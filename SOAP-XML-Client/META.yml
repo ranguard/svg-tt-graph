@@ -1,0 +1,16 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         SOAP-XML-Client
+version:      2.0
+version_from: 
+installdirs:  site
+requires:
+    Class::Accessor::Fast:         0.19
+    File::Slurp:                   0.1
+    SOAP::Data::Builder:           0.8
+    SOAP::Lite:                    0.67
+    Test::More:                    0.6
+    XML::LibXML:                   0.6
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.17
