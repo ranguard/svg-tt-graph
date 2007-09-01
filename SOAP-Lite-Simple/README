@@ -1,0 +1,183 @@
+SOAP::Lite::Simple(3) User Contributed Perl DocumentationSOAP::Lite::Simple(3)
+
+
+
+NNAAMMEE
+       SOAP::Lite::Simple - Simple frame work for talking with web services
+
+DDEESSCCRRIIPPTTIIOONN
+       This package is the base class for talking with web services, there are
+       specific modules to use depending on the type of service you are call-
+       ing, e.g. "SOAP::Lite::Simple::DotNet" or "SOAP::Lite::Simple::Real"
+
+       This package helps in talking with web services, it just needs a bit of
+       XML thrown at it and you get some XML back.  It's designed to be REALLY
+       simple to use.
+
+SSYYNNOOPPSSIISS
+         See SOAP::Lite::Simple::DotNet or SOAP::Lite::Simple::Real for usage example.
+
+         If you are creating a child class you just need to
+         impliment the actual _call() - see pod below.
+
+mmeetthhooddss
+       _n_e_w_(_)
+
+         my $soap_simple->SOAP::Lite::Simple::DotNet->new({
+           uri         => 'http://www.yourdomain.com/services',
+           proxy       => 'http://www.yourproxy.com/services/services.asmx',
+           xmlns       => 'http://www.yourdomain.com/services',
+           soapversion => '1.1',     # defaults to 1.1
+           timeout     => '30',      # detauls to 30 seconds
+           strip_default_xmlns => 1, # defaults to 1
+         });
+
+       This constructor requires uri, proxy and xmlns to be supplied, other-
+       wise it will croak.
+
+       strip_default_xmlns is used to remove xmlns="http://.../" from returned
+       XML, it will NOT alter xmlns:FOO="http//.../" set to '0' if you do not
+       wish for this to happen.
+
+       If you pass an encoding option then the SOAP message will be flagged as
+       that encoding (this defaults to UTF8):
+
+          ...
+            encoding => 'iso-8859-1',
+          ...
+
+       To stop SOAP::Lite being overly keen to encode values as Base64, pass
+       in disable_base64:
+
+          ...
+            disable_base64 => 1,
+          ...
+
+       _f_e_t_c_h_(_)
+
+         # Generate the required XML, this is the bit after the Method XML element
+         # in the services.asmx descriptor for this method (see Soap::Lite::Simple::DotNet SYNOPSIS).
+         my $user_id = '900109';
+         my $xml = "<userId _value_type='long'>$user_id</userId>";
+
+         if($soap_simple->fetch({ method => 'GetActivity', xml => $xml }) {
+             # Get result as a string
+             my $xml_string = $soap_simple->result();
+
+             # Get result as a XML::LibXML object
+             my $xml_libxml_object = $soap_simple->result_xml();
+
+         } else {
+             # There was some sort of error
+             print $soap_simple->error() . "\n";
+         }
+
+       This method actually calls the web service, it takes a method name and
+       an xml string. If there is a problem with either the XML or the SOAP
+       transport (e.g. web server error/could not connect etc) undef will be
+       returned and the _e_r_r_o_r_(_) will be set.
+
+       Each node in the XML supplied (either by string or from a filename)
+       needs to have _value_type defined or the submitted format will default
+       to 'string'.
+
+       You can supply 'filename' rather than 'xml' and it will read in from
+       the file.
+
+       We check for Fault/faultstring in the returned XML, anything else
+       you'll need to check for yourself.
+
+       _e_r_r_o_r_(_)
+
+         $soap_simple->error();
+
+       If fetch returns undef then check this method, it will either be that
+       the filename you supplied couldn't be read, the XML you supplied was
+       not correctly formatted (XML::LibXML could not parse it), there was a
+       transport error with the web service or Fault/faultstring was found in
+       the XML returned.
+
+       _r_e_s_u_l_t_s_(_);;
+
+         my $results = $soap_simple->results();
+
+       Can be called after _f_e_t_c_h_(_) to get the raw XML, if fetch was sucessful.
+
+       _r_e_s_u_l_t_s___x_m_l_(_);;
+
+         my $results_as_xml = $soap_simple->results_xml();
+
+       Can be called after _f_e_t_c_h_(_) to get the XML::LibXML Document element of
+       the returned xml, as long as fetch was sucessful.
+
+HHOOWW TTOO DDEEBBUUGG
+       At the top of your script, before 'use SOAP::Lite::Simple::<TYPE>' add:
+
+       use SOAP::Lite (  +trace => 'all',
+                         readable => 1,
+                         outputxml => 1,
+                      );
+
+       It may or may not help, not all web services give you many helpful
+       error messages!  At least you can see what's being submitted and
+       returned. It can be the smallest thing that causes a problem, mis-typed
+       data (see _value_type in xml), or typo in xmlns line.
+
+       If the type of module (e.g. SOAP::Lite::Simple::DotNet) doesn't work,
+       switch to one of the other ones and see if that helps.
+
+       ___c_a_l_l_(_)
+
+         This should be implimented by the child class
+
+         package SOAP::Lite::Simple::<PACKAGE NAME>;
+
+         use base qw(SOAP::Lite::Simple);
+
+         sub _call {
+               my ($self,$method) = @_;
+
+               # Impliment it! - below is the code from Simple::DotNet
+
+               # This code is the .NET specific way of calling SOAP,
+               # it might work for other stuff as well
+               my $soap_action = sub {return $self->uri() . '/' . $method};
+
+               my $caller = $self->{soap}
+                               ->uri($self->uri())
+                               ->proxy($self->proxy(), timeout => $self->timeout())
+                               ->on_action( $soap_action );
+
+               $caller->soapversion($self->soapversion());
+
+               # Create a SOAP::Data node for the method name
+               my $method_name = SOAP::Data->name($method)->attr({'xmlns' => $self->xmlns()});
+
+               # Execute the SOAP Request and get the resulting XML
+               my $res = $caller->call( $method_name => $self->{sdb}->to_soap_data());
+
+               return $res;
+         }
+
+         1;
+
+SSEEEE AALLSSOO
+       <SOAP::Lite::Simple::DotNet> <SOAP::Lite::Simple::Real>
+
+AAUUTTHHOORR
+       Leo Lapworth <LLAP@cuckoo.org>
+
+CCOOPPYYRRIIGGHHTT
+       (c) 2005 Leo Lapworth
+
+       This library is free software, you can use it under the same terms as
+       perl itself.
+
+TTHHAANNKKSS
+       Thanks to Foxtons for letting me develope this on their time and to
+       Aaron for his help with understanding SOAP a bit more and the London.pm
+       list for ideas.
+
+
+
+perl v5.8.6                       2005-12-28             SOAP::Lite::Simple(3)
