@@ -1,0 +1,1404 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+
+	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+
+
+
+
+
+
+
+	
+
+
+
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+
+
+<!-- \\\\\\\\\\\\\\\\\\\\\\\\\\\\  -->
+
+<!-- Created with SVG::TT::Graph   -->
+
+<!-- Dave Meibusch                 -->
+
+<!-- ////////////////////////////  -->
+
+
+
+
+
+<defs>
+
+<style type="text/css">
+
+<![CDATA[
+
+/* Copy from here for external style sheet */
+
+.svgBackground{
+
+	fill:#ffffff;
+
+}
+
+.graphBackground{
+
+	fill:#f0f0f0;
+
+}
+
+
+
+/* graphs titles */
+
+.mainTitle{
+
+	text-anchor: middle;
+
+	fill: #000000;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+.subTitle{
+
+	text-anchor: middle;
+
+	fill: #999999;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.axis{
+
+	stroke: #000000;
+
+	stroke-width: 1px;
+
+}
+
+
+
+.guideLines{
+
+	stroke: #666666;
+
+	stroke-width: 1px;
+
+	stroke-dasharray: 5 5;
+
+}
+
+
+
+.xAxisLabels{
+
+	text-anchor: middle;
+
+	fill: #000000;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.yAxisLabels{
+
+	text-anchor: end;
+
+	fill: #000000;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.xAxisTitle{
+
+	text-anchor: middle;
+
+	fill: #ff0000;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.yAxisTitle{
+
+	fill: #ff0000;
+
+	text-anchor: middle;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.dataPointLabel{
+
+	fill: #000000;
+
+	text-anchor:middle;
+
+	font-size: 10px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+.staggerGuideLine{
+
+	fill: none;
+
+	stroke: #000000;
+
+	stroke-width: 0.5px;	
+
+}
+
+/* default fill styles */
+
+.fill1{
+
+	fill: #cc0000;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill2{
+
+	fill: #0000cc;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill3{
+
+	fill: #00cc00;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill4{
+
+	fill: #ffcc00;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill5{
+
+	fill: #00ccff;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill6{
+
+	fill: #ff00ff;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill7{
+
+	fill: #00ffff;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill8{
+
+	fill: #ffff00;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill9{
+
+	fill: #cc6666;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill10{
+
+	fill: #663399;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill11{
+
+    fill: #339900;
+
+    fill-opacity: 0.2;
+
+    stroke: none;
+
+}
+
+.fill12{
+
+    fill: #9966FF;
+
+    fill-opacity: 0.2;
+
+    stroke: none;
+
+}
+
+
+
+/* default line styles */
+
+.line1{
+
+	fill: none;
+
+	stroke: #ff0000;
+
+	stroke-width: 1px;	
+
+}
+
+.line2{
+
+	fill: none;
+
+	stroke: #0000ff;
+
+	stroke-width: 1px;	
+
+}
+
+.line3{
+
+	fill: none;
+
+	stroke: #00ff00;
+
+	stroke-width: 1px;	
+
+}
+
+.line4{
+
+	fill: none;
+
+	stroke: #ffcc00;
+
+	stroke-width: 1px;	
+
+}
+
+.line5{
+
+	fill: none;
+
+	stroke: #00ccff;
+
+	stroke-width: 1px;	
+
+}
+
+.line6{
+
+	fill: none;
+
+	stroke: #ff00ff;
+
+	stroke-width: 1px;	
+
+}
+
+.line7{
+
+	fill: none;
+
+	stroke: #00ffff;
+
+	stroke-width: 1px;	
+
+}
+
+.line8{
+
+	fill: none;
+
+	stroke: #ffff00;
+
+	stroke-width: 1px;	
+
+}
+
+.line9{
+
+	fill: none;
+
+	stroke: #cc6666;
+
+	stroke-width: 1px;	
+
+}
+
+.line10{
+
+	fill: none;
+
+	stroke: #663399;
+
+	stroke-width: 1px;	
+
+}
+
+.line11{
+
+    fill: none;
+
+    stroke: #339900;
+
+    stroke-width: 1px;  
+
+}
+
+.line12{
+
+    fill: none;
+
+    stroke: #9966FF;
+
+    stroke-width: 1px;  
+
+}
+
+
+
+/* default line styles */
+
+.key1,.fill1{
+
+	fill: #ff0000;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key2,.fill2{
+
+	fill: #0000ff;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key3,.fill3{
+
+	fill: #00ff00;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key4,.fill4{
+
+	fill: #ffcc00;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key5,.fill5{
+
+	fill: #00ccff;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key6,.fill6{
+
+	fill: #ff00ff;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key7,.fill7{
+
+	fill: #00ffff;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key8,.fill8{
+
+	fill: #ffff00;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key9,.fill9{
+
+	fill: #cc6666;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key10,.fill10{
+
+	fill: #663399;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key11,.fill11{
+
+    fill: #339900;
+
+    stroke: none;
+
+    stroke-width: 1px;  
+
+}
+
+.key12,.fill12{
+
+    fill: #9966FF;
+
+    stroke: none;
+
+    stroke-width: 1px;  
+
+}
+
+.keyText{
+
+	fill: #000000;
+
+	text-anchor:start;
+
+	font-size: 10px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+/* End copy for external style sheet */
+
+]]>
+
+</style>
+
+</defs>
+
+
+<!-- svg bg -->
+
+<rect x="0" y="0" width="500" height="500" class="svgBackground"/>
+
+
+
+<!-- ///////////////// CALCULATE GRAPH AREA AND BOUNDARIES //////////////// -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- min_value 0.1 max_value 0.69 min_time 1062399600 max_time 1063134000 -->
+
+
+
+<!-- CALC HEIGHT AND Y COORD DIMENSIONS -->
+
+
+
+	
+
+
+
+
+    
+    
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- min_scale_value 0 max_scale_value 0.7 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+<!-- CALC WIDTH AND X COORD DIMENSIONS -->
+
+
+
+
+
+
+    
+        <!-- pad both sides -->
+
+        
+    
+    
+
+
+
+
+
+
+
+    
+    
+
+
+
+<!-- min_timescale_value 1062370800 max_timescale_value 1063134000 -->
+
+
+
+
+
+
+
+
+<!-- //////////////////////////////  BUILD GRAPH AREA ////////////////////////////// -->
+
+
+<rect x="49" y="45" width="427" height="324" class="graphBackground"/>
+
+<clipPath id="clipGraphArea">
+
+    <rect x="49" y="45" width="427" height="324"/>
+
+</clipPath> 
+
+
+
+<!-- axis -->
+
+<path d="M49 45 v324" class="axis" id="xAxis"/>
+
+<path d="M49 369 h427" class="axis" id="yAxis"/>
+
+
+
+<!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
+
+<!-- x axis scaling -->
+
+
+
+<!-- dx 763200 dw 0.000559486373165618 -->
+
+
+
+<!-- x axis labels -->
+
+
+    <text x="49" y="384"  transform="rotate(90 46.5 384) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">Monday</text>
+
+    
+    
+        
+            
+            
+                
+            
+            <!-- timescale_division 1 timescale_division_units days-->
+
+            
+            
+            
+                
+                
+                    <path d="M97.3396226415094 369 v17" class="staggerGuideLine" />
+
+                    <text x="97.3396226415094" y="401"  transform="rotate(90 94.8396226415094 401) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">Tuesday</text>        
+
+                
+                
+                
+                
+                
+            
+                
+                
+                    <text x="145.679245283019" y="384"  transform="rotate(90 143.179245283019 384) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">Wednesday</text>        
+
+                
+                
+                
+                
+                
+            
+                
+                
+                    <path d="M194.018867924528 369 v17" class="staggerGuideLine" />
+
+                    <text x="194.018867924528" y="401"  transform="rotate(90 191.518867924528 401) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">Thursday</text>        
+
+                
+                
+                
+                
+                
+            
+                
+                
+                    <text x="242.358490566038" y="384"  transform="rotate(90 239.858490566038 384) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">Friday</text>        
+
+                
+                
+                
+                
+                
+            
+                
+                
+                    <path d="M290.698113207547 369 v17" class="staggerGuideLine" />
+
+                    <text x="290.698113207547" y="401"  transform="rotate(90 288.198113207547 401) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">Saturday</text>        
+
+                
+                
+                
+                
+                
+            
+                
+                
+                    <text x="339.037735849057" y="384"  transform="rotate(90 336.537735849057 384) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">Sunday</text>        
+
+                
+                
+                
+                
+                
+            
+                
+                
+                    <path d="M387.377358490566 369 v17" class="staggerGuideLine" />
+
+                    <text x="387.377358490566" y="401"  transform="rotate(90 384.877358490566 401) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">Monday</text>        
+
+                
+                
+                
+                
+                
+            
+                
+                
+                    <text x="435.716981132075" y="384"  transform="rotate(90 433.216981132075 384) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">Tuesday</text>        
+
+                
+                
+                
+                
+                
+            
+        
+    
+    
+
+
+
+<!-- y axis scaling -->
+
+
+
+
+
+
+
+<!-- dy 0.7 dh 451.285714285714 scale_division 0.1 max_scale_value 0.7-->
+
+
+
+
+
+
+    
+			
+            <text x="44" y="369" class="yAxisLabels">0.0</text>
+
+	
+            
+                <text x="44" y="323.871428571429" class="yAxisLabels">0.1</text>
+
+                <path d="M49 323.871428571429 h427" class="guideLines"/>
+
+            
+	
+            
+                <text x="44" y="278.742857142857" class="yAxisLabels">0.2</text>
+
+                <path d="M49 278.742857142857 h427" class="guideLines"/>
+
+            
+	
+            
+                <text x="44" y="233.614285714286" class="yAxisLabels">0.3</text>
+
+                <path d="M49 233.614285714286 h427" class="guideLines"/>
+
+            
+	
+            
+                <text x="44" y="188.485714285714" class="yAxisLabels">0.4</text>
+
+                <path d="M49 188.485714285714 h427" class="guideLines"/>
+
+            
+	
+            
+                <text x="44" y="143.357142857143" class="yAxisLabels">0.5</text>
+
+                <path d="M49 143.357142857143 h427" class="guideLines"/>
+
+            
+	
+            
+                <text x="44" y="98.2285714285715" class="yAxisLabels">0.6</text>
+
+                <path d="M49 98.2285714285715 h427" class="guideLines"/>
+
+            
+	
+            
+                <text x="44" y="53.1000000000001" class="yAxisLabels">0.7</text>
+
+                <path d="M49 53.1000000000001 h427" class="guideLines"/>
+
+            
+	
+
+
+
+<!-- //////////////////////////////  AXIS TITLES ////////////////////////////// -->
+
+<!-- x axis title -->
+
+	
+		
+			
+		
+        <text x="262.5" y="473" class="xAxisTitle">Time</text>
+
+	
+
+
+<!-- y axis title -->
+
+	
+            <text x="10" y="207" transform="rotate(270,10,207)" class="yAxisTitle">Bogons</text>
+
+	
+
+
+<!-- //////////////////////////////  SHOW DATA ////////////////////////////// -->
+
+
+<g id="groupData" class="data">
+
+
+    <g id="groupDataSeries1" class="dataSeries1" clip-path="url(#clipGraphArea)">
+
+    
+        
+        
+        <path d="M65.1132075471698 369
+                    L 65.1132075471698 323.871428571429
+        
+                    L 89.2830188679245 310.332857142857
+        
+                    L 113.452830188679 265.204285714286
+        
+                    L 137.622641509434 256.178571428571
+        
+                    L 161.792452830189 215.562857142857
+        
+                    L 185.962264150943 66.6385714285715
+        
+                    L 210.132075471698 116.28
+        
+                    L 234.301886792453 165.921428571429
+        
+                    L 258.471698113208 215.562857142857
+        
+                    L 282.641509433962 265.204285714286
+        
+                    L 306.811320754717 323.871428571429
+        
+                    L 330.981132075472 143.357142857143
+        
+                    L 355.150943396226 260.691428571429
+        
+                    L 379.320754716981 310.332857142857
+        
+                    L 403.490566037736 57.6128571428572
+        
+                    L 427.660377358491 98.2285714285715
+        
+                    L 451.830188679245 75.6642857142858
+        
+                    L 476 93.7157142857143
+        
+         V 369 Z" class="fill1"/> 
+    
+
+
+    <!--- create line CPU usage-->
+
+    
+    
+        <path d="M
+
+                65.1132075471698 323.871428571429
+    
+        
+                    L 89.2830188679245 310.332857142857
+    
+        
+                    L 113.452830188679 265.204285714286
+    
+        
+                    L 137.622641509434 256.178571428571
+    
+        
+                    L 161.792452830189 215.562857142857
+    
+        
+                    L 185.962264150943 66.6385714285715
+    
+        
+                    L 210.132075471698 116.28
+    
+        
+                    L 234.301886792453 165.921428571429
+    
+        
+                    L 258.471698113208 215.562857142857
+    
+        
+                    L 282.641509433962 265.204285714286
+    
+        
+                    L 306.811320754717 323.871428571429
+    
+        
+                    L 330.981132075472 143.357142857143
+    
+        
+                    L 355.150943396226 260.691428571429
+    
+        
+                    L 379.320754716981 310.332857142857
+    
+        
+                    L 403.490566037736 57.6128571428572
+    
+        
+                    L 427.660377358491 98.2285714285715
+    
+        
+                    L 451.830188679245 75.6642857142858
+    
+        
+                    L 476 93.7157142857143
+    
+     " class="line1"/> 
+    </g>
+
+    <g id="groupDataLabels1" class="dataLabels1">
+
+    
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="65.1132075471698" y="317.871428571429" class="dataPointLabel1"
+
+                    
+                    >0.100</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="89.2830188679245" y="304.332857142857" class="dataPointLabel1"
+
+                    
+                    >0.130</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="113.452830188679" y="259.204285714286" class="dataPointLabel1"
+
+                    
+                    >0.230</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="137.622641509434" y="250.178571428571" class="dataPointLabel1"
+
+                    
+                    >0.250</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="161.792452830189" y="209.562857142857" class="dataPointLabel1"
+
+                    
+                    >0.340</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="185.962264150943" y="60.6385714285715" class="dataPointLabel1"
+
+                    
+                    >0.670</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="210.132075471698" y="110.28" class="dataPointLabel1"
+
+                    
+                    >0.560</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="234.301886792453" y="159.921428571429" class="dataPointLabel1"
+
+                    
+                    >0.450</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="258.471698113208" y="209.562857142857" class="dataPointLabel1"
+
+                    
+                    >0.340</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="282.641509433962" y="259.204285714286" class="dataPointLabel1"
+
+                    
+                    >0.230</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="306.811320754717" y="317.871428571429" class="dataPointLabel1"
+
+                    
+                    >0.100</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="330.981132075472" y="137.357142857143" class="dataPointLabel1"
+
+                    
+                    >0.500</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="355.150943396226" y="254.691428571429" class="dataPointLabel1"
+
+                    
+                    >0.240</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="379.320754716981" y="304.332857142857" class="dataPointLabel1"
+
+                    
+                    >0.130</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="403.490566037736" y="51.6128571428572" class="dataPointLabel1"
+
+                    
+                    >0.690</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="427.660377358491" y="92.2285714285715" class="dataPointLabel1"
+
+                    
+                    >0.600</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="451.830188679245" y="69.6642857142858" class="dataPointLabel1"
+
+                    
+                    >0.650</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                
+                    
+                    
+                    <text x="476" y="87.7157142857143" class="dataPointLabel1"
+
+                    
+                    >0.610</text>
+
+                
+                </g>
+
+            
+        
+    
+    </g>
+
+    
+
+</g>
+
+
+
+<!-- //////////////////////////////// KEY /////// ////////////////////////// -->
+
+
+
+	
+
+<!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->
+
+<!-- main graph title -->
+
+
+    <text x="250" y="15" class="mainTitle">Autoscaled with value range smaller than 1</text>
+
+
+
+
+<!-- graph sub title -->
+
+
+    
+        
+    
+    <text x="250" y="30" class="subTitle">Data values formatted.</text>
+
+
+</svg>
+

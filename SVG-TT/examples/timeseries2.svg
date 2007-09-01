@@ -1,0 +1,1266 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+
+	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+
+
+
+
+
+
+
+	
+
+
+
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+
+
+<!-- \\\\\\\\\\\\\\\\\\\\\\\\\\\\  -->
+
+<!-- Created with SVG::TT::Graph   -->
+
+<!-- Dave Meibusch                 -->
+
+<!-- ////////////////////////////  -->
+
+
+
+
+
+<defs>
+
+<style type="text/css">
+
+<![CDATA[
+
+/* Copy from here for external style sheet */
+
+.svgBackground{
+
+	fill:#ffffff;
+
+}
+
+.graphBackground{
+
+	fill:#f0f0f0;
+
+}
+
+
+
+/* graphs titles */
+
+.mainTitle{
+
+	text-anchor: middle;
+
+	fill: #000000;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+.subTitle{
+
+	text-anchor: middle;
+
+	fill: #999999;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.axis{
+
+	stroke: #000000;
+
+	stroke-width: 1px;
+
+}
+
+
+
+.guideLines{
+
+	stroke: #666666;
+
+	stroke-width: 1px;
+
+	stroke-dasharray: 5 5;
+
+}
+
+
+
+.xAxisLabels{
+
+	text-anchor: middle;
+
+	fill: #000000;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.yAxisLabels{
+
+	text-anchor: end;
+
+	fill: #000000;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.xAxisTitle{
+
+	text-anchor: middle;
+
+	fill: #ff0000;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.yAxisTitle{
+
+	fill: #ff0000;
+
+	text-anchor: middle;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.dataPointLabel{
+
+	fill: #000000;
+
+	text-anchor:middle;
+
+	font-size: 10px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+.staggerGuideLine{
+
+	fill: none;
+
+	stroke: #000000;
+
+	stroke-width: 0.5px;	
+
+}
+
+/* default fill styles */
+
+.fill1{
+
+	fill: #cc0000;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill2{
+
+	fill: #0000cc;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill3{
+
+	fill: #00cc00;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill4{
+
+	fill: #ffcc00;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill5{
+
+	fill: #00ccff;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill6{
+
+	fill: #ff00ff;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill7{
+
+	fill: #00ffff;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill8{
+
+	fill: #ffff00;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill9{
+
+	fill: #cc6666;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill10{
+
+	fill: #663399;
+
+	fill-opacity: 0.2;
+
+	stroke: none;
+
+}
+
+.fill11{
+
+    fill: #339900;
+
+    fill-opacity: 0.2;
+
+    stroke: none;
+
+}
+
+.fill12{
+
+    fill: #9966FF;
+
+    fill-opacity: 0.2;
+
+    stroke: none;
+
+}
+
+
+
+/* default line styles */
+
+.line1{
+
+	fill: none;
+
+	stroke: #ff0000;
+
+	stroke-width: 1px;	
+
+}
+
+.line2{
+
+	fill: none;
+
+	stroke: #0000ff;
+
+	stroke-width: 1px;	
+
+}
+
+.line3{
+
+	fill: none;
+
+	stroke: #00ff00;
+
+	stroke-width: 1px;	
+
+}
+
+.line4{
+
+	fill: none;
+
+	stroke: #ffcc00;
+
+	stroke-width: 1px;	
+
+}
+
+.line5{
+
+	fill: none;
+
+	stroke: #00ccff;
+
+	stroke-width: 1px;	
+
+}
+
+.line6{
+
+	fill: none;
+
+	stroke: #ff00ff;
+
+	stroke-width: 1px;	
+
+}
+
+.line7{
+
+	fill: none;
+
+	stroke: #00ffff;
+
+	stroke-width: 1px;	
+
+}
+
+.line8{
+
+	fill: none;
+
+	stroke: #ffff00;
+
+	stroke-width: 1px;	
+
+}
+
+.line9{
+
+	fill: none;
+
+	stroke: #cc6666;
+
+	stroke-width: 1px;	
+
+}
+
+.line10{
+
+	fill: none;
+
+	stroke: #663399;
+
+	stroke-width: 1px;	
+
+}
+
+.line11{
+
+    fill: none;
+
+    stroke: #339900;
+
+    stroke-width: 1px;  
+
+}
+
+.line12{
+
+    fill: none;
+
+    stroke: #9966FF;
+
+    stroke-width: 1px;  
+
+}
+
+
+
+/* default line styles */
+
+.key1,.fill1{
+
+	fill: #ff0000;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key2,.fill2{
+
+	fill: #0000ff;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key3,.fill3{
+
+	fill: #00ff00;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key4,.fill4{
+
+	fill: #ffcc00;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key5,.fill5{
+
+	fill: #00ccff;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key6,.fill6{
+
+	fill: #ff00ff;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key7,.fill7{
+
+	fill: #00ffff;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key8,.fill8{
+
+	fill: #ffff00;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key9,.fill9{
+
+	fill: #cc6666;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key10,.fill10{
+
+	fill: #663399;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key11,.fill11{
+
+    fill: #339900;
+
+    stroke: none;
+
+    stroke-width: 1px;  
+
+}
+
+.key12,.fill12{
+
+    fill: #9966FF;
+
+    stroke: none;
+
+    stroke-width: 1px;  
+
+}
+
+.keyText{
+
+	fill: #000000;
+
+	text-anchor:start;
+
+	font-size: 10px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+/* End copy for external style sheet */
+
+]]>
+
+</style>
+
+</defs>
+
+
+<!-- svg bg -->
+
+<rect x="0" y="0" width="500" height="500" class="svgBackground"/>
+
+
+
+<!-- ///////////////// CALCULATE GRAPH AREA AND BOUNDARIES //////////////// -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- min_value 8 max_value 67 min_time 1062572400 max_time 1062583200 -->
+
+
+
+<!-- CALC HEIGHT AND Y COORD DIMENSIONS -->
+
+
+
+	
+
+
+
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        
+    
+
+
+
+<!-- min_scale_value 0 max_scale_value 70 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+<!-- CALC WIDTH AND X COORD DIMENSIONS -->
+
+
+
+
+
+
+    
+        <!-- pad both sides -->
+
+        
+    
+    
+
+
+
+
+
+
+
+    
+    
+
+
+
+<!-- min_timescale_value 1062572400 max_timescale_value 1062583200 -->
+
+
+
+
+
+
+
+
+<!-- //////////////////////////////  BUILD GRAPH AREA ////////////////////////////// -->
+
+
+<rect x="57" y="45" width="411" height="315" class="graphBackground"/>
+
+<clipPath id="clipGraphArea">
+
+    <rect x="57" y="45" width="411" height="315"/>
+
+</clipPath> 
+
+
+
+<!-- axis -->
+
+<path d="M57 45 v315" class="axis" id="xAxis"/>
+
+<path d="M57 360 h411" class="axis" id="yAxis"/>
+
+
+
+<!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
+
+<!-- x axis scaling -->
+
+
+
+<!-- dx 10800 dw 0.0380555555555556 -->
+
+
+
+<!-- x axis labels -->
+
+
+    <text x="57" y="375"  transform="rotate(90 54.5 375) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">08:00:00</text>
+
+    
+    
+        
+            
+            
+                
+            
+            <!-- timescale_division 1 timescale_division_units hours-->
+
+            
+            
+            
+                
+                
+                    <text x="194" y="375"  transform="rotate(90 191.5 375) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">09:00:00</text>        
+
+                
+                
+                
+                
+                
+            
+                
+                
+                    <text x="331" y="375"  transform="rotate(90 328.5 375) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">10:00:00</text>        
+
+                
+                
+                
+                
+                
+            
+        
+    
+    
+        <text x="468" y="375"  transform="rotate(90 465.5 375) translate(-10,0)" style="text-anchor: start"  class="xAxisLabels">11:00:00</text>
+
+    
+
+
+
+<!-- y axis scaling -->
+
+
+
+
+
+
+
+<!-- dy 70 dh 4.3875 scale_division 10 max_scale_value 70-->
+
+
+
+
+
+
+    
+			
+            <text x="52" y="360" class="yAxisLabels">0.0</text>
+
+	
+            
+                <text x="52" y="316.125" class="yAxisLabels">10.0</text>
+
+                <path d="M57 316.125 h411" class="guideLines"/>
+
+            
+	
+            
+                <text x="52" y="272.25" class="yAxisLabels">20.0</text>
+
+                <path d="M57 272.25 h411" class="guideLines"/>
+
+            
+	
+            
+                <text x="52" y="228.375" class="yAxisLabels">30.0</text>
+
+                <path d="M57 228.375 h411" class="guideLines"/>
+
+            
+	
+            
+                <text x="52" y="184.5" class="yAxisLabels">40.0</text>
+
+                <path d="M57 184.5 h411" class="guideLines"/>
+
+            
+	
+            
+                <text x="52" y="140.625" class="yAxisLabels">50.0</text>
+
+                <path d="M57 140.625 h411" class="guideLines"/>
+
+            
+	
+            
+                <text x="52" y="96.75" class="yAxisLabels">60.0</text>
+
+                <path d="M57 96.75 h411" class="guideLines"/>
+
+            
+	
+            
+                <text x="52" y="52.875" class="yAxisLabels">70.0</text>
+
+                <path d="M57 52.875 h411" class="guideLines"/>
+
+            
+	
+
+
+
+<!-- //////////////////////////////  AXIS TITLES ////////////////////////////// -->
+
+<!-- x axis title -->
+
+	
+		
+			
+		
+        <text x="262.5" y="439" class="xAxisTitle">Time</text>
+
+	
+
+
+<!-- y axis title -->
+
+	
+            <text x="10" y="202.5" transform="rotate(270,10,202.5)" class="yAxisTitle">Bogons</text>
+
+	
+
+
+<!-- //////////////////////////////  SHOW DATA ////////////////////////////// -->
+
+
+<g id="groupData" class="data">
+
+
+    <g id="groupDataSeries2" class="dataSeries2" clip-path="url(#clipGraphArea)">
+
+    
+        
+        
+        <path d="M57 360
+                    L 57 324.9
+        
+                    L 194 307.35
+        
+                    L 331 245.925
+        
+                    L 468 259.0875
+        
+         V 360 Z" class="fill2"/> 
+    
+
+
+    <!--- create line Disk-->
+
+    
+    
+        <path d="M
+
+                57 324.9
+    
+        
+                    L 194 307.35
+    
+        
+                    L 331 245.925
+    
+        
+                    L 468 259.0875
+    
+     " class="line2"/> 
+    </g>
+
+    <g id="groupDataLabels2" class="dataLabels2">
+
+    
+        
+            
+                <g class="dataLabel2" >
+
+                
+                    <circle cx="57" cy="324.9" r="2.5" class="fill2"
+
+                    
+                    
+                    ></circle>
+
+                
+                
+                    
+                    
+                    <text x="57" y="318.9" class="dataPointLabel2"
+
+                    
+                    >8</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel2" >
+
+                
+                    <circle cx="194" cy="307.35" r="2.5" class="fill2"
+
+                    
+                    
+                    ></circle>
+
+                
+                
+                    
+                    
+                    <text x="194" y="301.35" class="dataPointLabel2"
+
+                    
+                    >12</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel2" >
+
+                
+                    <circle cx="331" cy="245.925" r="2.5" class="fill2"
+
+                    
+                    
+                    ></circle>
+
+                
+                
+                    
+                    
+                    <text x="331" y="239.925" class="dataPointLabel2"
+
+                    
+                    >26</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel2" >
+
+                
+                    <circle cx="468" cy="259.0875" r="2.5" class="fill2"
+
+                    
+                    
+                    ></circle>
+
+                
+                
+                    
+                    
+                    <text x="468" y="253.0875" class="dataPointLabel2"
+
+                    
+                    >23</text>
+
+                
+                </g>
+
+            
+        
+    
+    </g>
+
+    
+
+    <g id="groupDataSeries1" class="dataSeries1" clip-path="url(#clipGraphArea)">
+
+    
+        
+        
+        <path d="M194 360
+                    L 194 316.125
+        
+                    L 262.5 259.0875
+        
+                    L 296.75 123.075
+        
+                    L 331 66.0375
+        
+                    L 365.25 307.35
+        
+         V 360 Z" class="fill1"/> 
+    
+
+
+    <!--- create line CPU-->
+
+    
+    
+        <path d="M
+
+                194 316.125
+    
+        
+                    L 262.5 259.0875
+    
+        
+                    L 296.75 123.075
+    
+        
+                    L 331 66.0375
+    
+        
+                    L 365.25 307.35
+    
+     " class="line1"/> 
+    </g>
+
+    <g id="groupDataLabels1" class="dataLabels1">
+
+    
+        
+            
+                <g class="dataLabel1" >
+
+                
+                    <circle cx="194" cy="316.125" r="2.5" class="fill1"
+
+                    
+                    
+                    ></circle>
+
+                
+                
+                    
+                    
+                    <text x="194" y="310.125" class="dataPointLabel1"
+
+                    
+                    >10</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                    <circle cx="262.5" cy="259.0875" r="2.5" class="fill1"
+
+                    
+                    
+                    ></circle>
+
+                
+                
+                    
+                    
+                    <text x="262.5" y="253.0875" class="dataPointLabel1"
+
+                    
+                    >23</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                    <circle cx="296.75" cy="123.075" r="2.5" class="fill1"
+
+                    
+                    
+                    ></circle>
+
+                
+                
+                    
+                    
+                    <text x="296.75" y="117.075" class="dataPointLabel1"
+
+                    
+                    >54</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                    <circle cx="331" cy="66.0375" r="2.5" class="fill1"
+
+                    
+                    
+                    ></circle>
+
+                
+                
+                    
+                    
+                    <text x="331" y="60.0375" class="dataPointLabel1"
+
+                    
+                    >67</text>
+
+                
+                </g>
+
+            
+        
+            
+                <g class="dataLabel1" >
+
+                
+                    <circle cx="365.25" cy="307.35" r="2.5" class="fill1"
+
+                    
+                    
+                    ></circle>
+
+                
+                
+                    
+                    
+                    <text x="365.25" y="301.35" class="dataPointLabel1"
+
+                    
+                    >12</text>
+
+                
+                </g>
+
+            
+        
+    
+    </g>
+
+    
+
+</g>
+
+
+
+<!-- //////////////////////////////// KEY /////// ////////////////////////// -->
+
+
+
+	
+	
+    
+	
+    
+    
+        
+    
+    
+
+	
+	
+	
+		
+		<rect x="57" y="446" width="12" height="12" class="key1"/>
+
+
+
+		<text x="74" y="458" class="keyText">CPU</text>
+
+		
+	
+		
+		<rect x="57" y="463" width="12" height="12" class="key2"/>
+
+
+
+		<text x="74" y="475" class="keyText">Disk</text>
+
+		
+	
+	
+
+
+	
+
+<!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->
+
+<!-- main graph title -->
+
+
+    <text x="250" y="15" class="mainTitle">Auto-scale X and Y</text>
+
+
+
+
+<!-- graph sub title -->
+
+
+    
+        
+    
+    <text x="250" y="30" class="subTitle">Fill. Rotate formatted X labels. Show values and points.</text>
+
+
+</svg>
+

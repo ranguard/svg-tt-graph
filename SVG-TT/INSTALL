@@ -1,0 +1,35 @@
+SVG/TT/Graph version 0.01
+======================
+
+This set of modules can be used to generate high quality
+SVG graphs, bar charts and pie graphs.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+  Template 2.08 +
+  
+CONVERTING TO PNG
+
+Currently if you want to convert the SVG to PNG
+I'd suggest using Batik from http://xml.apache.org/,
+it is Java, I know there is work going on for the
+perl converters, they're just not there yet.
+
+COPYRIGHT AND LICENCE
+
+This module is free software; you can redistribute it or 
+modify it under the same terms as Perl itself.
+
+Copyright (C) 2003 Leo Lapworth
+

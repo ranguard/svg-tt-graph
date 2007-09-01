@@ -1,0 +1,981 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+
+	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+
+
+
+
+	
+
+
+
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<!-- \\\\\\\\\\\\\\\\\\\\\\\\\\\\  -->
+
+<!-- Created with SVG::TT::Graph   -->
+
+<!-- Stephen Morgan / Leo Lapworth -->
+
+<!-- ////////////////////////////  -->
+
+
+
+
+<!-- include default stylesheet if none specified -->
+
+<defs>
+
+<style type="text/css">
+
+<![CDATA[
+
+/* Copy from here for external style sheet */
+
+.svgBackground{
+
+	fill:#ffffff;
+
+}
+
+.graphBackground{
+
+	fill:#f0f0f0;
+
+}
+
+
+
+/* graphs titles */
+
+.mainTitle{
+
+	text-anchor: middle;
+
+	fill: #000000;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+.subTitle{
+
+	text-anchor: middle;
+
+	fill: #999999;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.axis{
+
+	stroke: #000000;
+
+	stroke-width: 1px;
+
+}
+
+
+
+.guideLines{
+
+	stroke: #666666;
+
+	stroke-width: 1px;
+
+	stroke-dasharray: 5 5;
+
+}
+
+
+
+.xAxisLabels{
+
+	text-anchor: middle;
+
+	fill: #000000;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.yAxisLabels{
+
+	text-anchor: end;
+
+	fill: #000000;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.xAxisTitle{
+
+	text-anchor: middle;
+
+	fill: #ff0000;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.yAxisTitle{
+
+	fill: #ff0000;
+
+	text-anchor: middle;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.dataPointLabel{
+
+	fill: #000000;
+
+	text-anchor:middle;
+
+	font-size: 10px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.staggerGuideLine{
+
+	fill: none;
+
+	stroke: #000000;
+
+	stroke-width: 0.5px;	
+
+}
+
+/* default fill styles for multiple datasets (probably only use a single dataset on this graph though) */
+
+.key1,.fill1{
+
+	fill: #ff0000;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 0.5px;	
+
+}
+
+.key2,.fill2{
+
+	fill: #0000ff;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key3,.fill3{
+
+	fill: #00ff00;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key4,.fill4{
+
+	fill: #ffcc00;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key5,.fill5{
+
+	fill: #00ccff;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key6,.fill6{
+
+	fill: #ff00ff;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key7,.fill7{
+
+	fill: #00ffff;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key8,.fill8{
+
+	fill: #ffff00;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key9,.fill9{
+
+	fill: #cc6666;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key10,.fill10{
+
+	fill: #663399;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key11,.fill11{
+
+	fill: #339900;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key12,.fill12{
+
+	fill: #9966FF;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.keyText{
+
+	fill: #000000;
+
+	text-anchor:start;
+
+	font-size: 10px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+/* End copy for external style sheet */
+
+]]>
+
+</style>
+
+</defs>
+
+
+<!-- svg bg -->
+
+<rect x="0" y="0" width="400" height="400" class="svgBackground"/>
+
+	
+
+<!-- ///////////////// CALCULATE GRAPH AREA AND BOUNDARIES //////////////// -->
+
+<!-- get dimensions of actual graph area (NOT SVG area) -->
+
+	
+	
+
+
+	<!-- set start/default coords of graph --> 
+
+	
+	
+	
+
+	
+	
+
+
+<!-- calc min and max values -->
+
+	
+	
+	
+	
+	
+		
+			
+		
+		
+
+		
+			
+				
+			
+			
+				
+			
+			
+				
+			
+		
+	
+		
+		
+
+		
+			
+			
+				
+			
+			
+		
+	
+		
+		
+
+		
+			
+			
+			
+		
+	
+		
+		
+
+		
+			
+			
+			
+		
+	
+		
+		
+
+		
+			
+			
+			
+		
+	
+
+
+
+
+<!-- CALC HEIGHT AND Y COORD DIMENSIONS -->
+
+	<!-- reduce height of graph area if there is labelling on x axis -->
+
+	
+	
+
+	<!-- reduce height if x labels are rotated -->
+
+	
+	
+		
+		
+	
+	
+
+	<!-- stagger x labels if overlapping occurs -->
+
+	
+	
+		
+		
+	
+	
+
+	
+	
+
+	<!-- pad top of graph if y axis has data labels so labels do not get chopped off -->
+
+	
+	
+
+	<!-- reduce height if graph has title or subtitle -->
+
+	
+	
+	
+
+
+
+	
+
+<!-- reduce graph dimensions if there is a KEY -->
+
+	
+	
+	
+
+	
+
+
+	<!-- find start value for scale on y axis -->
+
+	
+		
+	
+	
+
+	<!-- base line -->
+
+	
+	
+
+	<!-- how much padding between largest bar and top of graph -->
+
+	
+		
+	
+	
+
+	
+
+
+	<!-- default to 10 scale_divisions if none have been set -->
+
+	
+		
+	
+	
+
+	
+	
+
+<!-- JUMP THE GUN AND CALC BAR WIDTHS AS THESE ARE USED FOR PADDING IF LARGE X LABELS ARE USED -->
+
+<!-- get number of data points on x scale -->
+
+
+
+
+<!-- get distribution width on x axis -->
+
+
+
+
+
+
+
+
+
+<!-- CALC WIDTH AND X COORD DIMENSIONS -->
+
+	<!-- reduce width of graph area if there is large labelling on x axis -->
+
+	
+	
+
+	
+		<!-- calc difference and pad accordingly -->
+
+		
+		<!-- only need to pad the left side if a key is present -->
+
+		
+			<!-- pad both sides -->
+
+			
+		
+		
+	
+	
+
+	<!-- find the string length of max value -->
+
+	
+	
+
+	<!-- label width in pixels -->
+
+	
+	<!-- If the y labels are shown but the size of the x labels are small, pad for y labels -->
+
+	
+
+	
+	
+
+	
+		
+
+
+
+
+
+
+
+
+
+<!-- //////////////////////////////  BUILD GRAPH AREA ////////////////////////////// -->
+
+<!-- graph bg -->
+
+	<rect x="41" y="45" width="318" height="114" class="graphBackground"/>
+
+
+
+<!-- axis -->
+
+	<path d="M41 45 v114" class="axis" id="xAxis"/>
+
+	<path d="M41 159 h318" class="axis" id="yAxis"/>
+
+
+
+<!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
+
+<!-- get number of data points on x scale -->
+
+
+
+
+<!-- get distribution width on x axis -->
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+<!-- x axis labels -->
+
+
+	
+		
+<text x="72.5" y="174" transform="rotate(90 70 174)" style="text-anchor: start" class="xAxisLabels">Januararyasdasdasd</text>
+
+		
+		
+	
+	
+	
+	
+		
+			
+				<text x="135.5" y="191" transform="rotate(90 133 191)" style="text-anchor: start" class="xAxisLabels">Feb</text>
+
+				<path d="M135.5 159, v17" class="staggerGuideLine" />
+
+			
+		
+	
+	
+	
+	
+		
+			
+				<text x="198.5" y="174" transform="rotate(90 196 174)" style="text-anchor: start" class="xAxisLabels">Mar</text>
+
+				
+			
+		
+	
+	
+	
+	
+		
+			
+				<text x="261.5" y="191" transform="rotate(90 259 191)" style="text-anchor: start" class="xAxisLabels">Apr</text>
+
+				<path d="M261.5 159, v17" class="staggerGuideLine" />
+
+			
+		
+	
+	
+	
+	
+		
+			
+				<text x="324.5" y="174" transform="rotate(90 322 174)" style="text-anchor: start" class="xAxisLabels">Mayasdasdasdasdasd</text>
+
+				
+			
+		
+	
+	
+	
+	
+
+
+
+
+
+<!-- distribute Y scale -->
+
+
+<!-- ensure y_data_points butt up to edge of graph -->
+
+
+
+
+
+
+	
+		
+		<!-- no stroke for first line -->
+
+			<text x="36" y="159" class="yAxisLabels">0</text>
+
+		
+		
+		
+	
+		
+			<text x="36" y="148" class="yAxisLabels">4.7</text>
+
+			<path d="M41 148 h318" class="guideLines"/>
+
+		
+		
+		
+	
+		
+			<text x="36" y="137" class="yAxisLabels">9.4</text>
+
+			<path d="M41 137 h318" class="guideLines"/>
+
+		
+		
+		
+	
+		
+			<text x="36" y="126" class="yAxisLabels">14.1</text>
+
+			<path d="M41 126 h318" class="guideLines"/>
+
+		
+		
+		
+	
+		
+			<text x="36" y="115" class="yAxisLabels">18.8</text>
+
+			<path d="M41 115 h318" class="guideLines"/>
+
+		
+		
+		
+	
+		
+			<text x="36" y="104" class="yAxisLabels">23.5</text>
+
+			<path d="M41 104 h318" class="guideLines"/>
+
+		
+		
+		
+	
+		
+			<text x="36" y="93" class="yAxisLabels">28.2</text>
+
+			<path d="M41 93 h318" class="guideLines"/>
+
+		
+		
+		
+	
+		
+			<text x="36" y="82" class="yAxisLabels">32.9</text>
+
+			<path d="M41 82 h318" class="guideLines"/>
+
+		
+		
+		
+	
+		
+			<text x="36" y="71" class="yAxisLabels">37.6</text>
+
+			<path d="M41 71 h318" class="guideLines"/>
+
+		
+		
+		
+	
+		
+			<text x="36" y="60" class="yAxisLabels">42.3</text>
+
+			<path d="M41 60 h318" class="guideLines"/>
+
+		
+		
+		
+	
+		
+			<text x="36" y="49" class="yAxisLabels">47</text>
+
+			<path d="M41 49 h318" class="guideLines"/>
+
+		
+		
+		
+	
+
+
+
+
+
+
+
+<!-- //////////////////////////////  AXIS TITLES ////////////////////////////// -->
+
+
+
+<!-- x axis title -->
+
+	
+		
+			
+		
+		<text x="200" y="373" class="xAxisTitle">Field names</text>
+
+	
+
+
+<!-- y axis title -->
+
+	
+		
+			<text class="yAxisTitle" transform="translate(15,102) rotate(270)">Y Scale title</text>
+
+		
+	
+
+
+
+
+
+
+
+
+<!-- //////////////////////////////  SHOW DATA ////////////////////////////// -->
+
+
+
+
+
+<!-- data points on graph -->
+
+
+
+	
+	
+
+	
+		
+		<!-- find the lowest data value for each dataset -->
+
+
+
+		
+			<path d="M41 159 V130.914893617021 h63 V159 Z" class="fill1"/>
+
+			
+				<text x="72.5" y="124.914893617021" class="dataPointLabel">12</text>
+
+			
+			
+		
+		
+	
+		
+		<!-- find the lowest data value for each dataset -->
+
+
+
+		
+			<path d="M104 159 V53.6808510638298 h63 V159 Z" class="fill1"/>
+
+			
+				<text x="135.5" y="47.6808510638298" class="dataPointLabel">45</text>
+
+			
+			
+		
+		
+	
+		
+		<!-- find the lowest data value for each dataset -->
+
+
+
+		
+			<path d="M167 159 V109.851063829787 h63 V159 Z" class="fill1"/>
+
+			
+				<text x="198.5" y="103.851063829787" class="dataPointLabel">21</text>
+
+			
+			
+		
+		
+	
+		
+		<!-- find the lowest data value for each dataset -->
+
+
+
+		
+			<path d="M230 159 V53.6808510638298 h63 V159 Z" class="fill1"/>
+
+			
+				<text x="261.5" y="47.6808510638298" class="dataPointLabel">45</text>
+
+			
+			
+		
+		
+	
+		
+		<!-- find the lowest data value for each dataset -->
+
+
+
+		
+			<path d="M293 159 V84.1063829787234 h63 V159 Z" class="fill1"/>
+
+			
+				<text x="324.5" y="78.1063829787234" class="dataPointLabel">32</text>
+
+			
+			
+		
+		
+	
+
+
+
+
+<!-- //////////////////////////////// KEY /////// ////////////////////////// -->
+
+
+
+
+	
+
+<!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->
+
+
+
+<!-- main graph title -->
+
+	
+		<text x="200" y="15" class="mainTitle">Graph Title</text>
+
+	
+
+
+<!-- graph sub title -->
+
+	
+		
+			
+		
+		<text x="200" y="30" class="subTitle">Graph Sub Title</text>
+
+	
+</svg>

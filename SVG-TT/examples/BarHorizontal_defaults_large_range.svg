@@ -1,0 +1,1262 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+
+	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+
+
+
+
+
+
+	
+
+
+
+
+
+<svg width="500" height="300" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<!-- \\\\\\\\\\\\\\\\\\\\\\\\\\\\  -->
+
+<!-- Created with SVG::TT::Graph   -->
+
+<!-- Stephen Morgan / Leo Lapworth -->
+
+<!-- ////////////////////////////  -->
+
+
+
+<!-- include default stylesheet if none specified -->
+
+<defs>
+
+<style type="text/css">
+
+<![CDATA[
+
+/* Copy from here for external style sheet */
+
+.svgBackground{
+
+	fill:#ffffff;
+
+	/* set 'fill: none;' and then include 'wmode="transparent"'
+
+	 in the HTML embed tag if you need the SVG transparent */
+
+}
+
+.graphBackground{
+
+	fill:#f0f0f0;
+
+}
+
+
+
+/* graphs titles */
+
+.mainTitle{
+
+	text-anchor: middle;
+
+	fill: #000000;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: bold;
+
+}
+
+.subTitle{
+
+	text-anchor: middle;
+
+	fill: #999999;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.axis{
+
+	stroke: #000000;
+
+	stroke-width: 1px;
+
+}
+
+
+
+.guideLines{
+
+	stroke: #666666;
+
+	stroke-width: 1px;
+
+	stroke-dasharray: 5 5;
+
+}
+
+
+
+.xAxisLabels{
+
+	text-anchor: middle;
+
+	fill: #000000;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.yAxisLabels{
+
+	text-anchor: end;
+
+	fill: #000000;
+
+	font-size: 12px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.xAxisTitle{
+
+	text-anchor: middle;
+
+	fill: #ff0000;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.yAxisTitle{
+
+	fill: #ff0000;
+
+	text-anchor: middle;
+
+	font-size: 14px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+
+
+.dataPointLabel{
+
+	fill: #000000;
+
+	text-anchor:middle;
+
+	font-size: 10px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+.staggerGuideLine{
+
+	fill: none;
+
+	stroke: #000000;
+
+	stroke-width: 0.5px;	
+
+}
+
+/* default fill styles for multiple datasets (probably only use a single dataset on this graph though) */
+
+.key1,.fill1{
+
+	fill: #ff0000;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 0.5px;	
+
+}
+
+.key2,.fill2{
+
+	fill: #0000ff;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key3,.fill3{
+
+	fill: #00ff00;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key4,.fill4{
+
+	fill: #ffcc00;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key5,.fill5{
+
+	fill: #00ccff;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key6,.fill6{
+
+	fill: #ff00ff;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key7,.fill7{
+
+	fill: #00ffff;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key8,.fill8{
+
+	fill: #ffff00;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key9,.fill9{
+
+	fill: #cc6666;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key10,.fill10{
+
+	fill: #663399;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key11,.fill11{
+
+	fill: #339900;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.key12,.fill12{
+
+	fill: #9966FF;
+
+	fill-opacity: 0.5;
+
+	stroke: none;
+
+	stroke-width: 1px;	
+
+}
+
+.keyText{
+
+	fill: #000000;
+
+	text-anchor:start;
+
+	font-size: 10px;
+
+	font-family: "Arial", sans-serif;
+
+	font-weight: normal;
+
+}
+
+/* End copy for external style sheet */
+
+]]>
+
+</style>
+
+</defs>
+
+
+
+<!-- svg bg -->
+
+<rect x="0" y="0" width="500" height="300" class="svgBackground"/>
+
+	
+
+<!-- ///////////////// CALCULATE GRAPH AREA AND BOUNDARIES //////////////// -->
+
+<!-- get dimensions of actual graph area (NOT SVG area) -->
+
+	
+
+	
+
+
+
+	<!-- set start/default coords of graph --> 
+
+	
+
+	
+
+
+
+	
+
+
+
+<!-- CALC WIDTH AND X COORD DIMENSIONS -->
+
+	<!-- reduce width of graph area if there is labelling on y axis -->
+
+	
+
+	
+
+		
+
+		<!-- calculate largest label width and add margin accordingly -->
+
+		
+
+			
+
+				
+
+			
+
+		
+
+			
+
+		
+
+			
+
+		
+
+			
+
+		
+
+			
+
+		
+
+				
+
+		
+
+
+
+		
+
+		
+
+	
+
+	
+
+	<!-- corrects space around graph when very small y labels are used -->
+
+	
+
+
+
+	<!-- pad ends of graph if there are x labels -->
+
+	
+
+		
+
+	<!-- if there are no y labels or titles BUT there are x labels, then pad left -->
+
+		
+
+	<!-- adjust axis start position using the  first x label char lengths -->
+
+		
+
+	
+
+	
+
+
+
+<!-- CALC HEIGHT AND Y COORD DIMENSIONS -->
+
+	<!-- reduce height of graph area if there is labelling on x axis -->
+
+	
+
+	
+
+<!-- stagger x labels if overlapping occurs -->
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	<!-- pad top of graph if y axis has data labels so labels do not get chopped off -->
+
+	
+
+	
+
+	<!-- reduce height if graph has title or subtitle -->
+
+	
+
+	
+
+	
+
+		
+
+	
+
+	<!-- find largest dataset title for Key size -->
+
+		
+
+			
+
+		
+
+	
+
+	<!-- find largest dataset title for Key size -->
+
+		
+
+	
+
+	<!-- find largest dataset title for Key size -->
+
+		
+
+	
+
+	<!-- find largest dataset title for Key size -->
+
+		
+
+	
+
+	<!-- find largest dataset title for Key size -->
+
+		
+
+	
+
+	
+
+<!-- reduce graph dimensions if there is a KEY -->
+
+	
+
+	
+
+
+
+
+
+<!-- calc min and max values -->
+
+	
+
+	
+
+	
+
+		
+
+			
+
+				
+
+			
+
+			
+
+				
+
+			
+
+		
+
+	
+
+		
+
+			
+
+			
+
+				
+
+			
+
+		
+
+	
+
+		
+
+			
+
+			
+
+		
+
+	
+
+		
+
+			
+
+			
+
+		
+
+	
+
+		
+
+			
+
+			
+
+				
+
+			
+
+		
+
+	
+
+	
+
+	
+
+		
+
+	
+
+	
+
+	<!-- base line -->
+
+	
+
+	
+
+	<!-- how much padding above max point on graph -->
+
+	
+
+			
+
+		
+
+	
+
+	
+
+
+
+	<!-- default to 10 scale_divisions if none have been set -->
+
+	
+
+		
+
+	
+
+	
+
+	
+
+	
+
+<!-- //////////////////////////////  BUILD GRAPH AREA ////////////////////////////// -->
+
+<!-- graph bg -->
+
+	<rect x="126" y="10" width="354" height="270" class="graphBackground"/>
+
+
+
+<!-- axis -->
+
+	<path d="M126 10 v270" class="axis" id="xAxis"/>
+
+	<path d="M126 280 h354" class="axis" id="yAxis"/>
+
+
+
+<!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
+
+<!-- get number of data points on y scale -->
+
+
+
+
+
+<!-- get distribution heights on y axis -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- y axis labels -->
+
+
+
+	
+
+		
+
+<text x="116" y="253" class="yAxisLabels">Januararyasdasdasd</text>
+
+		
+
+		
+
+	
+
+	
+
+	
+
+		
+
+<text x="116" y="199" class="yAxisLabels">Feb</text>
+
+		
+
+	
+
+	
+
+	
+
+		
+
+<text x="116" y="145" class="yAxisLabels">Mar</text>
+
+		
+
+	
+
+	
+
+	
+
+		
+
+<text x="116" y="91" class="yAxisLabels">Apr</text>
+
+		
+
+	
+
+	
+
+	
+
+		
+
+<text x="116" y="37" class="yAxisLabels">Mayasdasdasdasdasd</text>
+
+		
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+<!-- distribute x scale -->
+
+
+
+<!-- ensure x_data_points butt up to edge of graph -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+		
+
+		<!-- no stroke for first line -->
+
+			<text x="126" y="295" class="xAxisLabels"> 0</text>
+
+		
+
+		
+
+		
+
+		
+
+	
+
+		
+
+			
+
+				<text x="161" y="295" class="xAxisLabels" style="text-anchor: middle;">36291.4</text>
+
+				<path d="M161 280 V10" class="guideLines"/>
+
+				<path d="M161 280, v0" class="staggerGuideLine" />
+
+			
+
+		
+
+		
+
+		
+
+		
+
+	
+
+		
+
+			
+
+				<text x="196" y="295" class="xAxisLabels" style="text-anchor: middle;">72582.7</text>
+
+				<path d="M196 280 V10" class="guideLines"/>
+
+				
+
+			
+
+		
+
+		
+
+		
+
+		
+
+	
+
+		
+
+			
+
+				<text x="231" y="295" class="xAxisLabels" style="text-anchor: middle;">108874.1</text>
+
+				<path d="M231 280 V10" class="guideLines"/>
+
+				<path d="M231 280, v0" class="staggerGuideLine" />
+
+			
+
+		
+
+		
+
+		
+
+		
+
+	
+
+		
+
+			
+
+				<text x="266" y="295" class="xAxisLabels" style="text-anchor: middle;">145165.4</text>
+
+				<path d="M266 280 V10" class="guideLines"/>
+
+				
+
+			
+
+		
+
+		
+
+		
+
+		
+
+	
+
+		
+
+			
+
+				<text x="301" y="295" class="xAxisLabels" style="text-anchor: middle;">181456.8</text>
+
+				<path d="M301 280 V10" class="guideLines"/>
+
+				<path d="M301 280, v0" class="staggerGuideLine" />
+
+			
+
+		
+
+		
+
+		
+
+		
+
+	
+
+		
+
+			
+
+				<text x="336" y="295" class="xAxisLabels" style="text-anchor: middle;">217748.2</text>
+
+				<path d="M336 280 V10" class="guideLines"/>
+
+				
+
+			
+
+		
+
+		
+
+		
+
+		
+
+	
+
+		
+
+			
+
+				<text x="371" y="295" class="xAxisLabels" style="text-anchor: middle;">254039.5</text>
+
+				<path d="M371 280 V10" class="guideLines"/>
+
+				<path d="M371 280, v0" class="staggerGuideLine" />
+
+			
+
+		
+
+		
+
+		
+
+		
+
+	
+
+		
+
+			
+
+				<text x="406" y="295" class="xAxisLabels" style="text-anchor: middle;">290330.9</text>
+
+				<path d="M406 280 V10" class="guideLines"/>
+
+				
+
+			
+
+		
+
+		
+
+		
+
+		
+
+	
+
+		
+
+			
+
+				<text x="441" y="295" class="xAxisLabels" style="text-anchor: middle;">326622.2</text>
+
+				<path d="M441 280 V10" class="guideLines"/>
+
+				<path d="M441 280, v0" class="staggerGuideLine" />
+
+			
+
+		
+
+		
+
+		
+
+		
+
+	
+
+		
+
+			
+
+				<text x="476" y="295" class="xAxisLabels" style="text-anchor: middle;">362913.6</text>
+
+				<path d="M476 280 V10" class="guideLines"/>
+
+				
+
+			
+
+		
+
+		
+
+		
+
+		
+
+	
+
+
+
+
+
+
+
+
+
+
+
+<!-- //////////////////////////////  AXIS TITLES ////////////////////////////// -->
+
+
+
+<!-- x axis title -->
+
+		
+
+
+
+<!-- y axis title -->
+
+	
+
+
+
+
+
+<!-- //////////////////////////////  SHOW DATA ////////////////////////////// -->
+
+
+
+	
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+	
+
+<path d="M126 226 H126.0115730025 v44 H126 Z" class="fill1"/>
+
+
+
+
+
+	
+
+<text x="131.0115730025" y="253" class="dataPointLabel" style="text-anchor: start;">12</text>
+
+	
+
+		
+
+
+
+			
+
+
+
+	
+
+
+
+	
+
+<path d="M126 172 H148.601109465173 v44 H126 Z" class="fill1"/>
+
+
+
+
+
+	
+
+<text x="153.601109465173" y="199" class="dataPointLabel" style="text-anchor: start;">23435</text>
+
+	
+
+		
+
+
+
+			
+
+
+
+	
+
+
+
+	
+
+<path d="M126 118 H126.020252754375 v44 H126 Z" class="fill1"/>
+
+
+
+
+
+	
+
+<text x="131.020252754375" y="145" class="dataPointLabel" style="text-anchor: start;">21</text>
+
+	
+
+		
+
+
+
+			
+
+
+
+	
+
+
+
+	
+
+<path d="M126 64 H129.322416134309 v44 H126 Z" class="fill1"/>
+
+
+
+
+
+	
+
+<text x="134.322416134309" y="91" class="dataPointLabel" style="text-anchor: start;">3445</text>
+
+	
+
+		
+
+
+
+			
+
+
+
+	
+
+
+
+	
+
+<path d="M126 10 H459.333333333333 v44 H126 Z" class="fill1"/>
+
+
+
+
+
+	
+
+<text x="464.333333333333" y="37" class="dataPointLabel" style="text-anchor: start;">345632</text>
+
+	
+
+		
+
+
+
+			
+
+
+
+
+
+
+
+
+
+<!-- //////////////////////////////// KEY /////// ////////////////////////// -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->
+
+
+
+<!-- main graph title -->
+
+	
+
+
+
+<!-- graph sub title -->
+
+	
+
+</svg>
+
