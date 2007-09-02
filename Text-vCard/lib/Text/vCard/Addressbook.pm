@@ -51,17 +51,17 @@ This method will croak if it is unable to read in any of the files.
 =cut
 
 sub load {
-	my ($proto,$files) = @_;
+    my ( $proto, $files ) = @_;
 
-	my $self = __PACKAGE__->new();
-	
-	foreach my $file (@{$files}) {
-		croak "Unable to read file $file" unless -r $file;
-		$self->_process_text(scalar read_file($file));
-	}
+    my $self = __PACKAGE__->new();
 
-	return $self;
-	
+    foreach my $file ( @{$files} ) {
+        croak "Unable to read file $file" unless -r $file;
+        $self->_process_text( scalar read_file($file) );
+    }
+
+    return $self;
+
 }
 
 =head2 new()
@@ -90,26 +90,29 @@ Looping through all vcards in an address book.
 =cut
 
 sub new {
-	my ($proto,$conf) = @_;
-	my $class = ref($proto) || $proto;
-	my $self = {};
+    my ( $proto, $conf ) = @_;
+    my $class = ref($proto) || $proto;
+    my $self  = {};
 
-	if(defined $conf->{'source_file'}) {
-		# Need to read in source file
-		croak "Unable to read file $conf->{'source_file'}\n" unless -r $conf->{'source_file'};
-		$conf->{'source_text'} = read_file($conf->{'source_file'});
-	}
+    if ( defined $conf->{'source_file'} ) {
 
-	# create some where to store out individual vCard objects
-	my @cards;
-	$self->{'cards'} = \@cards;
+        # Need to read in source file
+        croak "Unable to read file $conf->{'source_file'}\n"
+          unless -r $conf->{'source_file'};
+        $conf->{'source_text'} = read_file( $conf->{'source_file'} );
+    }
 
-	bless($self,$class);
+    # create some where to store out individual vCard objects
+    my @cards;
+    $self->{'cards'} = \@cards;
 
-	# Process the text if we have it.
-	$self->_process_text($conf->{'source_text'}) if defined $conf->{'source_text'};
-	
-	return $self;
+    bless( $self, $class );
+
+    # Process the text if we have it.
+    $self->_process_text( $conf->{'source_text'} )
+      if defined $conf->{'source_text'};
+
+    return $self;
 }
 
 =head1 METHODS
@@ -124,12 +127,11 @@ address book and return it so you can add data to it.
 =cut
 
 sub add_vcard {
-	my $self = shift;
-	my $vcard = Text::vCard->new();
-	push(@{$self->{cards}}, $vcard);
-	return $vcard;
+    my $self  = shift;
+    my $vcard = Text::vCard->new();
+    push( @{ $self->{cards} }, $vcard );
+    return $vcard;
 }
-
 
 =head2 vcards()
 
@@ -143,8 +145,8 @@ if there are no entries in the address book.
 =cut
 
 sub vcards {
-	my $self = shift;
-	return wantarray ? @{$self->{cards}} : $self->{cards};
+    my $self = shift;
+    return wantarray ? @{ $self->{cards} } : $self->{cards};
 }
 
 =head2 export()
@@ -163,60 +165,60 @@ at the moment.
 =cut
 
 sub export {
-	my $self = shift;
-	my @lines;
-	foreach my $vcard ($self->vcards()) {	
-		push @lines, 'BEGIN:VCARD';
-		while (my ($node_type,$nodes) = each %{ $vcard->{nodes} }) {
+    my $self = shift;
+    my @lines;
+    foreach my $vcard ( $self->vcards() ) {
+        push @lines, 'BEGIN:VCARD';
+        while ( my ( $node_type, $nodes ) = each %{ $vcard->{nodes} } ) {
 
-			# Make sure all the nodes values are up to date
-			my @export_nodes;
-			foreach my $node (@{$nodes}) {
-				my $name = $node_type;
-				if($node->group()) {
-					# Add the group in to the name
-					$name = $node->group() . '.' . $node_type;
-				}
+            # Make sure all the nodes values are up to date
+            my @export_nodes;
+            foreach my $node ( @{$nodes} ) {
+                my $name = $node_type;
+                if ( $node->group() ) {
 
-				my $param;
-                $param = join (',', ($node->types())) if $node->types();
+                    # Add the group in to the name
+                    $name = $node->group() . '.' . $node_type;
+                }
+
+                my $param;
+                $param = join( ',', ( $node->types() ) ) if $node->types();
                 $name .= ";TYPE=$param" if $param;
-				push(@lines,"$name:" . $node->export_data);
-			}
-		}
-		push @lines, 'END:VCARD';
-	} 
-	my $vcf_file = join("\r\n",@lines);
-	return $vcf_file;
+                push( @lines, "$name:" . $node->export_data );
+            }
+        }
+        push @lines, 'END:VCARD';
+    }
+    my $vcf_file = join( "\r\n", @lines );
+    return $vcf_file;
 }
-
 
 # PRIVATE METHODS
 
 # Process a chunk of text, create Text::vCard objects and store in the address book
 sub _process_text {
-	my($self,$text) = @_;
+    my ( $self, $text ) = @_;
 
-	# As data may handle \r - must ask richard
-	$text =~ s/\r//g;
+    # As data may handle \r - must ask richard
+    $text =~ s/\r//g;
 
-	# Add error checking here ?
-	my $asData = Text::vFile::asData->new;
-	$asData->preserve_params(1);
-	my $data = $asData->parse_lines(split("\n",$text));
-	foreach my $card (@{$data->{'objects'}}) {
-		# Run through each card in the data
-		if($card->{'type'} =~ /VCARD/i) {
-			my $vcard = Text::vCard->new({
-				'asData_node' => $card->{'properties'},
-			});
-			push(@{$self->{'cards'}},$vcard);
-		} else {
-			carp "This file contains $card->{'type'} data which was not parsed";
-		}
-	}
+    # Add error checking here ?
+    my $asData = Text::vFile::asData->new;
+    $asData->preserve_params(1);
+    my $data = $asData->parse_lines( split( "\n", $text ) );
+    foreach my $card ( @{ $data->{'objects'} } ) {
 
-	
+        # Run through each card in the data
+        if ( $card->{'type'} =~ /VCARD/i ) {
+            my $vcard =
+              Text::vCard->new( { 'asData_node' => $card->{'properties'}, } );
+            push( @{ $self->{'cards'} }, $vcard );
+        }
+        else {
+            carp "This file contains $card->{'type'} data which was not parsed";
+        }
+    }
+
 }
 
 =head1 AUTHOR

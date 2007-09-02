@@ -16,56 +16,64 @@ my @default_field = qw(value);
 
 # If it does use these
 %lookup = (
-	'ADR' => ['po_box','extended','street','city','region','post_code','country'],
-	'N' => ['family','given','middle','prefixes','suffixes'],
-	'GEO' => ['lat','long'],
-	'ORG' => ['name','unit'],
+    'ADR' => [
+        'po_box', 'extended',  'street', 'city',
+        'region', 'post_code', 'country'
+    ],
+    'N'   => [ 'family', 'given', 'middle', 'prefixes', 'suffixes' ],
+    'GEO' => [ 'lat',    'long' ],
+    'ORG' => [ 'name',   'unit' ],
 );
 
 %node_aliases = (
-	'FULLNAME' 	=> 'FN',
-	'BIRTHDAY'	=> 'BDAY',
-	'TIMEZONE'	=> 'TZ',
-	'PHONES'	=> 'TEL',
-	'ADDRESSES'	=> 'ADR',
-	'NAME'		=> 'N',
+    'FULLNAME'  => 'FN',
+    'BIRTHDAY'  => 'BDAY',
+    'TIMEZONE'  => 'TZ',
+    'PHONES'    => 'TEL',
+    'ADDRESSES' => 'ADR',
+    'NAME'      => 'N',
 );
 
 # Generate all our simple methods
-@simple = qw(FN BDAY MAILER TZ TITLE ROLE NOTE PRODID REV SORT-STRING UID URL CLASS FULLNAME BIRTHDAY TZ NAME EMAIL NICKNAME PHOTO);
+@simple =
+  qw(FN BDAY MAILER TZ TITLE ROLE NOTE PRODID REV SORT-STRING UID URL CLASS FULLNAME BIRTHDAY TZ NAME EMAIL NICKNAME PHOTO);
+
 # Now we want lowercase as well
-map { push(@simple,lc($_)) } @simple;
+map { push( @simple, lc($_) ) } @simple;
 
 # Generate the methods
 {
-	no strict 'refs';
-	no warnings;
-        # 'version' handled separately
-        # to prevent conflict with ExtUtils::MakeMaker
-        # and $VERSION
-	for my $node (@simple,"version") { 
-		*$node = sub { 
-			my ($self,$value) = @_; 
-			# See if we have it already
-			my $nodes = $self->get($node);
-			if(!defined $nodes && $value) {
-				# Add it as a node if not exists and there is a value
-				$self->add_node({
-					'node_type' => $node,
-				});
-				# Get it out again
-				$nodes = $self->get($node);
-			}
+    no strict 'refs';
+    no warnings;
 
-			if(scalar($nodes) && $value) {
-				# Set it
-				$nodes->[0]->value($value);
-			}
-			
-			return $nodes->[0]->value() if scalar($nodes);
-			return undef;
-		}
-	    }
+    # 'version' handled separately
+    # to prevent conflict with ExtUtils::MakeMaker
+    # and $VERSION
+    for my $node ( @simple, "version" ) {
+        *$node = sub {
+            my ( $self, $value ) = @_;
+
+            # See if we have it already
+            my $nodes = $self->get($node);
+            if ( !defined $nodes && $value ) {
+
+                # Add it as a node if not exists and there is a value
+                $self->add_node( { 'node_type' => $node, } );
+
+                # Get it out again
+                $nodes = $self->get($node);
+            }
+
+            if ( scalar($nodes) && $value ) {
+
+                # Set it
+                $nodes->[0]->value($value);
+            }
+
+            return $nodes->[0]->value() if scalar($nodes);
+            return undef;
+          }
+    }
 }
 
 =head1 NAME
@@ -113,36 +121,40 @@ vCards from an existing file for you.
 =cut
 
 sub new {
-	my ($proto,$conf) = @_;
-	my $class = ref($proto) || $proto;
-	my $self = {};
+    my ( $proto, $conf ) = @_;
+    my $class = ref($proto) || $proto;
+    my $self  = {};
 
-	bless($self,$class);
+    bless( $self, $class );
 
-	my %nodes;
-	$self->{nodes} = \%nodes;
-	
-	if(defined $conf->{'asData_node'}) {
-		# Have a vcard data node being passed in
-		while(my ($node_type,$data) = each %{$conf->{'asData_node'}}) {
-			my $group;
-			if($node_type =~ /\./) {
-				# Version 3.0 supports group types, we do not
-				# so remove everything before '.'
-				($group,$node_type) = $node_type =~ /(.+)\.(.*)/;
-			}
-			# Deal with each type (ADR, FN, TEL etc)
-			$self->_add_node({
-				'node_type' => $node_type,
-				'data' => $data,
-				'group' => $group,
-			});
-		}
-	} # else we're creating a new vCard
+    my %nodes;
+    $self->{nodes} = \%nodes;
 
-	return $self;
+    if ( defined $conf->{'asData_node'} ) {
+
+        # Have a vcard data node being passed in
+        while ( my ( $node_type, $data ) = each %{ $conf->{'asData_node'} } ) {
+            my $group;
+            if ( $node_type =~ /\./ ) {
+
+                # Version 3.0 supports group types, we do not
+                # so remove everything before '.'
+                ( $group, $node_type ) = $node_type =~ /(.+)\.(.*)/;
+            }
+
+            # Deal with each type (ADR, FN, TEL etc)
+            $self->_add_node(
+                {
+                    'node_type' => $node_type,
+                    'data'      => $data,
+                    'group'     => $group,
+                }
+            );
+        }
+    }    # else we're creating a new vCard
+
+    return $self;
 }
-
 
 =head2 add_node()
 
@@ -158,17 +170,18 @@ The node_type parameter must confirm to the vCard spec format (e.g. ADR not addr
 =cut
 
 sub add_node {
-	my ($self,$conf) = @_;
-	croak 'Must supply a node_type' unless defined $conf && defined $conf->{'node_type'};
-	unless(defined $conf->{data}) {
-		my %empty;
-		my @data = (\%empty);
-		$conf->{'data'} = \@data;
-	}
+    my ( $self, $conf ) = @_;
+    croak 'Must supply a node_type'
+      unless defined $conf && defined $conf->{'node_type'};
+    unless ( defined $conf->{data} ) {
+        my %empty;
+        my @data = ( \%empty );
+        $conf->{'data'} = \@data;
+    }
 
-	$self->_add_node($conf);
+    $self->_add_node($conf);
 }
-  
+
 =head2 get()
 
 The following method allows you to extract the contents from the vCard.
@@ -200,14 +213,16 @@ returned as the first element of the list.
 =cut
 
 sub get {
-	my ($self,$conf) = @_;
-	carp "You did not supply an element type" unless defined $conf;
-	if(ref($conf) eq 'HASH') {
-		return $self->get_of_type($conf->{'node_type'},$conf->{'types'}) if defined $conf->{'types'};
-		return $self->get_of_type($conf->{'node_type'});
-	} else {
-		return $self->get_of_type($conf);
-	}
+    my ( $self, $conf ) = @_;
+    carp "You did not supply an element type" unless defined $conf;
+    if ( ref($conf) eq 'HASH' ) {
+        return $self->get_of_type( $conf->{'node_type'}, $conf->{'types'} )
+          if defined $conf->{'types'};
+        return $self->get_of_type( $conf->{'node_type'} );
+    }
+    else {
+        return $self->get_of_type($conf);
+    }
 }
 
 =head2 nodes
@@ -309,32 +324,38 @@ be empty.
 =cut
 
 sub get_group {
-	my ($self,$group_name,$node_type) = @_;
-	my @to_return;
+    my ( $self, $group_name, $node_type ) = @_;
+    my @to_return;
 
-	carp "No group name supplied" unless defined $group_name and $group_name ne '';
-	
-	$group_name = lc($group_name);
-	
-	if(defined $node_type && $node_type ne '') {
-		# After a specific node type
-		my $nodes = $self->get($node_type);
-		foreach my $node (@{$nodes}) {
-			push(@to_return, $node) if $node->group() eq $group_name;
-		}
-	} else {
-		# We want everything from that group
-		foreach my $node_loop (keys %{$self->{nodes}}) {
-			# Loop through each type
-			my $nodes = $self->get($node_loop);
-			foreach my $node (@{$nodes}) {
-				if($node->group()) {
-					push(@to_return, $node) if $node->group() eq $group_name;
-				}
-			}
-		}
-	}
-	return wantarray ? @to_return : \@to_return;
+    carp "No group name supplied"
+      unless defined $group_name
+      and $group_name ne '';
+
+    $group_name = lc($group_name);
+
+    if ( defined $node_type && $node_type ne '' ) {
+
+        # After a specific node type
+        my $nodes = $self->get($node_type);
+        foreach my $node ( @{$nodes} ) {
+            push( @to_return, $node ) if $node->group() eq $group_name;
+        }
+    }
+    else {
+
+        # We want everything from that group
+        foreach my $node_loop ( keys %{ $self->{nodes} } ) {
+
+            # Loop through each type
+            my $nodes = $self->get($node_loop);
+            foreach my $node ( @{$nodes} ) {
+                if ( $node->group() ) {
+                    push( @to_return, $node ) if $node->group() eq $group_name;
+                }
+            }
+        }
+    }
+    return wantarray ? @to_return : \@to_return;
 }
 
 =head1 BINARY METHODS
@@ -357,7 +378,6 @@ API still to be finalised.
 sub DESTROY {
 }
 
-
 =head2 get_lookup
 
 This method is used internally to lookup those nodes which have multiple elements,
@@ -376,8 +396,8 @@ This has not been tested yet.
 =cut 
 
 sub get_lookup {
-	my $self = shift;
-	return \%lookup;
+    my $self = shift;
+    return \%lookup;
 }
 
 =head2 get_of_type()
@@ -391,100 +411,118 @@ this method.
 
 # Used to get the right elements
 sub get_of_type {
-	my ($self, $node_type, $types) = @_;
+    my ( $self, $node_type, $types ) = @_;
 
-	# Upper case the name
-	$node_type = uc($node_type);
+    # Upper case the name
+    $node_type = uc($node_type);
 
-	# See if there is an alias for it
-	$node_type = uc($node_aliases{$node_type}) if defined $node_aliases{$node_type};
+    # See if there is an alias for it
+    $node_type = uc( $node_aliases{$node_type} )
+      if defined $node_aliases{$node_type};
 
-	return undef unless defined $self->{nodes}->{$node_type};
+    return undef unless defined $self->{nodes}->{$node_type};
 
-	if($types) {
-		# After specific types
-		my @of_type;
-		if(ref($types) eq 'ARRAY') {
-			@of_type = @{$types};
-			#	print "T A: " . join('-',@{$types}) . "\n";
-		} else {
-			push(@of_type, $types);
-			#	print "T: $types\n";
-		}
-		my @to_return;
-		foreach my $element (@{$self->{nodes}->{$node_type}}) {
-			my $check = 1; # assum ok for now
-			foreach my $type (@of_type) {
-				# set it as bad if we don't match				
-				$check = 0 unless $element->is_type($type);
-			}
-			if($check == 1) {
-				#	print "Adding: $element->street() \n";
-				push(@to_return, $element);
-			}
-		}
-		
-		return undef unless scalar(@to_return);
-		# Make prefered value first
-		@to_return = sort {
-			_sort_prefs($b) <=> _sort_prefs($a)
-		} @to_return;
+    if ($types) {
 
-		return wantarray ? @to_return : \@to_return;	
-	
-	} else {
-		# Return them all
-		return wantarray ? @{$self->{nodes}->{$node_type}} : $self->{nodes}->{$node_type};	
-	}	
+        # After specific types
+        my @of_type;
+        if ( ref($types) eq 'ARRAY' ) {
+            @of_type = @{$types};
+
+            #	print "T A: " . join('-',@{$types}) . "\n";
+        }
+        else {
+            push( @of_type, $types );
+
+            #	print "T: $types\n";
+        }
+        my @to_return;
+        foreach my $element ( @{ $self->{nodes}->{$node_type} } ) {
+            my $check = 1;    # assum ok for now
+            foreach my $type (@of_type) {
+
+                # set it as bad if we don't match
+                $check = 0 unless $element->is_type($type);
+            }
+            if ( $check == 1 ) {
+
+                #	print "Adding: $element->street() \n";
+                push( @to_return, $element );
+            }
+        }
+
+        return undef unless scalar(@to_return);
+
+        # Make prefered value first
+        @to_return = sort { _sort_prefs($b) <=> _sort_prefs($a) } @to_return;
+
+        return wantarray ? @to_return : \@to_return;
+
+    }
+    else {
+
+        # Return them all
+        return
+          wantarray
+          ? @{ $self->{nodes}->{$node_type} }
+          : $self->{nodes}->{$node_type};
+    }
 }
 
 sub _sort_prefs {
-	my $check = shift;
-	if($check->is_type('pref')) {
-		return 1;
-	} else {
-		return 0;
-	}
+    my $check = shift;
+    if ( $check->is_type('pref') ) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
 }
 
 # Private method for adding nodes
 sub _add_node {
-	my($self,$conf) = @_;
+    my ( $self, $conf ) = @_;
 
-	my $value_fields = $self->get_lookup();
-	
-	my $node_type = uc($conf->{node_type});
-	$node_type = $node_aliases{$node_type} if defined $node_aliases{$node_type};
+    my $value_fields = $self->get_lookup();
 
-	my $field_list;
-				
-	if(defined $value_fields->{$node_type}) {
-		# We know what the field list is
-		$field_list = $value_fields->{$node_type};	
-	} else {
-		# No defined fields - use just the 'value' one
-		$field_list = \@default_field;
-	}
-	unless(defined $self->{nodes}->{$node_type}) {
-		# create space to hold list of node objects
-		my @node_list_space;
-		$self->{nodes}->{$node_type} = \@node_list_space;
-	}	
-	my $last_node;
-	foreach my $node_data (@{$conf->{data}}) {
-		my $node_obj = Text::vCard::Node->new({
-			node_type => $node_type,
-			fields => $field_list,
-			data => $node_data,
-			group => $conf->{group} || '',
-		});
+    my $node_type = uc( $conf->{node_type} );
+    $node_type = $node_aliases{$node_type} if defined $node_aliases{$node_type};
 
-		push(@{$self->{nodes}->{$node_type}}, $node_obj);
-		
-		# store the last node so we can return it.
-		$last_node = $node_obj;
-	}
-	return $last_node;
+    my $field_list;
+
+    if ( defined $value_fields->{$node_type} ) {
+
+        # We know what the field list is
+        $field_list = $value_fields->{$node_type};
+    }
+    else {
+
+        # No defined fields - use just the 'value' one
+        $field_list = \@default_field;
+    }
+    unless ( defined $self->{nodes}->{$node_type} ) {
+
+        # create space to hold list of node objects
+        my @node_list_space;
+        $self->{nodes}->{$node_type} = \@node_list_space;
+    }
+    my $last_node;
+    foreach my $node_data ( @{ $conf->{data} } ) {
+        my $node_obj = Text::vCard::Node->new(
+            {
+                node_type => $node_type,
+                fields    => $field_list,
+                data      => $node_data,
+                group     => $conf->{group} || '',
+            }
+        );
+
+        push( @{ $self->{nodes}->{$node_type} }, $node_obj );
+
+        # store the last node so we can return it.
+        $last_node = $node_obj;
+    }
+    return $last_node;
 }
 
 =head1 AUTHOR
