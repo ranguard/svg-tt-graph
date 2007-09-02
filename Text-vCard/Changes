@@ -1,5 +1,9 @@
 Revision history for Perl extension Text::vCard.
 
+2.01 Sun Sep 2 2007
+	- Stop empty TYPE= being set on export when not needed
+	thanks to Vadim for the suggestion
+
 2.00 Sat Oct 21 2006
 	- export now gives 'TYPE=x,y' instead of the incorrect 'x;y'
 	

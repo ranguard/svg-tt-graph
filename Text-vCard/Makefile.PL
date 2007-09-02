@@ -1,6 +1,6 @@
 use ExtUtils::MakeMaker;
 
-my $VERSION = '2.00';
+my $VERSION = '2.01';
 
 my $ABSTRACT = "Module for parsing and creating vCards (RFC 2426) address";
 

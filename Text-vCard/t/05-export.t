@@ -32,7 +32,7 @@ my @data = (
 my $adbk = Text::vCard::Addressbook->new({ 'source_file' => 't/apple_version3.vcf'});
 
 my $vcf = $adbk->export();
-print $vcf;
+#print $vcf;
 like($vcf,qr/TYPE=work/,'export() - added type def');
 
 my @lines = split("\r\n",$vcf);

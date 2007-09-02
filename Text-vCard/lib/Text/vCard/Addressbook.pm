@@ -9,7 +9,7 @@ use Text::vCard;
 # See this module for your basic parser functions
 use base qw(Text::vFile::asData);
 use vars qw ($VERSION);
-$VERSION = '1.96';
+$VERSION = '1.97';
 
 =head1 NAME
 
@@ -178,9 +178,9 @@ sub export {
 					$name = $node->group() . '.' . $node_type;
 				}
 
-				my $param = '';
-				$param = 'TYPE=' . join (',', ($node->types())) if $node->types();
-				$name .= ";$param" if $param ne '';
+				my $param;
+                $param = join (',', ($node->types())) if $node->types();
+                $name .= ";TYPE=$param" if $param;
 				push(@lines,"$name:" . $node->export_data);
 			}
 		}
