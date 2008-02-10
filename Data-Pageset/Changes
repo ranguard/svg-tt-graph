@@ -1,5 +1,9 @@
 Revision history for Perl extension Data::Pageset.
 
+1.04 Thu Mar  9 22:55:44 GMT 2006
+	- Apply patch from http://rt.cpan.org/Public/Bug/Display.html?id=27384
+	  to fix slider bug - thanks to PLOBBES
+
 1.03 Thu Mar  9 22:55:44 GMT 2006
 	- fix bug in last page of slide mode
 

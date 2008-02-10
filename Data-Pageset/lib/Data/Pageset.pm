@@ -9,7 +9,7 @@ use vars qw(@ISA $VERSION);
 
 @ISA = qw(Data::Page);
 
-$VERSION = '1.03';
+$VERSION = '1.04';
 
 =head1 NAME
 
@@ -138,15 +138,14 @@ sub new {
     my $self = {};
 
     croak "total_entries and entries_per_page must be supplied"
-      unless defined $conf->{'total_entries'}
-      && defined $conf->{'entries_per_page'};
+        unless defined $conf->{'total_entries'}
+            && defined $conf->{'entries_per_page'};
 
     $conf->{'current_page'} = 1 unless defined $conf->{'current_page'};
     $conf->{pages_per_set} = 10 unless defined $conf->{'pages_per_set'};
     if ( defined $conf->{'mode'} && $conf->{'mode'} eq 'slide' ) {
         $self->{mode} = 'slide';
-    }
-    else {
+    } else {
         $self->{mode} = 'fixed';
     }
     bless( $self, $class );
@@ -187,8 +186,9 @@ sub current_page {
     # Not sure if there is some cleaver way of calling SUPER here,
     # think it would have to be wrapped in an eval
     return $self->first_page
-      if $self->_current_page_accessor < $self->first_page;
-    return $self->last_page if $self->_current_page_accessor > $self->last_page;
+        if $self->_current_page_accessor < $self->first_page;
+    return $self->last_page
+        if $self->_current_page_accessor > $self->last_page;
     return $self->_current_page_accessor();
 }
 
@@ -211,44 +211,41 @@ sub pages_per_set {
 
     # set as undef so it at least exists
     $self->{PAGE_SET_PAGES_PER_SET} = undef
-      unless exists $self->{PAGE_SET_PAGES_PER_SET};
+        unless exists $self->{PAGE_SET_PAGES_PER_SET};
 
     # Not trying to set, so return current number;
     return $self->{PAGE_SET_PAGES_PER_SET} unless $max_pages_per_set;
 
     $self->{PAGE_SET_PAGES_PER_SET} = $max_pages_per_set;
 
-    my $starting_page = $self->_calc_start_page($max_pages_per_set);
-
     unless ( $max_pages_per_set > 1 ) {
 
         # Only have one page in the set, must be page 1
         $self->{PAGE_SET_PREVIOUS} = $self->current_page() - 1
-          if $self->current_page != 1;
+            if $self->current_page != 1;
         $self->{PAGE_SET_PAGES} = [1];
         $self->{PAGE_SET_NEXT}  = $self->current_page() + 1
-          if $self->current_page() < $self->last_page();
-    }
-    else {
+            if $self->current_page() < $self->last_page();
+    } else {
         if ( $self->{mode} eq 'fixed' ) {
-            my $end_page = $starting_page + $max_pages_per_set - 1;
+            my $starting_page = $self->_calc_start_page($max_pages_per_set);
+            my $end_page      = $starting_page + $max_pages_per_set - 1;
 
             if ( $end_page < $self->last_page() ) {
                 $self->{PAGE_SET_NEXT} = $end_page + 1;
             }
 
             if ( $starting_page > 1 ) {
-                $self->{PAGE_SET_PREVIOUS} =
-                  $starting_page - $max_pages_per_set;
+                $self->{PAGE_SET_PREVIOUS}
+                    = $starting_page - $max_pages_per_set;
 
-             # I can't see a reason for this to be here!
-             #$self->{PAGE_SET_PREVIOUS} =  1 if $self->{PAGE_SET_PREVIOUS} < 1;
+           # I can't see a reason for this to be here!
+           #$self->{PAGE_SET_PREVIOUS} =  1 if $self->{PAGE_SET_PREVIOUS} < 1;
             }
 
             $end_page = $self->last_page() if $self->last_page() < $end_page;
             $self->{PAGE_SET_PAGES} = [ $starting_page .. $end_page ];
-        }
-        else {
+        } else {
 
             # We're in slide mode
 
@@ -257,36 +254,53 @@ sub pages_per_set {
 
                 # No sliding, no next/prev pageset
                 $self->{PAGE_SET_PAGES} = [ '1' .. $self->last_page() ];
-            }
-            else {
+            } else {
 
-         # Find the middle rounding down - we want more pages after, than before
+       # Find the middle rounding down - we want more pages after, than before
                 my $middle = int( $max_pages_per_set / 2 );
+
+                # offset for extra value right of center on even numbered sets
+                my $offset = 1;
                 if ( $max_pages_per_set % 2 != 0 ) {
 
                     # must have been an odd number, add one
                     $middle++;
+                    $offset = 0;
                 }
+
+                my $starting_page = $self->current_page() - $middle + 1;
+                $starting_page = 1 if $starting_page < 1;
+                my $end_page = $starting_page + $max_pages_per_set - 1;
+                $end_page = $self->last_page()
+                    if $self->last_page() < $end_page;
+
                 if ( $self->current_page() <= $middle ) {
 
-                    # we must be at the start of the page numbers
-                    # so we don't want to scroll yes
-                    $self->{PAGE_SET_NEXT}  = $max_pages_per_set + 1;
+                    # near the start of the page numbers
+                    $self->{PAGE_SET_NEXT}
+                        = $max_pages_per_set + $middle - $offset;
                     $self->{PAGE_SET_PAGES} = [ '1' .. $max_pages_per_set ];
-                }
-                else {
+                } elsif ( $self->current_page()
+                    >= ( $self->last_page() - $middle - $offset ) )
+                {
+
+                    # near the end of the page numbers
+                    $self->{PAGE_SET_PREVIOUS}
+                        = $self->last_page() 
+                        - $max_pages_per_set 
+                        - $middle + 1;
+                    $self->{PAGE_SET_PAGES}
+                        = [ ( $self->last_page() - $max_pages_per_set + 1 )
+                        .. $self->last_page() ];
+                } else {
 
                     # Start scrolling baby!
-                    $starting_page = $self->current_page() - $middle + 1;
-                    my $end_page = $starting_page + $max_pages_per_set - 1;
-                    $end_page = $self->last_page()
-                      if $self->last_page() < $end_page;
                     $self->{PAGE_SET_PAGES} = [ $starting_page .. $end_page ];
-                    if ( $starting_page > $middle ) {
-                        $self->{PAGE_SET_PREVIOUS} = $starting_page - $middle;
-                        $self->{PAGE_SET_PREVIOUS} = 1
-                          if $self->{PAGE_SET_PREVIOUS} < 1;
-                    }
+                    $self->{PAGE_SET_PREVIOUS}
+                        = $starting_page - $middle - $offset;
+                    $self->{PAGE_SET_PREVIOUS} = 1
+                        if $self->{PAGE_SET_PREVIOUS} < 1;
+                    $self->{PAGE_SET_NEXT} = $end_page + $middle;
                 }
             }
         }

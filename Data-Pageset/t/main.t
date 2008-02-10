@@ -4,7 +4,7 @@ use strict;
 
 use lib qw( ./blib/lib ../blib/lib );
 
-use Test::More tests => 488;
+use Test::More tests => 499;
 
 # Check we can load module
 BEGIN { use_ok( 'Data::Pageset' ); }
@@ -160,10 +160,31 @@ foreach my $line (<DATA>) {
   is($page->next_set(), $vals[12], "$name: next_set");
   is($page->previous_set(), $vals[13], "$name: previous_set");
   is($page_nums, $vals[14], "$name: pages_in_set");
+
+#  my $ps = Data::Pageset->new({
+#  	'total_entries'		=> $vals[0],
+#	'entries_per_page'	=> $vals[1],
+#	'current_page'		=> $page->previous_set,
+#	'pages_per_set'		=> $vals[3],
+#	'mode'			=> $vals[15],
+#  });
+#  my $ns = Data::Pageset->new({
+#  	'total_entries'		=> $vals[0],
+#	'entries_per_page'	=> $vals[1],
+#	'current_page'		=> $page->next_set,
+#	'pages_per_set'		=> $vals[3],
+#	'mode'			=> $vals[15],
+#  });
+#
+#  diag("totent($vals[0]) epp($vals[1]) cp($vals[9]) pps($vals[3])\n");
+#  diag("previous set pis: ", join(",",@{$ps->pages_in_set()}), "\n") if($page->previous_set);
+#  diag("    this set pis: ", join(",",@{$page->pages_in_set()}), "\n");
+#  diag("    next set pis: ", join(",",@{$ns->pages_in_set()}), "\n") if($page->next_set);
+
 }
 
 # 0: total_entries
-# 1: enteries_per_page
+# 1: entries_per_page
 # 2: current_page
 # 3: pages_per_set
 # 4: first_page number
@@ -234,7 +255,8 @@ __DATA__
 
 # Slide - sliding
 89 10 4 10 1 9 31 40 3 4 5 30,31,32,33,34,35,36,37,38,39 undef undef 1,2,3,4,5,6,7,8,9 slide
-999 10 20 9 1 100 191 200 19 20 21 190,191,192,193,194,195,196,197,198,199 undef 11 16,17,18,19,20,21,22,23,24 slide
-999 10 11 9 1 100 101 110 10 11 12 100,101,102,103,104,105,106,107,108,109 undef 2 7,8,9,10,11,12,13,14,15 slide
-999 10 20 10 1 100 191 200 19 20 21 190,191,192,193,194,195,196,197,198,199 undef 11 16,17,18,19,20,21,22,23,24,25 slide
-1070 20 54 15 1 54 1061 1070 53 54 undef 1060,1061,1062,1063,1064,1065,1066,1067,1068,1069 undef 39 47,48,49,50,51,52,53,54 slide 
+999 10 20 9 1 100 191 200 19 20 21 190,191,192,193,194,195,196,197,198,199 29 11 16,17,18,19,20,21,22,23,24 slide
+999 10 11 9 1 100 101 110 10 11 12 100,101,102,103,104,105,106,107,108,109 20 2 7,8,9,10,11,12,13,14,15 slide
+999 10 20 10 1 100 191 200 19 20 21 190,191,192,193,194,195,196,197,198,199 30 10 16,17,18,19,20,21,22,23,24,25 slide
+1070 20 54 15 1 54 1061 1070 53 54 undef 1060,1061,1062,1063,1064,1065,1066,1067,1068,1069 undef 32 40,41,42,43,44,45,46,47,48,49,50,51,52,53,54 slide 
+209 10 5 5 1 21 41 50 4 5 6 40,41,42,43,44,45,46,47,48,49 10 1 3,4,5,6,7 slide
