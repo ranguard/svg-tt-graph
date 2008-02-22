@@ -9,7 +9,7 @@ use vars qw(@ISA $VERSION);
 
 @ISA = qw(Data::Page);
 
-$VERSION = '1.04';
+$VERSION = '1.05';
 
 =head1 NAME
 
@@ -281,7 +281,7 @@ sub pages_per_set {
                         = $max_pages_per_set + $middle - $offset;
                     $self->{PAGE_SET_PAGES} = [ '1' .. $max_pages_per_set ];
                 } elsif ( $self->current_page()
-                    >= ( $self->last_page() - $middle - $offset ) )
+                    > ( $self->last_page() - $middle - $offset ) )
                 {
 
                     # near the end of the page numbers
@@ -383,8 +383,16 @@ None by default.
 
 =head1 AUTHOR
 
-Leo Lapworth <lt>LLAP@cuckoo.org<gt> - let me know if you've used
-this module - go on... you know you want to.
+Leo Lapworth C<< <LLAP@cuckoo.org> >>
+
+=head1 SVN
+
+http://code.google.com/p/llap/
+
+=head1 CONTRIBUTORS
+
+Ryan D Johnson C<< <ryan@innerfence.com> >>
+PLOBBES
 
 =head1 SEE ALSO
 
@@ -392,7 +400,7 @@ L<Data::Page>.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2003, Leo Lapworth
+Copyright (C) 2007, Leo Lapworth
 
 This module is free software; you can redistribute it or modify it
 under the same terms as Perl itself.
