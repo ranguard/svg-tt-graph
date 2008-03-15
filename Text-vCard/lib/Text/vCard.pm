@@ -531,7 +531,11 @@ Leo Lapworth, LLAP@cuckoo.org
 
 =head1 BUGS
 
-None that I'm aware of - export does not encode correctly.
+None that I'm aware of - export may not encode correctly.
+
+=head1 SVN
+
+http://code.google.com/p/llap/
 
 =head1 COPYRIGHT
 
