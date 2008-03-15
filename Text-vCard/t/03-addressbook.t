@@ -39,7 +39,7 @@ like($@,qr/Unable to read file/,'new() - croak when unable to read file');
 eval {
 	Text::vCard::Addressbook::new(undef);
 };
-like($@,qr/Use of uninitialized value in bless/,'new() - ok error when no proto supplied');
+like($@,qr/Use of uninitialized value/,'new() - ok error when no proto supplied');
 
 my $foo = Text::vCard::Addressbook::new('foo::bar');
 is(ref($foo),'foo::bar','new() - Can use as a base class');

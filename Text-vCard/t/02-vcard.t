@@ -25,7 +25,7 @@ is(ref($hash),'HASH','new() retruns HASH when supplied hash');
 eval {
 	Text::vCard::new(undef);
 };
-like($@, qr/Use of uninitialized value in bless/,'Errors if no class supplied');
+like($@, qr/Use of uninitialized value/,'Errors if no class supplied');
 $@ = 'foo';
 
 my $adbk = Text::vCard::Addressbook->new({ 'source_file' => 't/simple.vcf'});

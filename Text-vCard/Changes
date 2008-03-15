@@ -1,5 +1,10 @@
 Revision history for Perl extension Text::vCard.
 
+2.02 Sat Mar 15 17:15:16 GMT 2008
+	- http://rt.cpan.org/Ticket/Display.html?id=34044 
+	  Clean up tests so they pass in perl 5.10
+      thanks to Neil Williams
+
 2.01 Sun Sep 2 2007
 	- Stop empty TYPE= being set on export when not needed
 	thanks to Vadim for the suggestion

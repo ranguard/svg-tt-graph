@@ -42,7 +42,7 @@ is(ref($hash),'HASH','new() retruns HASH when supplied hash');
 eval {
 	Text::vCard::Node::new(undef, { 'fields' => ['value'] });
 };
-like($@, qr/Use of uninitialized value in bless/,'Errors if no class supplied');
+like($@, qr/Use of uninitialized value/,'Errors if no class supplied');
 $@ = 'foo';
 
 eval {
