@@ -2,7 +2,7 @@
 
 use strict;
 
-use blib;
+use lib qw(./lib);
 
 use Test::More tests => 28;
 use Data::Dumper;
@@ -84,8 +84,6 @@ is(scalar(@list),2,'Got all 2 addresses from array');
 my @list_all = $vcard->get_of_type('addresses');
 is(scalar(@list_all),3,'Got 3 addresses from array as expected');
 
-
-
 #######
 # Test get()
 #######
@@ -120,6 +118,16 @@ is($vcard->email(),undef,'autogen methods - undef for no email as expected');
 is($vcard->email('n.e@body.com'),'n.e@body.com','autogen methods - new value set');
 
 is($vcard->birthday('new bd'),'new bd','autogen added with alias');
+
+######
+# 
+######
+
+my $names = $vcard->get({ 'node_type' => 'name' });
+is($names->[0]->family(),'T-surname','got name - but this will be depreciated');
+
+my $names = $vcard->get({ 'node_type' => 'moniker' });
+is($names->[0]->family(),'T-surname','got moniker');
 
 ######
 # get get_group()

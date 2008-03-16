@@ -3,7 +3,7 @@
 use strict;
 use Data::Dumper;
 
-use blib;
+use lib qw(./lib);
 
 use Test::More  tests => 13;
 

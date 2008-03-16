@@ -2,7 +2,7 @@
 
 use strict;
 
-use blib;
+use lib qw(./lib);
 
 use Test::More tests => 4;
 

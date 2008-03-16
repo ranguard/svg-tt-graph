@@ -32,6 +32,7 @@ my @default_field = qw(value);
     'PHONES'    => 'TEL',
     'ADDRESSES' => 'ADR',
     'NAME'      => 'N',
+	'MONIKER'	=> 'N',
 );
 
 # Generate all our simple methods
@@ -281,7 +282,8 @@ or all lowercase method names.
 
   vCard Spec    Alias           Methods on object
   ----------    ----------      -----------------
-  N             name            'family','given','middle','prefixes','suffixes'
+  N             name (depreciated as conflicts with rfc, use moniker)
+  N             moniker            'family','given','middle','prefixes','suffixes'
   ADR           addresses       'po_box','extended','street','city','region','post_code','country'
   GEO                           'lat','long'
   TEL           phones
