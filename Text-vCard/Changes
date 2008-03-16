@@ -1,5 +1,8 @@
 Revision history for Perl extension Text::vCard.
 
+2.03 Sun Mar 16 10:10:54 GMT 2008
+	- added 'moniker' and marked 'name' as depreciated
+
 2.02 Sat Mar 15 17:15:16 GMT 2008
 	- http://rt.cpan.org/Ticket/Display.html?id=34044 
 	  Clean up tests so they pass in perl 5.10
