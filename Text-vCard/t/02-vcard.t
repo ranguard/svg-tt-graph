@@ -4,7 +4,7 @@ use strict;
 
 use lib qw(./lib);
 
-use Test::More tests => 28;
+use Test::More tests => 30;
 use Data::Dumper;
 # Check we can load module
 BEGIN { use_ok( 'Text::vCard' ); }
@@ -126,8 +126,8 @@ is($vcard->birthday('new bd'),'new bd','autogen added with alias');
 my $names = $vcard->get({ 'node_type' => 'name' });
 is($names->[0]->family(),'T-surname','got name - but this will be depreciated');
 
-my $names = $vcard->get({ 'node_type' => 'moniker' });
-is($names->[0]->family(),'T-surname','got moniker');
+my $names2 = $vcard->get({ 'node_type' => 'moniker' });
+is($names2->[0]->family(),'T-surname','got moniker');
 
 ######
 # get get_group()
