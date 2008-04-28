@@ -1048,7 +1048,12 @@ __DATA__
         [% END %]    
     [% END %]
     [% IF date.format(calc.max_timescale_value,config.x_label_format) != last_label %]
+        [% IF (config.stagger_x_labels && ((count % 2) == 0)) %]
+        <path d="M[% x + w %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
+        <text x="[% x + w %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.max_timescale_value,config.x_label_format) %]</text>        
+        [% ELSE %]
         <text x="[% x + w %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.max_timescale_value,config.x_label_format) %]</text>
+        [% END %]
     [% END %]
 [% END %]
 
