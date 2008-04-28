@@ -88,6 +88,9 @@ title, subtitle etc.
     # Optional - defaults to using internal stylesheet
     'style_sheet'       => '/includes/graph.css',
 
+    # Use field names for in the stylesheet
+    'style_sheet_field_names' => 0,
+
   });
 
 The constructor takes a hash reference, fields (the name for each
@@ -155,6 +158,18 @@ you want to revert back to using the defaut internal version.
 To create an external stylesheet create a graph using the
 default internal version and copy the stylesheet section to
 an external file and edit from there.
+
+If you use the style_sheet_field_names() option then you can
+use the field names within your stylesheet.  This allows
+consistent use of styles.  The names should be:
+
+=over 4
+
+=item <field>_dataPoint
+
+=item <field>_key
+
+=back
 
 =item show_graph_title()
 
@@ -308,6 +323,7 @@ sub _set_defaults {
 		'width'				=> '500',
 		'height'			=> '300',
 		'style_sheet'       => '',
+		'style_sheet_field_names' => 0,
 
 	    'show_graph_title'		=> 0,
 	    'graph_title'			=> 'Graph Title',
@@ -663,7 +679,7 @@ __DATA__
 		[% ye = re * sin(radians_half) FILTER format('%02.10f') %]
 
         <path d="M[% px_start + xe %] [% pmin_scale_value + ye %] A[% r %] [% r %] 0 
-        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="dataPoint[% count %]"/>
+        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]"/>
 	
 	[% ELSIF !config.expanded && config.expand_greatest %]
 		[% IF data.0.data.$field == max_value %]
@@ -671,15 +687,15 @@ __DATA__
 		    [% xe = re * cos(radians_half) FILTER format('%02.10f') %]
 		    [% ye = re * sin(radians_half) FILTER format('%02.10f') %]
 		    <path d="M[% px_start + xe %] [% pmin_scale_value + ye %] A[% r %] [% r %] 0 
-            [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="dataPoint[% count %]"/>
+            [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]"/>
 		[% ELSE %]
 			<path d="M[% px_start %] [% pmin_scale_value %] A[% r %] [% r %] 0 
-            [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="dataPoint[% count %]"/>    
+            [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]"/>    
 		[% END %]
 	
 	[% ELSE %]
 		<path d="M[% px_start %] [% pmin_scale_value %] A[% r %] [% r %] 0 
-        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="dataPoint[% count %]"/>    
+        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]"/>    
 	[% END %]
 	
 	
@@ -716,10 +732,10 @@ __DATA__
 	[% percent = (100 / total) * data.0.data.$field FILTER format('%2.0f')%]
 		<!-- position key left or right -->
 		[% IF config.key_placement == 'R' %]
-			<rect x="[% x + r + x_key_start %]" y="[% (y - r) + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]"/>
+			<rect x="[% x + r + x_key_start %]" y="[% (y - r) + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="[% IF config.style_sheet_field_names %][% field %]_key[% ELSE %]key[% key_count %][% END %]"/>
 			<text x="[% x + r + x_key_start + key_box_size + key_padding %]" y="[% (y - r) + (key_box_size * key_count) + (key_count * key_padding) + key_box_size %]" class="keyText">[% IF config.show_key_data_labels %][% field %][% END %] [% IF config.show_key_actual_values %][[% data.0.data.$field %]][% END %] [% IF config.show_key_percent %][% percent %]%[% END %]</text>
 		[% ELSE %]
-			<rect x="[% x_key_start %]" y="[% (y - r) + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]"/>
+			<rect x="[% x_key_start %]" y="[% (y - r) + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="[% IF config.style_sheet_field_names %][% field %]_key[% ELSE %]key[% key_count %][% END %]"/>
 			<text x="[% x_key_start + key_box_size + key_padding %]" y="[% (y - r) + (key_box_size * key_count) + (key_count * key_padding) + key_box_size %]" class="keyText" style="text-anchor: start">[% IF config.show_key_data_labels %][% field %][% END %] [% IF config.show_key_actual_values %][[% data.0.data.$field %]][% END %] [% IF config.show_key_percent %][% percent %]%[% END %]</text>	
 		[% END %]
 		[% key_count = key_count + 1 %]
@@ -747,11 +763,11 @@ __DATA__
 		[% END %]
 		
 		[% IF config.key_placement == 'T' %]
-		<rect x="[% x_key %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]"/>
+		<rect x="[% x_key %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="[% IF config.style_sheet_field_names %][% field %]_key[% ELSE %]key[% key_count %][% END %]"/>
 
 		<text x="[% x_key + key_box_size + key_padding %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + key_box_size %]" class="keyText">[% IF config.show_key_data_labels %][% field %][% END %] [% IF config.show_key_actual_values %][[% data.0.data.$field %]][% END %] [% IF config.show_key_percent %][% percent %]%[% END %]</text>
 		[% ELSE %]
-			<rect x="[% x_key %]" y="[% (r * 2) + (padding * 2) + y_key + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]"/>
+			<rect x="[% x_key %]" y="[% (r * 2) + (padding * 2) + y_key + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="[% IF config.style_sheet_field_names %][% field %]_key[% ELSE %]key[% key_count %][% END %]"/>
 
 			<text x="[% x_key + key_box_size + key_padding %]" y="[% (r * 2) + (padding * 2) + y_key + (key_box_size * key_count) + (key_count * key_padding) + key_box_size %]" class="keyText">[% IF config.show_key_data_labels %][% field %][% END %] [% IF config.show_key_actual_values %][[% data.0.data.$field %]][% END %] [% IF config.show_key_percent %][% percent %]%[% END %]</text>	
 		
