@@ -884,7 +884,7 @@ __DATA__
         <path d="M[% x %] [% base_line %] L
         [% xcount = 0 %]
         [% FOREACH field = config.fields %]
-            [% (dw * xcount) + x %] [% base_line - (dataset.data.$field * divider) %]
+            [% (dw * xcount) + x %] [% base_line - ((dataset.data.$field - min_scale_value) * divider) %]
             [% xcount = xcount + 1 %]
         [% END %]
         [% (dw * (xcount - 1)) + x %] [% base_line %] Z" class="fill[% line %]"/>
@@ -895,7 +895,7 @@ __DATA__
     [% xcount = 0 %]
     [% FOREACH field = config.fields %]
         [% IF xcount == 1 %] L [% END %]
-        [% (dw * xcount) + x %] [% base_line - (dataset.data.$field * divider) %]
+        [% (dw * xcount) + x %] [% base_line - ((dataset.data.$field - min_scale_value) * divider) %]
         [% xcount = xcount + 1 %]       
     [% END %]" class="line[% line %]"/>
     
@@ -904,12 +904,12 @@ __DATA__
         [% FOREACH field = config.fields %]
             [% IF config.show_data_points %]
                 <!-- datapoint shown -->
-                <circle cx="[% (dw * xcount) + x %]" cy="[% base_line - (dataset.data.$field * divider) %]" r="2.5" class="fill[% line %]"/>
+				<circle cx="[% (dw * xcount) + x %]" cy="[% base_line - ((dataset.data.$field - min_scale_value) * divider) %]" r="2.5" class="fill[% line %]"/>
             [% END %]
             
             [% IF config.show_data_values %]
                 <!-- datavalue shown -->
-                <text x="[% (dw * xcount) + x %]" y="[% base_line - (dataset.data.$field * divider) - 6 %]" class="dataPointLabel">[% dataset.data.$field %]</text>
+                <text x="[% (dw * xcount) + x %]" y="[% base_line - ((dataset.data.$field - min_scale_value) * divider) - 6 %]" class="dataPointLabel">[% dataset.data.$field %]</text>
             [% END %]
             [% xcount = xcount + 1 %]       
         [% END %]
