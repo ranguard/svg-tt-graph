@@ -2,8 +2,6 @@ package SVG::TT::Graph::BarLine;
 
 use strict;
 use Carp;
-use vars qw($VERSION);
-$VERSION = '0.09';
 
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);

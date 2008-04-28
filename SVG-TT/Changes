@@ -1,13 +1,15 @@
 Revision history for Perl extension SVG::TT::Graph.
 
-TODO - probably!
-	- max_scale_value
-	- format of scale & data values (e.g.  34,333.32)
-	- extra padding on right for long x labels
-	- Fix bug when text hides in pie chart if opacity off
+0.10 - Mon Apr 28 21:07:30 BST 2008
+ 	Applied patched:
+	http://rt.cpan.org/Ticket/Display.html?id=34491
+	http://rt.cpan.org/Ticket/Display.html?id=22896
+	http://rt.cpan.org/Ticket/Display.html?id=20828
+	http://rt.cpan.org/Ticket/Display.html?id=20475
 
 0.09	- Applied path patch for Firefox from Pat Ekman for Pie
 	- patched other modules so Firefox works (doesn't like comma's in a path)
+	
 0.08
 	- Fix stylesheet for Pie
 

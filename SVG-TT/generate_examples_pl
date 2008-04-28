@@ -5,7 +5,7 @@
 # More example will be added for the next release.
 # See http://leo.cuckoo.org/projects/SVG-TT-Graph/ for more
 
-use lib qw( ./blib/lib ../blib/lib );
+use lib qw( ./lib ./blib/lib ../blib/lib );
 use SVG::TT::Graph::Bar;
 use SVG::TT::Graph::BarHorizontal;
 use SVG::TT::Graph::Line;

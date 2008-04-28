@@ -7,9 +7,6 @@ use HTTP::Date;
 use DateTime;
 use POSIX;
 
-use vars qw($VERSION);
-$VERSION = '0.09';
-
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);
 
