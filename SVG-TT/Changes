@@ -1,5 +1,14 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.12 - Mon Feb 16 12:00:00 EST 2009
+    Missed updating the versions for some of the sub libraries.
+
+0.11 - Sun Feb 15 22:54:00 EST 2009
+    Applied patches:
+    http://rt.cpan.org/Ticket/Display.html?id=38441 - Ampersands in Fields cause XML error
+    http://rt.cpan.org/Ticket/Display.html?id=43326 - Multiple data sets in Bar.pm will now show stacked graphs
+    http://rt.cpan.org/Ticket/Display.html?id=43325 - Allow toggling the display of data on TimeSeries
+
 0.10 - Mon Apr 28 21:07:30 BST 2008
  	Applied patched:
 	http://rt.cpan.org/Ticket/Display.html?id=34491

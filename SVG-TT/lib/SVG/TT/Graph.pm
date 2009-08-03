@@ -6,7 +6,7 @@ use vars qw($VERSION $AUTOLOAD);
 use Template;
 use POSIX;
 
-$VERSION = '0.10';
+$VERSION = '0.12';
 
 # set up TT object
 my %config = (
@@ -151,7 +151,7 @@ sub add_data {
 
 	if(defined $conf->{'data'} && ref($conf->{'data'}) eq 'ARRAY') {
 		my %new_data;
-		@new_data{@{$self->{'config'}->{'fields'}}} = @{$conf->{'data'}};
+		@new_data{ map { s/&/&amp;/; $_ } @{$self->{'config'}->{'fields'}}} = @{$conf->{'data'}};
 		my %store = (
 			'data' => \%new_data,
 		);

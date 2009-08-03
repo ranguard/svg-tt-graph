@@ -2,6 +2,9 @@ package SVG::TT::Graph::TimeSeries;
 
 use strict;
 use Carp;
+use vars qw($VERSION);
+$VERSION = '0.11';
+
 use Data::Dumper;
 use HTTP::Date;
 use DateTime;
@@ -426,7 +429,7 @@ sub _set_defaults {
 # override this so we can pre-manipulate the data
 sub add_data {
     my ($self, $conf) = @_;
-    
+
     croak 'no data provided'
     unless (defined $conf->{'data'} && ref($conf->{'data'}) eq 'ARRAY');
 
@@ -878,6 +881,23 @@ __DATA__
 </style>
 </defs>
 [% END %]
+
+<!-- Script to toggle paths when their key is clicked on -->
+<script language="JavaScript">
+function togglePath( series ) {
+    var path    = document.getElementById('groupDataSeries' + series)
+    var points  = document.getElementById('groupDataLabels' + series)
+    var current = path.getAttribute('opacity');
+    if ( path.getAttribute('opacity') == 0 ) {
+        path.setAttribute('opacity',1)
+        points.setAttribute('opacity',1)
+    } else {
+        path.setAttribute('opacity',0)
+        points.setAttribute('opacity',0)
+    }
+}
+</script>
+
 <!-- svg bg -->
 <rect x="0" y="0" width="[% config.width %]" height="[% config.height %]" class="svgBackground"/>
 
@@ -1178,7 +1198,7 @@ __DATA__
 [% key_count = 1 %]
 [% IF config.key && config.key_position == 'right' %]
 	[% FOREACH dataset = data %]
-		<rect x="[% x + w + 20 %]" y="[% y + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]"/>
+		<rect x="[% x + w + 20 %]" y="[% y + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]" onclick="togglePath([% key_count %]);"/>
 		<text x="[% x + w + 20 + key_box_size + key_padding %]" y="[% y + (key_box_size * key_count) + (key_count * key_padding) + key_box_size %]" class="keyText">[% dataset.title %]</text>
 		[% key_count = key_count + 1 %]
 	[% END %]
@@ -1202,8 +1222,7 @@ __DATA__
 			[% x_key = x_key + 200 %]
 			[% y_key = y_key - (key_box_size * 4) - 2 %]
 		[% END %]
-		<rect x="[% x_key %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + stagger %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]"/>
-
+		<rect x="[% x_key %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + stagger %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]" onclick="togglePath([% key_count %]);"/>
 		<text x="[% x_key + key_box_size + key_padding %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + key_box_size + stagger %]" class="keyText">[% dataset.title %]</text>
 		[% key_count = key_count + 1 %]
 	[% END %]

@@ -2,6 +2,8 @@ package SVG::TT::Graph::Bar;
 
 use strict;
 use Carp;
+use vars qw($VERSION);
+$VERSION = '0.11';
 
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);
@@ -60,7 +62,6 @@ title, subtitle etc.
     'width'             => '300',
     'show_data_values'  => 1,
 
-    'max_scale_value'           => undef,
     'min_scale_value'           => '0',
 	'stagger_x_labels'  => 0,
     'rotate_x_labels'   => 0,
@@ -171,11 +172,6 @@ is '1', set to '0' if you don't want gaps.
 
 The point at which the Y axis starts, defaults to '0',
 if set to '' it will default to the minimum data value.
-
-=item max_scale_value()
-
-The maximum value for the Y axis.  If set to '', it will 
-default to the maximum data value.
 
 =item show_x_labels()
 
@@ -328,7 +324,6 @@ sub _set_defaults {
 		'style_sheet'       => '',
 	    'show_data_values'  => 1,
 	
-	    'max_scale_value'   => '',
 	    'min_scale_value'   => '0',
 		'scale_divisions'	=> '',
 		'bar_gap'			=> 1,
@@ -574,17 +569,22 @@ __DATA__
 			[% max_x_label_size = field.length %]
 		[% END %]
 		
+        [% max_y_value = 0 %]
 		[% FOREACH dataset = data %]
-			[% IF min_value > dataset.data.$field && dataset.data.$field != '' %]
-				[% min_value = dataset.data.$field %]
-			[% END %]
-			[% IF max_value < dataset.data.$field && dataset.data.$field != '' %]
-				[% max_value = dataset.data.$field %]
-			[% END %]
+            [% IF dataset.data.$field != '' %]
+                [% max_y_value = max_y_value + dataset.data.$field %]
+            [% END %]
 			[% IF max_key_size < dataset.title.length %]
 				[% max_key_size = dataset.title.length %]
 			[% END %]
 		[% END %]
+
+		[% IF min_value > max_y_value %]
+			[% min_value = max_y_value %]
+		[% END %]
+		[% IF max_value < max_y_value %]
+			[% max_value = max_y_value %]
+		[% END %] -->
 	[% END %]
 
 
@@ -638,25 +638,17 @@ __DATA__
 		[% min_scale_value = min_value %]
 	[% END %]
 	
-	<!-- find ending value for scale on y axis -->
-	[% IF config.max_scale_value || config.max_scale_value == '0' %]
-		[% max_scale_value = config.max_scale_value %]
-	[% ELSE %]
-		<!-- setting highest value to be max_value as no max_scale_value defined -->
-		[% max_scale_value = max_value %]
-	[% END %]
-	
 	<!-- base line -->
 	[% base_line = h + y %]
 	
 	<!-- how much padding between largest bar and top of graph -->
-	[% IF (max_scale_value - min_scale_value) == 0 %]
+	[% IF (max_value - min_scale_value) == 0 %]
 		[% top_pad = 10 %]
 	[% ELSE %]
-		[% top_pad = (max_scale_value - min_scale_value) / 20 %]	
+		[% top_pad = (max_value - min_scale_value) / 20 %]	
 	[% END %]	
 	
-	[% scale_range = (max_scale_value + top_pad) - min_scale_value %]
+	[% scale_range = (max_value + top_pad) - min_scale_value %]
 
 	<!-- default to 10 scale_divisions if none have been set -->
 	[% IF config.scale_divisions %]
@@ -837,11 +829,13 @@ __DATA__
 		[% dcount = 1 %]
 		<!-- find the lowest data value for each dataset -->
 
+        [% start_x = base_line %]
 		[% FOREACH dataset = data %]
-			<path d="M[% (dw * xcount) + x %] [% base_line %] V[% base_line - (dataset.data.$field * divider) %] h[% bar_width %] V[% base_line %] Z" class="fill[% dcount %]"/>
+			<path d="M[% (dw * xcount) + x %] [% start_x %] V[% start_x - (dataset.data.$field * divider) %] h[% bar_width %] V[% start_x %] Z" class="fill[% dcount %]"/>
 			[% IF config.show_data_values %]
-				<text x="[% (dw * xcount) + x + (dw / 2) - (bar_gap / 2) %]" y="[% base_line - (dataset.data.$field * divider) - 6 %]" class="dataPointLabel">[% dataset.data.$field %]</text>
+				<text x="[% (dw * xcount) + x + (dw / 2) - (bar_gap / 2) %]" y="[% start_x - (dataset.data.$field * divider) - 6 %]" class="dataPointLabel">[% dataset.data.$field %]</text>
 			[% END %]
+            [% start_x = start_x - (dataset.data.$field * divider) %]
 			[% dcount = dcount + 1 %]	
 		[% END %]
 		[% xcount = xcount + 1 %]		
