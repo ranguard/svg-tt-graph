@@ -53,6 +53,8 @@ WriteMakefile(
         #? libcatalyst-view-json-perlmaya_0.24-1_all.deb
 
         # 'Data manipulation'
+        #? Need a JSON parser/serialiser
+        'Text::CSV_XS'                    => 0,
         'Spreadsheet::WriteExcel::Simple' => 0,
         'Spreadsheet::ParseExcel::Simple' => 0,
 
