@@ -40,21 +40,30 @@ WriteMakefile(
         'XML::Easy::ProceduralWriter' => 0,
 
         # 'Web Development',
-        'Catalyst'                         => 0,
-        'Catalyst::View::TT'               => 0,
-        'Catalyst::Model::DBIC::Schema'    => 0,
-        'Catalyst::Devel'                  => 0,
-        'Catalyst::Plugin::Session'        => 0,
-        'Catalyst::Plugin::Authentication' => 0,
-        'Catalyst::Plugin::StackTrace'     => 0,
+        'Catalyst'                                 => 0,
+        'Catalyst::View::TT'                       => 0,
+        'Catalyst::View::JSON'                     => 0,
+        'Catalyst::Model::DBIC::Schema'            => 0,
+        'Catalyst::Devel'                          => 0,
+        'Catalyst::Plugin::Session'                => 0,
+        'Catalyst::Plugin::Session::State::Cookie' => 0,
+        'Catalyst::Plugin::Session::Store::DBIC'   => 0,
+        'Catalyst::Plugin::Authentication'         => 0,
+        'Catalyst::Plugin::StackTrace'             => 0,
 
-        #? libcatalyst-plugin-fillinform-perlmaya_0.06-1_all.deb
-        #? libcatalyst-plugin-formvalidator-perlmaya_0.02-1_all.deb
-        #? libcatalyst-view-json-perlmaya_0.24-1_all.deb
+        'Catalyst::Plugin::Static::Simple' => 0,
+
+        'Catalyst::Plugin::FillInForm'      => 0,
+        'Catalyst::Plugin::FormValidator'   => 0,
+        'Catalyst::Plugin::RunAfterRequest' => 0.02,
+
+        #? Catalyst::Plugin::AutoCRUD
 
         # 'Data manipulation'
-        #? Need a JSON parser/serialiser
+        'Encode'                          => 0,
+        'JSON::XS'                        => 0,
         'Text::CSV_XS'                    => 0,
+        'XML::RSS'                        => 0,
         'Spreadsheet::WriteExcel::Simple' => 0,
         'Spreadsheet::ParseExcel::Simple' => 0,
 
