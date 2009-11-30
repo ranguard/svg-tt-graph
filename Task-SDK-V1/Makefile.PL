@@ -3,20 +3,18 @@ WriteMakefile(
     'NAME'         => 'Task::SDK::V1',
     'VERSION_FROM' => 'lib/Task/SDK/V1.pm',
     'PREREQ_PM'    => {
-        'Test::More' => 0.1,
-
         # 'Basic Toolchain',
         'Bundle::CPAN' => 0,
         'local::lib'   => 0,
         'version'      => 0,
 
         # 'Testing',
-        'Test::Simple'                   => 0,
-        'Test::Most'                     => 0,
         'Test::Exception'                => 0,
+        'Test::Memory::Cycle'            => 0,
+        'Test::Most'                     => 0,
         'Test::Pod'                      => 0,
         'Test::Pod::Coverage'            => 0,
-        'Test::Memory::Cycle'            => 0,
+        'Test::Simple'                   => 0,
         'Test::WWW::Mechanize'           => 0,
         'Test::WWW::Mechanize::Catalyst' => 0,
 
@@ -41,31 +39,28 @@ WriteMakefile(
 
         # 'Web Development',
         'Catalyst'                                 => 0,
-        'Catalyst::View::TT'                       => 0,
-        'Catalyst::View::JSON'                     => 0,
-        'Catalyst::Model::DBIC::Schema'            => 0,
         'Catalyst::Devel'                          => 0,
+        'Catalyst::Model::DBIC::Schema'            => 0,
+        'Catalyst::Plugin::Authentication'         => 0,
+        'Catalyst::Plugin::FillInForm'             => 0,
+        'Catalyst::Plugin::FormValidator'          => 0,
         'Catalyst::Plugin::Session'                => 0,
         'Catalyst::Plugin::Session::State::Cookie' => 0,
         'Catalyst::Plugin::Session::Store::DBIC'   => 0,
-        'Catalyst::Plugin::Authentication'         => 0,
         'Catalyst::Plugin::StackTrace'             => 0,
-
-        'Catalyst::Plugin::Static::Simple' => 0,
-
-        'Catalyst::Plugin::FillInForm'      => 0,
-        'Catalyst::Plugin::FormValidator'   => 0,
-        'Catalyst::Plugin::RunAfterRequest' => 0.02,
+        'Catalyst::Plugin::Static::Simple'         => 0,
+        'Catalyst::View::JSON'                     => 0,
+        'Catalyst::View::TT'                       => 0,
 
         #? Catalyst::Plugin::AutoCRUD
 
         # 'Data manipulation'
         'Encode'                          => 0,
         'JSON::XS'                        => 0,
+        'Spreadsheet::ParseExcel::Simple' => 0,
+        'Spreadsheet::WriteExcel::Simple' => 0,
         'Text::CSV_XS'                    => 0,
         'XML::RSS'                        => 0,
-        'Spreadsheet::WriteExcel::Simple' => 0,
-        'Spreadsheet::ParseExcel::Simple' => 0,
 
         # Email
         'Email::Sender' => 0,
@@ -87,7 +82,6 @@ WriteMakefile(
         'Template::Plugin::DateTime' => 0,
 
         #? http-async-
-        #? lockfile?
         #? perl::critic
 
         # 'Database Development',
@@ -104,14 +98,14 @@ WriteMakefile(
         'WWW::Mechanize' => 0,
 
         # 'Module Development',
+        'Carp::Always'      => 0,
         'Devel::Cover'      => 0,
         'Devel::NYTProf'    => 0,
-        'Perl::Tidy'        => 0,
-        'Carp::Always'      => 0,
         'Modern::Perl'      => 0,
+        'Perl::Tidy'        => 0,
         'Perl::Version'     => 0,
-        'Software::License' => 0,
         'Pod::Readme'       => 0,
+        'Software::License' => 0,
 
         # Debugging / timing
         'Log::Log4perl'             => 0,
@@ -138,6 +132,7 @@ WriteMakefile(
         'IPC::Run3'                     => 0,
         'List::AllUtils'                => 0,
         'Lingua::EN::Numbers::Ordinate' => 0,
+        'LockFile::Simple'              => 0
 
     },
 );
