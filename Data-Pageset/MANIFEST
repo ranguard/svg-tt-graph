@@ -1,8 +1,0 @@
-Changes
-Makefile.PL
-MANIFEST
-MANIFEST.SKIP
-lib/Data/Pageset.pm
-README
-t/main.t
-META.yml
