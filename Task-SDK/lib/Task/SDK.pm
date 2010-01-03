@@ -17,6 +17,8 @@ This package will always point to the latest production ready SDK.
 
 This project is just starting - so ignore this for now.
 
+Might actually use Task::Kensho instead of this
+
 =head1 AUTHOR
 
 Leo Lapworth C<< <LLAP@cuckoo.org> >>

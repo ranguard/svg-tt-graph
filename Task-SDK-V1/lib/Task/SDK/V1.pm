@@ -9,12 +9,29 @@ $VERSION = '0.01';
 
 =head1 NAME
 
-Task::SDK::V1
+Task::SDK::V1 - Version 1 of Task::SDK
+
+=head1 WARNING
+
+This is not a finalised list, please do not rely
+on this version yet.
 
 =head1 DESCRIPTION
 
-This will become the foundation for another project,
-please ignore for now.
+Task::SDK aims to provide a Standard Development/Deployment Kit
+for Perl. Specificially with the aim of creating a stable learning
+environment.
+
+The latest stable version will always be pointed to
+from Task::SDK, however for backwards compatibility there
+will also be specific versions always available on CPAN. 
+
+The modules listed as dependencies of this package are there
+to suggest a single way of doing a specific task. CPAN and Perl
+offer many ways to do things, and this can be a great advantage,
+but this is often confusing and overwhelming for someone just
+starting with CPAN. Therefore we are recommending a specific
+set of modules for a new user to start learning from / deploying with.
 
 =head1 AUTHOR
 
