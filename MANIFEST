@@ -1,7 +1,7 @@
 Changes
 Makefile.PL
 MANIFEST
-INSTALL
+README
 generate_examples_pl
 timeseries_pl
 t/01_main.t
