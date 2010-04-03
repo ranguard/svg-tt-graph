@@ -2,18 +2,12 @@ package SVG::TT::Graph;
 
 use strict;
 use Carp;
+
 use vars qw($VERSION $AUTOLOAD);
 use Template;
 use POSIX;
 
-$VERSION = '0.12';
-
-# set up TT object
-my %config = (
-	POST_CHOMP => 1,
-	INCLUDE_PATH	=> '/',
-);	
-my $tt = Template->new( \%config );
+$VERSION = '0.13';
 
 =head1 NAME
 
@@ -46,7 +40,7 @@ SVG::TT::Graph - Base object for generating SVG Graphs
   # optional - called when object is created
   sub _init {
     my $self = shift;
-	# any testing you want to do.
+  # any testing you want to do.
   
   }
   
@@ -69,8 +63,8 @@ SVG::TT::Graph - Base object for generating SVG Graphs
   
   my @data = qw(23 56 32);
   $graph->add_data({
-  	'data' => \@data,
-	'title' => 'Sales 2002',
+    'data' => \@data,
+    'title' => 'Sales 2002',
   });
   
   # find a config options value
@@ -82,43 +76,49 @@ SVG::TT::Graph - Base object for generating SVG Graphs
   # Compress::Zlib is available.
   # either 'compress' => 1 config option, or
   $graph->compress(1);
-    
-  print "Content-type: image/svg+xml\r\n";
+
+  # All graph SVGs can be tidied if XML::Tidy
+  # Compress::Zlib is installed.
+  # either 'tidy' => 1 config option, or
+  $graph->tidy(1);
+
+  print "Content-type: image/svg+xml\n\n";
   print $graph->burn();
 
 =head1 DESCRIPTION
 
-This package should be used as a base for creating SVG graphs.
+This package should be used as a base for creating SVG graphs. If XML::Tidy is
+installed, the SVG files generated are tidied.
 
 See SVG::TT::Graph::Line for an example.
 
 =cut
 
 sub new {
-	my ($proto,$conf) = @_;
-    my $class = ref($proto) || $proto;
-    my $self = {};
+  my ($proto,$conf) = @_;
+  my $class = ref($proto) || $proto;
+  my $self = {};
 
-    bless($self, $class);
+  bless($self, $class);
 
-	if($self->can('_set_defaults')) {
-		# Populate with local defaults
-		$self->_set_defaults();
-	} else {
-		croak "$class should have a _set_defaults method";
-	}
-		
-	# overwrite defaults with user options
-	while( my ($key,$value) = each %{$conf} ) {
-		$self->{config}->{$key} = $value;
-	}
+  if($self->can('_set_defaults')) {
+    # Populate with local defaults
+    $self->_set_defaults();
+  } else {
+    croak "$class should have a _set_defaults method";
+  }
 
-	# Allow the inheriting modules to do checks
-	if($self->can('_init')) {
-		$self->_init();
-	}
-	
-	return $self;
+  # overwrite defaults with user options
+  while( my ($key,$value) = each %{$conf} ) {
+    $self->{config}->{$key} = $value;
+  }
+
+  # Allow the inheriting modules to do checks
+  if($self->can('_init')) {
+    $self->_init();
+  }
+
+  return $self;
 }
 
 =head1 METHODS
@@ -138,28 +138,28 @@ It can be called several times to add more data sets in.
 =cut
   
 sub add_data {
-	my ($self, $conf) = @_;
-	# create an array
-	unless(defined $self->{'data'}) {
-		my @data;
-		$self->{'data'} = \@data;
-	}
-	
-	croak 'no fields array ref' 
-	unless defined $self->{'config'}->{'fields'} 
-	&& ref($self->{'config'}->{'fields'}) eq 'ARRAY';
+  my ($self, $conf) = @_;
+  # create an array
+  unless(defined $self->{'data'}) {
+    my @data;
+    $self->{'data'} = \@data;
+  }
+  
+  croak 'no fields array ref' 
+  unless defined $self->{'config'}->{'fields'} 
+    && ref($self->{'config'}->{'fields'}) eq 'ARRAY';
 
-	if(defined $conf->{'data'} && ref($conf->{'data'}) eq 'ARRAY') {
-		my %new_data;
-		@new_data{ map { s/&/&amp;/; $_ } @{$self->{'config'}->{'fields'}}} = @{$conf->{'data'}};
-		my %store = (
-			'data' => \%new_data,
-		);
-		$store{'title'} = $conf->{'title'} if defined $conf->{'title'};
-		push (@{$self->{'data'}},\%store);
-		return 1;
-	}
-	return undef;
+  if(defined $conf->{'data'} && ref($conf->{'data'}) eq 'ARRAY') {
+    my %new_data;
+    @new_data{ map { s/&/&amp;/; $_ } @{$self->{'config'}->{'fields'}}} = @{$conf->{'data'}};
+    my %store = (
+      'data' => \%new_data,
+    );
+    $store{'title'} = $conf->{'title'} if defined $conf->{'title'};
+    push (@{$self->{'data'}},\%store);
+    return 1;
+  }
+  return undef;
 }
 
 =head2 clear_data()
@@ -172,9 +172,9 @@ reuse it to create a new graph but with the same config options.
 =cut
 
 sub clear_data {
-	my $self = shift;
-	my @data;
-	$self->{'data'} = \@data;
+  my $self = shift;
+  my @data;
+  $self->{'data'} = \@data;
 }
 
 =head2 burn()
@@ -190,59 +190,172 @@ been added to the graph object.
 =cut
 
 sub burn {
-	my $self = shift;
-	
-	# Check we have at least one data value
-	croak "No data available" 
-		unless scalar(@{$self->{'data'}}) > 0;
+  my $self = shift;
+  
+  # Check we have at least one data value
+  croak "No data available" 
+    unless scalar(@{$self->{'data'}}) > 0;
         
-    # perform any calculations prior to burn
-    $self->calculations() if $self->can('calculations');
+  # perform any calculations prior to burn
+  $self->calculations() if $self->can('calculations');
+  croak ref($self) . ' must have a get_template method.' 
+    unless $self->can('get_template');
+  my $template = $self->get_template();
+  my %vals = (
+    'data'             => $self->{'data'},     # the data
+    'config'           => $self->{'config'},   # the configuration
+    'calc'             => $self->{'calc'},     # the calculated values
+    'sin'              => \&_sin_it,
+    'cos'              => \&_cos_it,
+    'predefined_color' => \&_predefined_color,
+    'random_color'     => \&_random_color,
+  );
+  
+  # euu - hack!! - maybe should just be a method 
+  $self->{sin} = \&_sin_it;
+  $self->{cos} = \&_cos_it;
 
-	croak ref($self) . ' must have a get_template method.' 
-		unless $self->can('get_template');
-	
-	my $template = $self->get_template();
-	
-	my %vals = (
-		'data'		=> $self->{'data'},     # the data
-		'config'	=> $self->{'config'},   # the configuration
-        'calc'      => $self->{'calc'},     # the calculated values
-		'sin'		=> \&_sin_it,
-		'cos'		=> \&_cos_it,
-	);
-	
-	# euu - hack!! - maybe should just be a method 
-	$self->{sin} = \&_sin_it;
-	$self->{cos} = \&_cos_it;
-    
-	my $file;
-	my $template_responce = $tt->process( \$template, \%vals, \$file );
+  # set up TT object
+  my %config = (
+    POST_CHOMP   => 1,
+    INCLUDE_PATH => '/',
+    #DEBUG       => 'undef', # TT warnings on, useful for debugging, finding undef values
+  );
+  my $tt = Template->new( \%config );
+  my $file;
+  my $template_response = $tt->process( \$template, \%vals, \$file );
+  if($tt->error()) {
+    croak "Template error: " . $tt->error . "\n" if $tt->error;
+  }
 
-	if($tt->error()) {
-#		require Data::Dumper;
-		croak "Template error: " . $tt->error . "\n" if $tt->error;
-	}
-    
-    # compress if required
-    if ($self->{config}->{compress}) {
-        if (eval "require Compress::Zlib") {
-            return Compress::Zlib::memGzip($file) ; 
-            
-        } else {
-            $file .= "<!-- Compress::Zlib not available for SVGZ:$@ -->";
-        }        
+  # tidy SVG if required
+  if ($self->tidy()) {
+    if (eval "require XML::Tidy") {
+      # remove the doctype tag temporarily because it seems to cause trouble
+      $file =~ s/(<!doctype svg .+?>)//si;
+      my $doctype = $1;
+      # tidy
+      my $tidy_obj = XML::Tidy->new( 'xml' => $file );
+      $tidy_obj->tidy();
+      $file = $tidy_obj->toString();
+      # re-add the doctype
+      if (defined $doctype) {
+        $file =~ s/(<\?xml.+?\?>)/$1\n$doctype/si;
+      }
+      # even more tidy
+      $file = $self->_tidy_more($file);
+    } else {
+      croak "Error tidying the SVG file: XML::Tidy does not seem to be installed properly";
     }
+  }
+
+  # compress SVG if required
+  if ($self->compress()) {
+    if (eval "require Compress::Zlib") {
+      $file = Compress::Zlib::memGzip($file); 
+    } else {
+      croak "Error compressing the SVG file: Compress::Zlib does not seem to be installed properly";
+    }
+  }
     
-	return $file;
+  return $file;
 }
+
+
 
 sub _sin_it {
-	return sin(shift);
+  return sin(shift);
 }
 
+
 sub _cos_it {
-	return cos(shift);
+  return cos(shift);
+}
+
+
+=head2 compress()
+
+  $graph->compress(1);
+
+If Compress::Zlib is installed, the content of the SVG file can be compressed.
+This get/set method controls whether or not to compress. The default is 1 if
+Compress::Zlib is available, 0 otherwise.
+
+=cut
+
+sub compress {
+  my ($self, $val) = @_;
+  # set the default compress value
+  if (not defined $self->{config}->{compress}) {
+    if ( eval "require Compress::Zlib" ) {
+      $self->{config}->{compress} = 1;
+    } else {
+      $self->{config}->{compress} = 0;
+    }
+  }
+  # set the user-defined compress value
+  if (defined $val) {
+    $self->{config}->{compress} = $val;
+  }
+  # get the compress value
+  return $self->{config}->{compress};
+}
+
+
+=head2 tidy()
+
+  $graph->tidy(1);
+
+If XML::Tidy is installed, the content of the SVG file can be formatted in a
+prettier way. This get/set method controls whether or not to tidy. The default
+is 1 if XML::Tidy is available, 0 otherwise.
+
+=cut
+
+sub tidy {
+  my ($self, $val) = @_;
+  # set the default tidy value
+  if (not defined $self->{config}->{tidy}) {
+    if ( eval "require XML::Tidy" ) {
+      $self->{config}->{tidy} = 1;
+    } else {
+      $self->{config}->{tidy} = 0;
+    }
+  }
+  # set the user-defined tidy value
+  if (defined $val) {
+    $self->{config}->{tidy} = $val;
+  }
+  # get the tidy value
+  return $self->{config}->{tidy};
+}
+
+
+sub _tidy_more {
+  # Remove extra spaces in the SVG <path> tag
+  my ($self, $svg_string) = @_;
+  while ($svg_string =~ s/(<path .*? )\s+(.*?"\s*?\/>)/$1$2/mgi) {};
+  return $svg_string;
+}
+
+
+sub _random_color {
+  # Generate the rgb code for a randomly selected color
+  my $rgb = 'rgb('.int(rand(256)).','.int(rand(256)).','.int(rand(256)).')';
+  return $rgb;
+}
+
+
+sub _predefined_color {
+  # Get the hexadecimal code for one of 12 predefined colors
+  my ($num) = shift;
+  my @colors = ("#ff0000", "#0000ff", "#00ff00", "#ffcc00", "#00ccff",
+    "#ff00ff", "#00ffff", "#ffff00", "#cc6666", "#663399", "#339900", "#9966FF");
+  my $hex;
+  if ($num-1 < scalar @colors) {
+    $hex = $colors[$num-1];
+  }
+  return $hex;
 }
 
 # Calculate a scaling range and divisions to be aesthetically pleasing
@@ -251,67 +364,68 @@ sub _cos_it {
 # Returns
 #   (revised range, division size, division precision)
 sub _range_calc () {
-    my $self = shift;
-    my $range = shift;
+  my ($self, $range) = @_;
 
-    my ($max,$division);
-    my $count = 0;
-    my $value = $range;
-    
-    if ($value == 0) {
-        # Can't do much really
-        $division = 0.2;    
-        $max = 1;
-        return ($max,$division,1);
+  my ($max,$division);
+  my $count = 0;
+  my $value = $range;
+  
+  if ($value == 0) {
+    # Can't do much really
+    $division = 0.2;
+    $max = 1;
+    return ($max,$division,1);
+  }
+  
+  if ($value < 1) {
+    while ($value < 1) {
+      $value *= 10;
+      $count++;
     }
-    
-    if ($value < 1) {
-        while ($value < 1) {
-            $value *= 10;
-            $count++;
-        }
-        $division = 1;
-        while ($count--) {
-            $division /= 10;
-        }
-        $max = ceil($range / $division) * $division;
+    $division = 1;
+    while ($count--) {
+      $division /= 10;
     }
-    else {
-        while ($value > 10) {
-            $value /= 10;
-            $count++;
-        }
-        $division = 1;
-        while ($count--) {
-            $division *= 10;
-        }
-        $max = ceil($range / $division) * $division;
+    $max = ceil($range / $division) * $division;
+  }
+  else {
+    while ($value > 10) {
+      $value /= 10;
+      $count++;
     }
-    
-    if (int($max / $division) <= 2) {
-        $division /= 5;
-        $max = ceil($range / $division) * $division;
+    $division = 1;
+    while ($count--) {
+      $division *= 10;
     }
-    elsif (int($max / $division) <= 5) {
-        $division /= 2;
-        $max = ceil($range / $division) * $division;
-    }
-    
-    if ($division >= 1) {
-        $count = 0;  
-    }
-    else {
-        $count = length($division) - 2;
-    }
+    $max = ceil($range / $division) * $division;
+  }
+  
+  if (int($max / $division) <= 2) {
+    $division /= 5;
+    $max = ceil($range / $division) * $division;
+  }
+  elsif (int($max / $division) <= 5) {
+    $division /= 2;
+    $max = ceil($range / $division) * $division;
+  }
+  
+  if ($division >= 1) {
+    $count = 0;  
+  }
+  else {
+    $count = length($division) - 2;
+  }
 
-    return ($max,$division,$count);
+  return ($max,$division,$count);
 }
+
 
 # Returns true if config value exists, is defined and not ''
 sub _is_valid_config() { 
-    my ($self,$name) = @_;
-    return ((exists $self->{config}->{$name}) && (defined $self->{config}->{$name}) && ($self->{config}->{$name} ne ''));
+  my ($self,$name) = @_;
+  return ((exists $self->{config}->{$name}) && (defined $self->{config}->{$name}) && ($self->{config}->{$name} ne ''));
 }
+
 
 =head2 config methods
 
@@ -329,25 +443,27 @@ See the SVG::TT::Graph::GRAPH_TYPE documentation for a list.
 ## AUTOLOAD FOR CONFIG editing
 
 sub AUTOLOAD {
-	my $name = $AUTOLOAD;
-	$name =~ s/.*://;
+  my $name = $AUTOLOAD;
+  $name =~ s/.*://;
 
-	croak "No object supplied" unless $_[0];
-	if(defined $_[0]->{'config'}->{$name}) {
-		if(defined $_[1]) {
-			# set the value
-			$_[0]->{'config'}->{$name} = $_[1];
-		}
-		return $_[0]->{'config'}->{$name} if defined $_[0]->{'config'}->{$name};
-		return undef;
-	} else {
-		croak "Method: $name can not be used with " . ref($_[0]);
-	}
+  croak "No object supplied" unless $_[0];
+  if(defined $_[0]->{'config'}->{$name}) {
+    if(defined $_[1]) {
+      # set the value
+      $_[0]->{'config'}->{$name} = $_[1];
+    }
+    return $_[0]->{'config'}->{$name} if defined $_[0]->{'config'}->{$name};
+    return undef;
+  } else {
+    croak "Method: $name can not be used with " . ref($_[0]);
+  }
 }
+
 
 # As we have AUTOLOAD we need this
 sub DESTROY {
 }
+
 
 1;
 __END__
@@ -380,8 +496,9 @@ L<SVG::TT::Graph::BarLine>,
 L<SVG::TT::Graph::Pie>,
 L<SVG::TT::Graph::TimeSeries>,
 L<Compress::Zlib>,
+L<XML::Tidy>
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2003, Leo Lapworth 
 

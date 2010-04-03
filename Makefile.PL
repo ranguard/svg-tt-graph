@@ -1,12 +1,21 @@
-use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
-WriteMakefile(
-    'NAME'		=> 'SVG::TT::Graph',
-    'VERSION_FROM'	=> 'lib/SVG/TT/Graph.pm', # finds $VERSION
-    'PREREQ_PM'		=> {
-	'Template'	=> 2.08,
-	'DateTime'	=> 0.1,
-	'HTTP::Date'	=> 0.1,
-    }, # e.g., Module::Name => 1.1
-);
+use strict;
+use warnings;
+use inc::Module::Install;
+
+name     'SVG-TT-Graph';
+all_from 'lib/SVG/TT/Graph.pm';
+
+test_requires 'Test::More';
+
+requires 'Template'	   => 2.08;
+requires 'DateTime'	   => 0.1;
+requires 'HTTP::Date'  => 0.1;
+
+recommends 'XML::Tidy';
+recommends 'Compress::Zlib';
+
+repository 'git://github.com/ranguard/svg-tt-graph.git';
+
+auto_install;
+
+WriteAll;

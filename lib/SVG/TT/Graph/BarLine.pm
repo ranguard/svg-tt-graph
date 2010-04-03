@@ -2,35 +2,41 @@ package SVG::TT::Graph::BarLine;
 
 use strict;
 use Carp;
-
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);
+use vars qw($VERSION);
+$VERSION = $SVG::TT::Graph::VERSION;
 
-my $template;
 
 =head1 NAME
 
-SVG::TT::Graph::Bar - Create presentation quality SVG bar graphs easily
+SVG::TT::Graph::BarLine - Create presentation quality SVG bar-line graphs easily
 
 =head1 SYNOPSIS
 
-  use SVG::TT::Graph::Bar;
+  use SVG::TT::Graph::BarLine;
 
   my @fields = qw(Jan Feb Mar);
   my @data_sales_02 = qw(12 45 21);
+  my @data_sales_03 = (24, 55, 61);
 
-  my $graph = SVG::TT::Graph::Bar->new({
-  	'height' => '500',
-	'width' => '300',
-	'fields' => \@fields,
+  my $graph = SVG::TT::Graph::BarLine->new({
+    'height' => '500',
+    'width'  => '300',
+    'fields' => \@fields,
   });
   
   $graph->add_data({
-  	'data' => \@data_sales_02,
-	'title' => 'Sales 2002',
+    'data'  => \@data_sales_02,
+    'title' => 'Sales 2002',
   });
   
-  print "Content-type: image/svg+xml\r\n\r\n";
+  $graph->add_data({
+    'data'  => \@data_sales_03,
+    'title' => 'Sales 2003',
+  });
+
+  print "Content-type: image/svg+xml\n\n";
   print $graph->burn();
 
 =head1 DESCRIPTION
@@ -46,51 +52,53 @@ title, subtitle etc.
 
 =head2 new()
 
-  use SVG::TT::Graph::Bar;
+  use SVG::TT::Graph::BarLine;
   
   # Field names along the X axis
   my @fields = qw(Jan Feb Mar);
   
-  my $graph = SVG::TT::Graph::Bar->new({
+  my $graph = SVG::TT::Graph::BarLine->new({
     # Required
-    'fields' => \@fields,
+    'fields'                           => \@fields,
   
     # Optional - defaults shown
-    'height'            => '500',
-    'width'             => '300',
-    'show_data_values'  => 1,
+    'height'                           => '500',
+    'width'                            => '300',
 
-    'scale_divisions'   => '',
-    'min_scale_value'           => '0',
-	'bar_gap'           => 1,
+    'show_data_values'                 => 1,
 
-    'show_x_labels'     => 1,
-    'stagger_x_labels'  => 0,
-    'rotate_x_labels'   => 0,
-    'show_y_labels'     => 1,
-    'scale_integers'    => 0,
-    'show_secondary_y_labels'     => 1,
+    'scale_divisions'                  => '',
+    'min_scale_value'                  => '0',
+    'bar_gap'                          => 1,
 
-    'show_x_title'      => 0,
-    'x_title'           => 'X Field names',
+    'show_x_labels'                    => 1,
+    'stagger_x_labels'                 => 0,
+    'rotate_x_labels'                  => 0,
+    'show_y_labels'                    => 1,
+    'scale_integers'                   => 0,
+    'show_secondary_y_labels'          => 1,
 
-    'show_y_title'      => 0,
-    'show_secondary_y_title' => 0,
-    'y_title_text_direction' => 'bt',
+    'show_x_title'                     => 0,
+    'x_title'                          => 'X Field names',
+
+    'show_y_title'                     => 0,
+    'show_secondary_y_title'           => 0,
+    'y_title_text_direction'           => 'bt',
     'secondary_y_title_text_direction' => 'bt',
-    'y_title'           => 'Y Scale',
-    'secondary_y_title'     => 'Y Scale 2',
+    'y_title'                          => 'Y Scale',
+    'secondary_y_title'                => 'Y Scale 2',
 
-    'show_graph_title'		=> 0,
-    'graph_title'           => 'Graph Title',
-    'show_graph_subtitle'   => 0,
-    'graph_subtitle'        => 'Graph Sub Title',
+    'show_graph_title'                 => 0,
+    'graph_title'                      => 'Graph Title',
+    'show_graph_subtitle'              => 0,
+    'graph_subtitle'                   => 'Graph Sub Title',
 
-    'key'                   => 0,
-    'key_position'          => 'right',
-
-    # Optional - defaults to using internal stylesheet
-    'style_sheet'       => '/includes/graph.css',
+    'key'                              => 0,
+    'key_position'                     => 'right',
+ 
+    # Stylesheet defaults
+    'style_sheet'                      => '/includes/graph.css', # internal stylesheet
+    'random_colors'                    => 0,
   });
 
 The constructor takes a hash reference, fields (the names for each
@@ -109,7 +117,7 @@ to using the internal style sheet.
 
 This method allows you to add data to the graph object.
 It can be called several times to add more data sets in,
-but the likely hood is you should be using SVG::TT::Graph::Line
+but the likelihood is you should be using SVG::TT::Graph::Line
 as it won't look great!
 
 =head2 clear_data()
@@ -152,14 +160,33 @@ Set the width of the graph box, this is the total width
 of the SVG box created - not the graph it self which auto
 scales to fix the space.
 
+=item compress()
+
+Whether or not to compress the content of the SVG file (Compress::Zlib required).
+
+=item tidy()
+
+Whether or not to tidy the content of the SVG file (XML::Tidy required).
+
+=item style_sheet()
 =item style_sheet()
 
 Set the path to an external stylesheet, set to '' if
 you want to revert back to using the defaut internal version.
 
+The default stylesheet handles up to 12 data sets. All data series over
+the 12th will have no style and be in black. If you have over 12 data
+sets you can assign them all random colors (see the random_color()
+method) or create your own stylesheet and add the additional settings
+for the extra data sets.
+
 To create an external stylesheet create a graph using the
 default internal version and copy the stylesheet section to
 an external file and edit from there.
+
+=item random_colors()
+
+Use random colors in the internal stylesheet
 
 =item show_data_values()
 
@@ -282,14 +309,6 @@ Where the key should be positioned, defaults to
 
 =back
 
-=head1 NOTES
-
-The default stylesheet handles upto 12 data sets, if you
-use more you must create your own stylesheet and add the
-additional settings for the extra data sets. You will know
-if you go over 12 data sets as they will have no style and
-be in black.
-
 =head1 EXAMPLES
 
 For examples look at the project home page
@@ -314,82 +333,88 @@ L<SVG::TT::Graph::Line>,
 L<SVG::TT::Graph::Bar>,
 L<SVG::TT::Graph::BarHorizontal>,
 L<SVG::TT::Graph::Pie>,
-L<SVG::TT::Graph::TimeSeries>
+L<SVG::TT::Graph::TimeSeries>,
+L<Compress::Zlib>,
+L<XML::Tidy>
 
 =cut
 
 sub get_template {
-	my $self = shift;
-	# read in template
-	return $template if $template;
-	while(<DATA>) {
-		$template .= $_ . "\r\n";
-	}
-	return $template;
+  my $self = shift;
+  # read in template
+  my $template = '';
+  while(<DATA>) {
+    chomp;
+    $template .= $_ . "\n";
+  }
+  return $template;
 }
 
 sub _init {
-	my $self = shift;
-	croak "fields was not supplied or is empty" 
-	unless defined $self->{'config'}->{fields} 
-	&& ref($self->{'config'}->{fields}) eq 'ARRAY'
-	&& scalar(@{$self->{'config'}->{fields}}) > 0;
+  my $self = shift;
+  croak "fields was not supplied or is empty" 
+  unless defined $self->{'config'}->{fields} 
+    && ref($self->{'config'}->{fields}) eq 'ARRAY'
+    && scalar(@{$self->{'config'}->{fields}}) > 0;
 }
 
 sub _set_defaults {
-	my $self = shift;
-	
-	my %default = (
-		'width'				=> '500',
-		'height'			=> '300',
-		'style_sheet'       => '',
-	    'show_data_values'  => 1,
-	
-	    'min_scale_value'   => '0',
-		'scale_divisions'	=> '',
-		'bar_gap'			=> 1,
+  my $self = shift;
+  
+  my %default = (
+    'width'                            => '500',
+    'height'                           => '300',
 
-	    'show_x_labels'     => 1,
-        'rotate_x_labels'   => 0,
-		'stagger_x_labels'	=> 0,
-	    'show_y_labels'     => 1,
-        'scale_integers'    => 0,
-        'show_secondary_y_labels'     => 1,
+    'style_sheet'                      => '',
+    'random_colors'                    => 0,
 
-	    'show_x_title'      => 0,
-	    'x_title'           => 'X Field names',
-	
-	    'show_y_title'      => 0,
-        'show_secondary_y_title'  => 0,
-        'y_title_text_direction' => 'bt',
-        'secondary_y_title_text_direction' => 'bt',
-	    'y_title'           => 'Y Scale',
-        'secondary_y_title'     => 'Y Scale 2',
-	
-	    'show_graph_title'		=> 0,
-	    'graph_title'			=> 'Graph Title',
-	    'show_graph_subtitle'	=> 0,
-	    'graph_subtitle'		=> 'Graph Sub Title',
-		'key'					=> 0, 
-		'key_position'			=> 'right', # bottom or right
-	);
-	
-	while( my ($key,$value) = each %default ) {
-		$self->{config}->{$key} = $value;
-	}
+    'show_data_values'                 => 1,
+  
+    'min_scale_value'                  => '0',
+    'scale_divisions'                  => '',
+    'bar_gap'                          => 1,
+
+    'show_x_labels'                    => 1,
+    'rotate_x_labels'                  => 0,
+    'stagger_x_labels'                 => 0,
+    'show_y_labels'                    => 1,
+    'scale_integers'                   => 0,
+    'show_secondary_y_labels'          => 1,
+
+    'show_x_title'                     => 0,
+    'x_title'                          => 'X Field names',
+  
+    'show_y_title'                     => 0,
+    'show_secondary_y_title'           => 0,
+    'y_title_text_direction'           => 'bt',
+    'secondary_y_title_text_direction' => 'bt',
+    'y_title'                          => 'Y Scale',
+    'secondary_y_title'                => 'Y Scale 2',
+  
+    'show_graph_title'                 => 0,
+    'graph_title'                      => 'Graph Title',
+    'show_graph_subtitle'              => 0,
+    'graph_subtitle'                   => 'Graph Sub Title',
+    'key'                              => 0, 
+    'key_position'                     => 'right', # bottom or right
+  );
+  
+  while( my ($key,$value) = each %default ) {
+    $self->{config}->{$key} = $value;
+  }
 }
 
 1;
 __DATA__
 <?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
-	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+  "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 [% stylesheet = 'included' %]
 
 [% IF config.style_sheet && config.style_sheet != '' %]
-	<?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>	
+  <?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>
 [% ELSE %]
-	[% stylesheet = 'excluded' %]
+  [% stylesheet = 'excluded' %]
 [% END %]
 
 <svg width="[% config.width %]" height="[% config.height %]" viewBox="0 0 [% config.width %] [% config.height %]" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -405,224 +430,115 @@ __DATA__
 <![CDATA[
 /* Copy from here for external style sheet */
 .svgBackground{
-	fill:#ffffff;
+  fill:#ffffff;
 }
 .graphBackground{
-	fill:#f0f0f0;
+  fill:#f0f0f0;
 }
 
 /* graphs titles */
 .mainTitle{
-	text-anchor: middle;
-	fill: #000000;
-	font-size: 14px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  text-anchor: middle;
+  fill: #000000;
+  font-size: 14px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 .subTitle{
-	text-anchor: middle;
-	fill: #999999;
-	font-size: 12px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  text-anchor: middle;
+  fill: #999999;
+  font-size: 12px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .axis{
-	stroke: #000000;
-	stroke-width: 1px;
+  stroke: #000000;
+  stroke-width: 1px;
 }
 
 .guideLines{
-	stroke: #666666;
-	stroke-width: 1px;
-	stroke-dasharray: 5 5;
+  stroke: #666666;
+  stroke-width: 1px;
+  stroke-dasharray: 5 5;
 }
 
 .xAxisLabels{
-	text-anchor: middle;
-	fill: #000000;
-	font-size: 12px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  text-anchor: middle;
+  fill: #000000;
+  font-size: 12px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .yAxisLabels{
-	text-anchor: end;
-	fill: #000000;
-	font-size: 12px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  text-anchor: end;
+  fill: #000000;
+  font-size: 12px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .xAxisTitle{
-	text-anchor: middle;
-	fill: #ff0000;
-	font-size: 14px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  text-anchor: middle;
+  fill: #ff0000;
+  font-size: 14px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .yAxisTitle{
-	fill: #ff0000;
-	text-anchor: middle;
-	font-size: 14px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  fill: #ff0000;
+  text-anchor: middle;
+  font-size: 14px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .dataPointLabel{
-	fill: #000000;
-	text-anchor:middle;
-	font-size: 10px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  fill: #000000;
+  text-anchor:middle;
+  font-size: 10px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .staggerGuideLine{
-	fill: none;
-	stroke: #000000;
-	stroke-width: 0.5px;	
+  fill: none;
+  stroke: #000000;
+  stroke-width: 0.5px;
 }
-/* default line styles */
-.line1{
-	fill: none;
-	stroke: #ff0000;
-	stroke-width: 1px;	
-}
-.line2{
-	fill: none;
-	stroke: #0000ff;
-	stroke-width: 1px;	
-}
-.line3{
-	fill: none;
-	stroke: #00ff00;
-	stroke-width: 1px;	
-}
-.line4{
-	fill: none;
-	stroke: #ffcc00;
-	stroke-width: 1px;	
-}
-.line5{
-	fill: none;
-	stroke: #00ccff;
-	stroke-width: 1px;	
-}
-.line6{
-	fill: none;
-	stroke: #ff00ff;
-	stroke-width: 1px;	
-}
-.line7{
-	fill: none;
-	stroke: #00ffff;
-	stroke-width: 1px;	
-}
-.line8{
-	fill: none;
-	stroke: #ffff00;
-	stroke-width: 1px;	
-}
-.line9{
-	fill: none;
-	stroke: #cc6666;
-	stroke-width: 1px;	
-}
-.line10{
-	fill: none;
-	stroke: #663399;
-	stroke-width: 1px;	
-}
-.line11{
-	fill: none;
-	stroke: #339900;
-	stroke-width: 1px;	
-}
-.line12{
-	fill: none;
-	stroke: #9966FF;
-	stroke-width: 1px;	
-}
-/* default fill styles for multiple datasets (probably only use a single dataset on this graph though) */
-.key1,.fill1{
-	fill: #ff0000;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 0.5px;	
-}
-.key2,.fill2{
-	fill: #0000ff;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key3,.fill3{
-	fill: #00ff00;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key4,.fill4{
-	fill: #ffcc00;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key5,.fill5{
-	fill: #00ccff;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key6,.fill6{
-	fill: #ff00ff;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key7,.fill7{
-	fill: #00ffff;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key8,.fill8{
-	fill: #ffff00;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key9,.fill9{
-	fill: #cc6666;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key10,.fill10{
-	fill: #663399;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key11,.fill11{
-	fill: #339900;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key12,.fill12{
-	fill: #9966FF;
-	fill-opacity: 0.2;
-	stroke: none;
-	stroke-width: 1px;	
-}
+
+[% FOREACH dataset = data %]
+  [% color = '' %]
+  [% IF config.random_colors %]
+    [% color = random_color() %]
+  [% ELSE %]
+    [% color = predefined_color(loop.count) %]
+  [% END %]
+
+  .line[% loop.count %]{
+    fill: none;
+    stroke: [% color %];
+    stroke-width: 1px;
+  }
+
+  .key[% loop.count %],.fill[% loop.count %]{
+    fill: [% color %];
+    fill-opacity: 0.5;
+    stroke: none;
+    stroke-width: 0.5px;
+  }
+
+  [% LAST IF (config.random_colors == 0 && loop.count == 12) %]
+[% END %]
+
 .keyText{
-	fill: #000000;
-	text-anchor:start;
-	font-size: 10px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  fill: #000000;
+  text-anchor:start;
+  font-size: 10px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 /* End copy for external style sheet */
 ]]>
@@ -631,64 +547,63 @@ __DATA__
 [% END %]
 <!-- svg bg -->
 <rect x="0" y="0" width="[% config.width %]" height="[% config.height %]" class="svgBackground"/>
-	
+  
 <!-- ///////////////// CALCULATE GRAPH AREA AND BOUNDARIES //////////////// -->
 <!-- get dimensions of actual graph area (NOT SVG area) -->
-	[% w = config.width %]
-	[% h = config.height %]
+[% w = config.width %]
+[% h = config.height %]
 
-	<!-- set start/default coords of graph --> 
-	[% x = 0 %]
-	[% y = 0 %]
-	
-	[% char_width = 9 %]
-	[% half_char_height = 2.5 %]
-	[% title_height = 25 %]
+<!-- set start/default coords of graph --> 
+[% x = 0 %]
+[% y = 0 %]
+
+[% char_width = 9 %]
+[% half_char_height = 2.5 %]
+[% title_height = 25 %]
 
 <!-- calc min and max values for the first dataset (ie bar graph) -->
-	[% min_value = 99999999999 %]
-	[% max_value = 0 %]
-	[% secondary_max_value = 0 %]
-	[% secondary_max_y_label_length = 0 %]
-	[% secondary_max_y_label_size = 0 %]
-	[% max_key_size = 0 %]
-	[% max_x_label_size = 0 %]
-	<!-- find largest labels values in turn -->
-	[% FOREACH field = config.fields %]
-			[% IF max_x_label_size < field.length %]
-				[% max_x_label_size = field.length %]
-			[% END %]
-
-			[% IF min_value > data.0.data.$field && data.0.data.$field != '' %]
-				[% min_value = data.0.data.$field %]
-			[% END %]
-
-			[% IF max_value < data.0.data.$field && data.0.data.$field != '' %]
-				[% max_value = data.0.data.$field %]
-			[% END %]
-
-			[% IF secondary_max_value < data.1.data.$field && data.1.data.$field != '' %]
-				[% secondary_max_value = data.1.data.$field %]
-			[% END %]
-			[% IF secondary_max_y_label_size < data.1.data.$field.length %]
-				[% secondary_max_y_label_size = data.1.data.$field.length %]
-			[% END %]
-
-			[% IF max_key_size < data.0.title.length %]
-				[% max_key_size = data.0.title.length %]
-			[% END %]
+[% min_value = 99999999999 %]
+[% max_value = 0 %]
+[% secondary_max_value = 0 %]
+[% secondary_max_y_label_length = 0 %]
+[% secondary_max_y_label_size = 0 %]
+[% max_key_size = 0 %]
+[% max_x_label_size = 0 %]
+<!-- find largest labels values in turn -->
+[% FOREACH field = config.fields %]
+	[% IF max_x_label_size < field.length %]
+		[% max_x_label_size = field.length %]
 	[% END %]
 
+	[% IF min_value > data.0.data.$field && data.0.data.$field != '' %]
+		[% min_value = data.0.data.$field %]
+	[% END %]
 
-	[% secondary_max_y_label_length = secondary_max_y_label_size * char_width %]
-	
+	[% IF max_value < data.0.data.$field && data.0.data.$field != '' %]
+		[% max_value = data.0.data.$field %]
+	[% END %]
+
+	[% IF secondary_max_value < data.1.data.$field && data.1.data.$field != '' %]
+		[% secondary_max_value = data.1.data.$field %]
+	[% END %]
+	[% IF secondary_max_y_label_size < data.1.data.$field.length %]
+		[% secondary_max_y_label_size = data.1.data.$field.length %]
+	[% END %]
+	[% IF max_key_size < data.0.title.length %]
+		[% max_key_size = data.0.title.length %]
+	[% END %]
+[% END %]
+
+
+[% secondary_max_y_label_length = secondary_max_y_label_size * char_width %]
+
 
 <!-- CALC HEIGHT AND Y COORD DIMENSIONS -->
-	<!-- reduce height of graph area if there is labelling on x axis -->
-	[% IF config.show_x_labels %][% h = h - 20 %][% END %]
-	
-	<!-- reduce height if x labels are rotated -->
-	[% max_x_label_length = 0 %]
+<!-- reduce height of graph area if there is labelling on x axis -->
+[% IF config.show_x_labels %][% h = h - 20 %][% END %]
+
+  <!-- reduce height if x labels are rotated -->
+  [% max_x_label_length = 0 %]
 	[% IF config.rotate_x_labels %]
 		[% max_x_label_length = max_x_label_size * char_width %]
 		[% h = h - max_x_label_length %]
@@ -710,8 +625,6 @@ __DATA__
 	[% IF config.show_graph_title %][% h = h - title_height %][% y = y + title_height %][% END %]
 	[% IF config.show_graph_subtitle %][% h = h - 10 %][% y = y + 10 %][% END %]
 	
-
-	
 <!-- reduce graph dimensions if there is a KEY -->
 	[% key_box_size = 12 %]
 	
@@ -722,11 +635,11 @@ __DATA__
 			[% w = w - (max_key_size * (char_width - 1)) - (key_box_size * 3 ) - title_height %]
 		[% END %]
 	[% ELSIF config.key && config.key_position == 'bottom' %]
-        [% IF data.size < 4 %]
-            [% h = h - ((data.size + 1) * (key_box_size + key_padding))%]
-        [% ELSE %]
-            [% h = h - (4 * (key_box_size + key_padding))%]
-        [% END %]        
+    [% IF data.size < 4 %]
+      [% h = h - ((data.size + 1) * (key_box_size + key_padding))%]
+    [% ELSE %]
+      [% h = h - (4 * (key_box_size + key_padding))%]
+    [% END %]        
 	[% END %]
 
 	<!-- find start value for scale on y axis -->
@@ -754,7 +667,6 @@ __DATA__
 		[% secondary_top_pad = (secondary_max_value - min_scale_value) / 20 %]	
 	[% END %]	
 	
-	
 	[% scale_range = (max_value + top_pad) - min_scale_value %]
 	[% secondary_scale_range = (secondary_max_value + secondary_top_pad) - min_scale_value %]
 
@@ -765,7 +677,7 @@ __DATA__
 		[% scale_division = scale_range / 10 FILTER format('%2.01f') %]
 	[% END %]
 	
-<!-- default to 10 scale_divisions if none have been set for secondary y axis -->
+  <!-- default to 10 scale_divisions if none have been set for secondary y axis -->
 	[% IF config.scale_divisions %]
 		[% secondary_scale_division = config.scale_divisions %]
 	[% ELSE %]
@@ -784,16 +696,16 @@ __DATA__
 <!-- get number of data points on x scale -->
 [% dx = config.fields.size %]
 
-	[% secondary_title_padding = 0 %]
-	[% IF config.show_secondary_y_labels %]
-		[% w = w - secondary_max_y_label_length - title_height %]
-		[% secondary_title_padding = secondary_title_padding + secondary_max_y_label_length + 10 %]
-	[% END %]
-	
-	[% IF config.show_secondary_y_title %]
-		[% w = w - title_height - char_width %]
-		[% secondary_title_padding = secondary_title_padding + title_height %]
-	[% END %]
+[% secondary_title_padding = 0 %]
+[% IF config.show_secondary_y_labels %]
+	[% w = w - secondary_max_y_label_length - title_height %]
+	[% secondary_title_padding = secondary_title_padding + secondary_max_y_label_length + 10 %]
+[% END %]
+
+[% IF config.show_secondary_y_title %]
+	[% w = w - title_height - char_width %]
+	[% secondary_title_padding = secondary_title_padding + title_height %]
+[% END %]
 
 
 <!-- get distribution width on x axis -->
@@ -801,64 +713,60 @@ __DATA__
 [% dw = data_widths_x FILTER format('%2.02f') %]
 
 
-
 <!-- CALC WIDTH AND X COORD DIMENSIONS -->
-	<!-- reduce width of graph area if there is large labelling on x axis -->
-	[% half_label_width = (config.fields.0.length / 2) * char_width %]
-	
-	[% IF half_label_width > (dw / 2) %]
-		<!-- calc difference and pad accordingly -->
-		[% space_b4_y_axis = half_label_width - (dw / 2) %]
-		<!-- only need to pad the left side if a key is present -->
-		[% IF config.key && config.key_position == 'right' %]
-			[% w = w - space_b4_y_axis %]
-		[% ELSE %]
-			<!-- pad both sides -->
-			[% w = w - (space_b4_y_axis * 2) %]
-		[% END %]
-		[% x = x + space_b4_y_axis %]
-	[% END %]
-	
-	<!-- find the string length of max value -->
-	[% max_value_length = max_value.length %]
-	
-	<!-- label width in pixels -->
-	[% max_value_length_px = max_value_length * char_width %]
-	<!-- If the y labels are shown but the size of the x labels are small, pad for y labels -->
-	
-	[% IF config.show_y_labels && space_b4_y_axis < max_value_length_px %]
-		<!-- allow slightly more padding if small labels -->
-		[% IF max_value_length < 2 %]
-			[% w = w - (max_value_length * (char_width * 2)) %]
-			[% x = x + (max_value_length * (char_width * 2)) %]
-		[% ELSE %]
-			[% w = w - max_value_length_px %]
-			[% x = x + max_value_length_px %]
-		[% END %]
-	[% END %]
-	
-	[% IF config.show_y_title && space_b4_y_axis < max_value_length_px %]
-		[% w = w - title_height %]
-		[% x = x + title_height %]
-	[% END %]
-	
+<!-- reduce width of graph area if there is large labelling on x axis -->
+[% half_label_width = (config.fields.0.length / 2) * char_width %]
 
+[% space_b4_y_axis = 0 %]
+[% IF half_label_width > (dw / 2) %]
+	<!-- calc difference and pad accordingly -->
+	[% space_b4_y_axis = half_label_width - (dw / 2) %]
+	<!-- only need to pad the left side if a key is present -->
+	[% IF config.key && config.key_position == 'right' %]
+		[% w = w - space_b4_y_axis %]
+	[% ELSE %]
+		<!-- pad both sides -->
+		[% w = w - (space_b4_y_axis * 2) %]
+	[% END %]
+	[% x = x + space_b4_y_axis %]
+[% END %]
 
+<!-- find the string length of max value -->
+[% max_value_length = max_value.length %]
 
+<!-- label width in pixels -->
+[% max_value_length_px = max_value_length * char_width %]
+<!-- If the y labels are shown but the size of the x labels are small, pad for y labels -->
+
+[% IF config.show_y_labels && space_b4_y_axis < max_value_length_px %]
+	<!-- allow slightly more padding if small labels -->
+	[% IF max_value_length < 2 %]
+		[% w = w - (max_value_length * (char_width * 2)) %]
+		[% x = x + (max_value_length * (char_width * 2)) %]
+	[% ELSE %]
+		[% w = w - max_value_length_px %]
+		[% x = x + max_value_length_px %]
+	[% END %]
+[% END %]
+
+[% IF config.show_y_title && space_b4_y_axis < max_value_length_px %]
+	[% w = w - title_height %]
+	[% x = x + title_height %]
+[% END %]
 
 
 <!-- //////////////////////////////  BUILD GRAPH AREA ////////////////////////////// -->
 <!-- graph bg -->
-	<rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]" class="graphBackground"/>
+<rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]" class="graphBackground"/>
 
 <!-- axis -->
-	<path d="M[% x %] [% y %] v[% h %]" class="axis" id="xAxis"/>
-	<path d="M[% x %] [% base_line %] h[% w %]" class="axis" id="yAxis"/>
+<path d="M[% x %] [% y %] v[% h %]" class="axis" id="xAxis"/>
+<path d="M[% x %] [% base_line %] h[% w %]" class="axis" id="yAxis"/>
 
-	<path d="M[% x + w %] [% y %] v[% h %]" class="axis" id="xAxis"/>
+<path d="M[% x + w %] [% y %] v[% h %]" class="axis" id="yAxis2"/>
 <!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
-	<!-- get number of data points on x scale -->
-	[% dx = config.fields.size %]
+<!-- get number of data points on x scale -->
+[% dx = config.fields.size %]
 <!-- get distribution width on x axis -->
 [% data_widths_x = w / dx %]
 
@@ -867,8 +775,8 @@ __DATA__
 
 [% dw = data_widths_x %]
 [% IF config.bar_gap %]
-	[% bar_gap = 10 %]
-	[% IF dw < bar_gap %]
+  [% bar_gap = 10 %]
+  [% IF dw < bar_gap %]
 		[% bar_gap = dw / 2 %]
 	[% END %]
 [% ELSE %]
@@ -883,8 +791,8 @@ __DATA__
 [% IF config.show_x_labels %]
 	[% FOREACH field = config.fields %]
 		[% IF count == 0 %]
-<text x="[% x + (dw / 2) - (bar_gap / 2) %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + (dw / 2) - (bar_gap / 2) - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field %]</text>
-		[% i = i - dw %]
+      <text x="[% x + (dw / 2) - (bar_gap / 2) %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + (dw / 2) - (bar_gap / 2) - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field %]</text>
+		  [% i = i - dw %]
 		[% ELSE %]
 			[% IF stagger_count == 2 %]
 				<text x="[% x + i + (dw / 2) - (bar_gap / 2) %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + i + (dw / 2) - (bar_gap / 2) - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field %]</text>
@@ -894,9 +802,9 @@ __DATA__
 				<path d="M[% x + i + (dw / 2) - (bar_gap / 2) %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
 			[% END %]
 		[% END %]
-	[% i = i + dw %]
-	[% count = count + 1 %]
-	[% stagger_count = stagger_count + 1 %]
+	  [% i = i + dw %]
+	  [% count = count + 1 %]
+	  [% stagger_count = stagger_count + 1 %]
 	[% END %]
 [% END %]
 
@@ -911,7 +819,7 @@ __DATA__
 [% IF config.show_y_labels %]
 	[% WHILE (dy * count) < h %]
 		[% IF count == 0 %]
-		<!-- no stroke for first line -->
+  		<!-- no stroke for first line -->
 			<text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% y_value %]</text>
 		[% ELSE %]
 			<text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% y_value %]</text>
@@ -932,7 +840,7 @@ __DATA__
 [% secondary_y_value = min_scale_value %]
 [% IF config.show_secondary_y_labels %]
 	[% WHILE (dy * s_count) < h %]
-			<text x="[% x + w + 5 %]" y="[% base_line - (dy * s_count) %]" class="yAxisLabels" style="text-anchor: start">[% secondary_y_value %]</text>
+		<text x="[% x + w + 5 %]" y="[% base_line - (dy * s_count) %]" class="yAxisLabels" style="text-anchor: start">[% secondary_y_value %]</text>
 
 		[% secondary_y_value = secondary_y_value + secondary_scale_division %]
 		[% s_count = s_count + 1 %]
@@ -940,45 +848,35 @@ __DATA__
 [% END %]
 
 
-
-
-
-
-
-
-
-
-
 <!-- //////////////////////////////  AXIS TITLES ////////////////////////////// -->
 
 <!-- x axis title -->
-	[% IF config.show_x_title %]
-		[% IF !config.show_x_labels %]
-			[% y_xtitle = 15 %]
-		[% ELSE %]
-			[% y_xtitle = 35 %]
-		[% END %]
-		<text x="[% (w / 2) + x %]" y="[% h + y + y_xtitle + stagger + max_x_label_length %]" class="xAxisTitle">[% config.x_title %]</text>
-	[% END %]	
+[% IF config.show_x_title %]
+	[% IF !config.show_x_labels %]
+		[% y_xtitle = 15 %]
+	[% ELSE %]
+		[% y_xtitle = 35 %]
+	[% END %]
+	<text x="[% (w / 2) + x %]" y="[% h + y + y_xtitle + stagger + max_x_label_length %]" class="xAxisTitle">[% config.x_title %]</text>
+[% END %]
 
 <!-- y axis title -->
-	[% IF config.show_y_title %]
-		[% IF config.y_title_text_direction == 'tb' %]
-			<text x="11" y="[% (h / 2) + y %]" class="yAxisTitle" style="writing-mode:tb;">[% config.y_title %]</text>
-		[% ELSE %]
-			<text class="yAxisTitle" transform="translate(15,[% (h / 2) + y %]) rotate(270)">[% config.y_title %]</text>
-		[% END %]
+[% IF config.show_y_title %]
+	[% IF config.y_title_text_direction == 'tb' %]
+		<text x="11" y="[% (h / 2) + y %]" class="yAxisTitle" style="writing-mode:tb;">[% config.y_title %]</text>
+	[% ELSE %]
+		<text class="yAxisTitle" transform="translate(15,[% (h / 2) + y %]) rotate(270)">[% config.y_title %]</text>
 	[% END %]
+[% END %]
 
 <!-- secondary y axis title -->
-	[% IF config.show_secondary_y_title %]
-		[% IF config.secondary_y_title_text_direction == 'tb' %]
-			<text x="[% x + w + secondary_title_padding %]" y="[% (h / 2) + y %]" class="yAxisTitle" style="writing-mode:tb;">[% config.secondary_y_title %]</text>
-		[% ELSE %]
-			<text class="yAxisTitle" transform="translate([% x + w + secondary_title_padding %],[% (h / 2) + y %]) rotate(270)">[% config.secondary_y_title %]</text>
-		[% END %]
+[% IF config.show_secondary_y_title %]
+	[% IF config.secondary_y_title_text_direction == 'tb' %]
+		<text x="[% x + w + secondary_title_padding %]" y="[% (h / 2) + y %]" class="yAxisTitle" style="writing-mode:tb;">[% config.secondary_y_title %]</text>
+	[% ELSE %]
+		<text class="yAxisTitle" transform="translate([% x + w + secondary_title_padding %],[% (h / 2) + y %]) rotate(270)">[% config.secondary_y_title %]</text>
 	[% END %]
-
+[% END %]
 
 
 <!-- //////////////////////////////  SHOW DATA ////////////////////////////// -->
@@ -989,43 +887,43 @@ __DATA__
 
 [% xcount = 0 %]
 [% line = data.size %]
-	
+
 <!-- Draw BAR CHART -->
-	[% FOREACH field = config.fields %]
-		[% dcount = 1 %]
-			<path d="M[% x + (dw * xcount) %] [% base_line %] V[% base_line - (data.0.data.$field * divider) %] h[% bar_width %] V[% base_line %] Z" class="fill[% dcount %]"/>
-			[% IF config.show_data_values %]
-				<text x="[% (dw * xcount) + x + (dw / 2) - (bar_gap / 2) %]" y="[% base_line - (data.0.data.$field * divider) - 6 %]" class="dataPointLabel">[% data.0.data.$field %]</text>
-			[% END %]
-			[% dcount = dcount + 1 %]	
-		[% xcount = xcount + 1 %]		
+[% FOREACH field = config.fields %]
+	[% dcount = 1 %]
+	<path d="M[% x + (dw * xcount) %] [% base_line %] V[% base_line - (data.0.data.$field * divider) %] h[% bar_width %] V[% base_line %] Z" class="fill[% dcount %]"/>
+	[% IF config.show_data_values %]
+		<text x="[% (dw * xcount) + x + (dw / 2) - (bar_gap / 2) %]" y="[% base_line - (data.0.data.$field * divider) - 6 %]" class="dataPointLabel">[% data.0.data.$field %]</text>
 	[% END %]
-	
+	[% dcount = dcount + 1 %]	
+  [% xcount = xcount + 1 %]		
+[% END %]
+
 <!-- Draw Line graph -->
-    <path d="M
-    [% xcount = 0 %]
-    [% FOREACH field = config.fields %]
-        [% IF xcount == 1 %] L [% END %]
-      	[% (dw * xcount) + x + (bar_width / 2) %] [% base_line - (data.1.data.$field * secondary_divider) %]
-        [% xcount = xcount + 1 %]       
-    [% END %]" class="line[% line %]"/>
-	
-	[% xcount = 0 %]
-        [% FOREACH field = config.fields %]
-            [% IF config.show_data_points %]
-                <!-- datapoint shown -->
-                <circle cx="[% (dw * xcount) + x + (bar_width / 2) %]" cy="[% base_line - (data.1.data.$field * secondary_divider) %]" r="2.5" class="dataPoint[% line %]"/>
-            [% END %]
+<path d="M
+[% xcount = 0 %]
+[% FOREACH field = config.fields %]
+  [% IF xcount == 1 %] L [% END %]
+    [% (dw * xcount) + x + (bar_width / 2) %] [% base_line - (data.1.data.$field * secondary_divider) %]
+    [% xcount = xcount + 1 %]       
+  [% END %]" class="line[% line %]"/>
+
+  [% xcount = 0 %]
+  [% FOREACH field = config.fields %]
+    [% IF config.show_data_points %]
+      <!-- datapoint shown -->
+      <circle cx="[% (dw * xcount) + x + (bar_width / 2) %]" cy="[% base_line - (data.1.data.$field * secondary_divider) %]" r="2.5" class="dataPoint[% line %]"/>
+    [% END %]
             
-            [% IF config.show_data_values %]
-                <!-- datavalue shown -->
-                <text x="[% (dw * xcount) + x + (bar_width / 2) %]" y="[% base_line - (data.1.data.$field * secondary_divider) - 6 %]" class="dataPointLabel">[% data.1.data.$field %]</text>
-            [% END %]
-            [% xcount = xcount + 1 %]       
-        [% END %]
+    [% IF config.show_data_values %]
+      <!-- datavalue shown -->
+      <text x="[% (dw * xcount) + x + (bar_width / 2) %]" y="[% base_line - (data.1.data.$field * secondary_divider) - 6 %]" class="dataPointLabel">[% data.1.data.$field %]</text>
+    [% END %]
+  [% xcount = xcount + 1 %]       
+[% END %]
 
 
-<!-- //////////////////////////////// KEY /////// ////////////////////////// -->
+<!-- //////////////////////////////// KEY ///////////////////////////////// -->
 [% key_count = 1 %]
 [% key_padding = 5 %]
 [% IF config.key && config.key_position == 'right' %]
@@ -1048,32 +946,31 @@ __DATA__
 	[% x_key = x %]
 	[% FOREACH dataset = data %]
 		[% IF key_count == 4 || key_count == 7 || key_count == 10 %]
-		<!-- wrap key every 3 entries -->
+  		<!-- wrap key every 3 entries -->
 			[% x_key = x_key + 200 %]
 			[% y_key = y_key - (key_box_size * 4) - 2 %]
 		[% END %]
 		<rect x="[% x_key %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + stagger %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]"/>
-
 		<text x="[% x_key + key_box_size + key_padding %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + key_box_size + stagger %]" class="keyText">[% dataset.title %]</text>
 		[% key_count = key_count + 1 %]
 	[% END %]
 	
 [% END %]
-	
+
 <!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->
 
 <!-- main graph title -->
-	[% IF config.show_graph_title %]
-		<text x="[% config.width / 2 %]" y="15" class="mainTitle">[% config.graph_title %]</text>
-	[% END %]
+[% IF config.show_graph_title %]
+	<text x="[% config.width / 2 %]" y="15" class="mainTitle">[% config.graph_title %]</text>
+[% END %]
 
 <!-- graph sub title -->
-	[% IF config.show_graph_subtitle %]
-		[% IF config.show_graph_title %]
-			[% y_subtitle = 30 %]
-		[% ELSE %]
-			[% y_subtitle = 15 %]
-		[% END %]
-		<text x="[% config.width / 2 %]" y="[% y_subtitle %]" class="subTitle">[% config.graph_subtitle %]</text>
+[% IF config.show_graph_subtitle %]
+	[% IF config.show_graph_title %]
+		[% y_subtitle = 30 %]
+	[% ELSE %]
+		[% y_subtitle = 15 %]
 	[% END %]
+	<text x="[% config.width / 2 %]" y="[% y_subtitle %]" class="subTitle">[% config.graph_subtitle %]</text>
+[% END %]
 </svg>

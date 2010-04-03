@@ -2,18 +2,16 @@ package SVG::TT::Graph::TimeSeries;
 
 use strict;
 use Carp;
+use SVG::TT::Graph;
+use base qw(SVG::TT::Graph);
 use vars qw($VERSION);
-$VERSION = '0.11';
+$VERSION = $SVG::TT::Graph::VERSION;
 
 use Data::Dumper;
 use HTTP::Date;
 use DateTime;
 use POSIX;
 
-use SVG::TT::Graph;
-use base qw(SVG::TT::Graph);
-
-my $template;
 
 =head1 NAME
 
@@ -27,21 +25,21 @@ SVG::TT::Graph::TimeSeries - Create presentation quality SVG line graphs of time
   my @data_disk = ('2003-09-03 09:00:00',12,'2003-09-03 10:00:00',26,'2003-09-03 11:00:00',23);
   
   my $graph = SVG::TT::Graph::TimeSeries->new({
-  	'height' => '500',
-	'width' => '300',
+    'height' => '500',
+    'width'  => '300',
   });
   
   $graph->add_data({
-    'data' => \@data_cpu,
-	'title' => 'CPU',
+    'data'  => \@data_cpu,
+    'title' => 'CPU',
   });
 
   $graph->add_data({
-    'data' => \@data_disk,
-	'title' => 'Disk',
+    'data'  => \@data_disk,
+    'title' => 'Disk',
   });
   
-  print "Content-type: image/svg+xml\r\n\r\n";
+  print "Content-type: image/svg+xml\n\n";
   print $graph->burn();
 
 =head1 DESCRIPTION
@@ -102,8 +100,9 @@ date range limited by 32 bit signed integers (around 1902 to 2038).
     'key'                   => 0,
     'key_position'          => 'right',
 
-    # Optional - defaults to using internal stylesheet
-    'style_sheet'       => '/includes/graph.css',
+    # Stylesheet defaults
+    'style_sheet'             => '/includes/graph.css', # internal stylesheet
+    'random_colors'           => 0,
   });
 
 The constructor takes a hash reference with values defaulted to those
@@ -165,18 +164,41 @@ Set the width of the graph box, this is the total width
 of the SVG box created - not the graph it self which auto
 scales to fix the space.
 
+=item compress()
+
+Whether or not to compress the content of the SVG file (Compress::Zlib required).
+
+=item tidy()
+
+Whether or not to tidy the content of the SVG file (XML::Tidy required).
+
 =item style_sheet()
 
 Set the path to an external stylesheet, set to '' if
 you want to revert back to using the defaut internal version.
 
+The default stylesheet handles up to 12 data sets. All data series over
+the 12th will have no style and be in black. If you have over 12 data
+sets you can assign them all random colors (see the random_color()
+method) or create your own stylesheet and add the additional settings
+for the extra data sets.
+
 To create an external stylesheet create a graph using the
 default internal version and copy the stylesheet section to
 an external file and edit from there.
 
+=item random_colors()
+
+Use random colors in the internal stylesheet.
+
 =item show_data_values()
 
 Show the value of each element of data on the graph.
+
+=item show_data_points()
+
+Show a small circle on the graph where the line
+goes from one point to the next.
 
 =item rollover_values()
 
@@ -186,11 +208,6 @@ Used in combination with show_data_values and/or show_data_points.
 =item data_value_format()
 
 Format specifier to for data values (as per printf).
-
-=item show_data_points()
-
-Show a small circle on the graph where the line
-goes from one point to the next.
 
 =item max_time_span()
 
@@ -324,14 +341,6 @@ Where the key should be positioned, defaults to
 
 =back
 
-=head1 NOTES
-
-The default stylesheet handles upto 12 data sets, if you
-use more you must create your own stylesheet and add the
-additional settings for the extra data sets. You will know
-if you go over 12 data sets as they will have no style and
-be in black.
-
 =head1 EXAMPLES
 
 For examples look at the project home page 
@@ -357,240 +366,249 @@ L<SVG::TT::Graph::Line>,
 L<SVG::TT::Graph::Bar>,
 L<SVG::TT::Graph::BarHorizontal>,
 L<SVG::TT::Graph::BarLine>,
-L<SVG::TT::Graph::Pie>
+L<SVG::TT::Graph::Pie>,
+L<Compress::Zlib>,
+L<XML::Tidy>
 
 =cut
 
 sub get_template {
-	my $self = shift;
-	# read in template
-	return $template if $template;
-	while(<DATA>) {
-		$template .= $_ . "\r\n";
-	}
-	return $template;
+  my $self = shift;
+  # read in template
+  my $template = '';
+  while(<DATA>) {
+    chomp;
+    $template .= $_ . "\n";
+  }
+  return $template;
 }
 
 sub _init {
-	my $self = shift;
+  my $self = shift;
 }
 
 sub _set_defaults {
-	my $self = shift;
+  my $self = shift;
     
-    my @fields = ();
+  my @fields = ();
 
-	my %default = (
-        'fields'            => \@fields,
+  my %default = (
+    'fields'              => \@fields,
         
-		'width'				=> '500',
-		'height'			=> '300',
+    'width'               => '500',
+    'height'              => '300',
         
-		'style_sheet'       => '',
-	    'show_data_points'  => 1,
-        'show_data_values'  => 1,
-        'max_time_span'     => '',
-        
-        'area_fill'         => 0,
-        
-        'show_y_labels'     => 1,   
-		'scale_divisions'   => '',
-	    'min_scale_value'   => '0',
-        
-        'stacked'           => 0,
+    'style_sheet'         => '',
+    'random_colors'       => 0,
 
-	    'show_x_labels'     => 1,
-		'stagger_x_labels'	=> 0,
-        'rotate_x_labels'   => 0,
-        'timescale_divisions'   => '',
-        'x_label_format'    => '%Y-%m-%d %H:%M:%S',
-	
-	    'show_x_title'      => 0,
-	    'x_title'           => 'X Field names',
-	
-	    'show_y_title'      => 0,
-	    'y_title'           => 'Y Scale',
-	
-	    'show_graph_title'		=> 0,
-	    'graph_title'			=> 'Graph Title',
-	    'show_graph_subtitle'	=> 0,
-	    'graph_subtitle'		=> 'Graph Sub Title',
-		'key'					=> 0, 
-		'key_position'			=> 'right', # bottom or right
+    'show_data_points'    => 1,
+    'show_data_values'    => 1,
+    'rollover_values'     => 0,
+
+    'max_time_span'       => '',
         
-        'dateadd'               => \&dateadd,
-	);
-	
-	while( my ($key,$value) = each %default ) {
-		$self->{config}->{$key} = $value;
-	}
+    'area_fill'           => 0,
+        
+    'show_y_labels'       => 1,   
+    'scale_divisions'     => '',
+    'min_scale_value'     => '0',
+        
+    'stacked'             => 0,
+
+    'show_x_labels'       => 1,
+    'stagger_x_labels'    => 0,
+    'rotate_x_labels'     => 0,
+    'timescale_divisions' => '',
+    'x_label_format'      => '%Y-%m-%d %H:%M:%S',
+  
+    'show_x_title'        => 0,
+    'x_title'             => 'X Field names',
+  
+    'show_y_title'        => 0,
+    'y_title'             => 'Y Scale',
+  
+    'show_graph_title'    => 0,
+    'graph_title'         => 'Graph Title',
+    'show_graph_subtitle' => 0,
+    'graph_subtitle'      => 'Graph Sub Title',
+
+    'key'                 => 0,
+    'key_position'        => 'right', # bottom or right
+        
+    'dateadd'             => \&dateadd,
+
+  );
+  
+  while( my ($key,$value) = each %default ) {
+    $self->{config}->{$key} = $value;
+  }
 }
 
 # override this so we can pre-manipulate the data
 sub add_data {
-    my ($self, $conf) = @_;
+  my ($self, $conf) = @_;
 
-    croak 'no data provided'
+  croak 'no data provided'
     unless (defined $conf->{'data'} && ref($conf->{'data'}) eq 'ARRAY');
 
-    # create an array
-    unless(defined $self->{'data'}) {
-        my @data;
-        $self->{'data'} = \@data;
+  # create an array
+  unless(defined $self->{'data'}) {
+    my @data;
+    $self->{'data'} = \@data;
+  }
+
+  # convert to sorted (by ascending time) array of [ time, value ]
+  my @new_data = ();
+  my ($i,$time,@pair);
+
+  $i = 0;
+  while ($i < @{$conf->{'data'}}) {
+    @pair = ();
+    if (ref($conf->{'data'}->[$i]) eq 'ARRAY') {
+      push @pair,@{$conf->{'data'}->[$i]};
+      $i++;
     }
-
-    # convert to sorted (by ascending time) array of [ time, value ]
-    my @new_data = ();    
-    my ($i,$time,@pair);
-
-    $i = 0;    
-    while ($i < @{$conf->{'data'}}) {
-        @pair = ();
-        if (ref($conf->{'data'}->[$i]) eq 'ARRAY') {
-            push @pair,@{$conf->{'data'}->[$i]};
-            $i++;
-        }
-        else {
-            $pair[0] = $conf->{'data'}->[$i++];
-            $pair[1] = $conf->{'data'}->[$i++];
-        }
-        
-        $time = str2time($pair[0]);
-        # special case for time-only values
-        if ((!defined $time) && ($pair[0] =~ m/^\w*(\d+:\d+:\d+)|(\d+:\d+)\w*$/))  {
-            $time = str2time('1970-1-1 '.$pair[0]);
-        }
-        
-        croak sprintf("Series %d contains an illegal datetime value %s at sample %d.",
-            scalar(@{$self->{'data'}}),
-            $pair[0],
-            $i / 2)
-        unless (defined $time);
-        
-        $pair[0] = $time;
-        push @new_data, [ @pair ];
+    else {
+      $pair[0] = $conf->{'data'}->[$i++];
+      $pair[1] = $conf->{'data'}->[$i++];
     }
     
-    my @sorted = sort {@{$a}[0] <=> @{$b}[0]} @new_data;
-    
-    # if stacked, we accumulate the 
-    if (($self->{config}->{stacked}) && (@{$self->{'data'}})) {
-        my $prev = $self->{'data'}->[@{$self->{'data'}} - 1]->{pairs};
-        
-        # check our length matches previous
-        croak sprintf("Series %d can not be stacked on previous series. Mismatched length.",
-            scalar(@{$self->{'data'}}))
-        unless (scalar(@sorted) == scalar(@$prev));
-        
-        for (my $i = 0; $i < @sorted; $i++) {
-            # check the time value matches
-            croak sprintf("Series %d can not be stacked on previous series. Mismatched timestamp at sample %d (time %s).",
-                scalar(@{$self->{'data'}}),
-                $i,
-                HTTP::Date::time2iso($sorted[$i][0]))
-            unless ($sorted[$i][0] == $prev->[$i][0]);
-           
-            $sorted[$i][1] += $prev->[$i][1];
-        }
+    $time = str2time($pair[0]);
+    # special case for time-only values
+    if ((!defined $time) && ($pair[0] =~ m/^\w*(\d+:\d+:\d+)|(\d+:\d+)\w*$/))  {
+      $time = str2time('1970-1-1 '.$pair[0]);
     }
     
-    my %store = (
-        'pairs' => \@sorted,
-    );
+    croak sprintf("Series %d contains an illegal datetime value %s at sample %d.",
+      scalar(@{$self->{'data'}}),
+      $pair[0],
+      $i / 2)
+    unless (defined $time);
     
-    $store{'title'} = $conf->{'title'} if defined $conf->{'title'};
-    push (@{$self->{'data'}},\%store);
+    $pair[0] = $time;
+    push @new_data, [ @pair ];
+  }
+  
+  my @sorted = sort {@{$a}[0] <=> @{$b}[0]} @new_data;
+  
+  # if stacked, we accumulate the 
+  if (($self->{config}->{stacked}) && (@{$self->{'data'}})) {
+    my $prev = $self->{'data'}->[@{$self->{'data'}} - 1]->{pairs};
+    
+    # check our length matches previous
+    croak sprintf("Series %d can not be stacked on previous series. Mismatched length.",
+      scalar(@{$self->{'data'}}))
+      unless (scalar(@sorted) == scalar(@$prev));
+    
+    for (my $i = 0; $i < @sorted; $i++) {
+      # check the time value matches
+      croak sprintf("Series %d can not be stacked on previous series. Mismatched timestamp at sample %d (time %s).",
+        scalar(@{$self->{'data'}}),
+        $i,
+        HTTP::Date::time2iso($sorted[$i][0]))
+      unless ($sorted[$i][0] == $prev->[$i][0]);
+       
+      $sorted[$i][1] += $prev->[$i][1];
+    }
+  }
+  
+  my %store = (
+    'pairs' => \@sorted,
+  );
+  
+  $store{'title'} = $conf->{'title'} if defined $conf->{'title'};
+  push (@{$self->{'data'}},\%store);
 
-    return 1;
+  return 1;
 }
 
 # Helper function for doing date/time calculations
 # Current implementations of DateTime can be slow :-(
 sub dateadd {
-    my ($epoch,$value,$unit) = @_;
-    my $dt = DateTime->from_epoch(epoch => $epoch);
-    $dt->add( $unit => $value );
-    return $dt->epoch();
+  my ($epoch,$value,$unit) = @_;
+  my $dt = DateTime->from_epoch(epoch => $epoch);
+  $dt->add( $unit => $value );
+  return $dt->epoch();
 }
 
 # override calculations to set a few calculated values, mainly for scaling
 sub calculations {
-    my $self = shift;
+  my $self = shift;
+  
+  # run through the data and calculate maximum and minimum values
+  my ($max_key_size,$max_time,$min_time,$max_value,$min_value,$max_x_label_length,$x_label);
+  
+  foreach my $dataset (@{$self->{data}}) {
+    $max_key_size = length($dataset->{title}) if ((!defined $max_key_size) || ($max_key_size < length($dataset->{title})));
     
-    # run through the data and calculate maximum and minimum values
-    my ($max_key_size,$max_time,$min_time,$max_value,$min_value,$max_x_label_length,$x_label);
-    
-    foreach my $dataset (@{$self->{data}}) {
-        $max_key_size = length($dataset->{title}) if ((!defined $max_key_size) || ($max_key_size < length($dataset->{title})));
-        
-        foreach my $pair (@{$dataset->{pairs}}) {
-            $max_time = $pair->[0] if ((!defined $max_time) || ($max_time < $pair->[0]));
-            $min_time = $pair->[0] if ((!defined $min_time) || ($min_time > $pair->[0]));
-            $max_value = $pair->[1] if (($pair->[1] ne '') && ((!defined $max_value) || ($max_value < $pair->[1])));
-            $min_value = $pair->[1] if (($pair->[1] ne '') && ((!defined $min_value) || ($min_value > $pair->[1])));
-            
-            $x_label = strftime($self->{config}->{x_label_format},localtime($pair->[0]));
-            $max_x_label_length = length($x_label) if ((!defined $max_x_label_length) || ($max_x_label_length < length($x_label)));
-        }
+    foreach my $pair (@{$dataset->{pairs}}) {
+      $max_time = $pair->[0] if ((!defined $max_time) || ($max_time < $pair->[0]));
+      $min_time = $pair->[0] if ((!defined $min_time) || ($min_time > $pair->[0]));
+      $max_value = $pair->[1] if (($pair->[1] ne '') && ((!defined $max_value) || ($max_value < $pair->[1])));
+      $min_value = $pair->[1] if (($pair->[1] ne '') && ((!defined $min_value) || ($min_value > $pair->[1])));
+      
+      $x_label = strftime($self->{config}->{x_label_format},localtime($pair->[0]));
+      $max_x_label_length = length($x_label) if ((!defined $max_x_label_length) || ($max_x_label_length < length($x_label)));
     }
-    $self->{calc}->{max_key_size} = $max_key_size;
-    $self->{calc}->{max_time} = $max_time;
-    $self->{calc}->{min_time} = $min_time;
-    $self->{calc}->{max_value} = $max_value;
-    $self->{calc}->{min_value} = $min_value;
-    $self->{calc}->{max_x_label_length} = $max_x_label_length;
+  }
+  $self->{calc}->{max_key_size} = $max_key_size;
+  $self->{calc}->{max_time} = $max_time;
+  $self->{calc}->{min_time} = $min_time;
+  $self->{calc}->{max_value} = $max_value;
+  $self->{calc}->{min_value} = $min_value;
+  $self->{calc}->{max_x_label_length} = $max_x_label_length;
 
-    # Calc the x axis scale values
-    $self->{calc}->{min_timescale_value} = ($self->_is_valid_config('min_timescale_value')) ? str2time($self->{config}->{min_timescale_value}) : $min_time;
-    $self->{calc}->{max_timescale_value} = ($self->_is_valid_config('max_timescale_value')) ? str2time($self->{config}->{max_timescale_value}) : $max_time;
-    $self->{calc}->{timescale_range} = $self->{calc}->{max_timescale_value} - $self->{calc}->{min_timescale_value};
+  # Calc the x axis scale values
+  $self->{calc}->{min_timescale_value} = ($self->_is_valid_config('min_timescale_value')) ? str2time($self->{config}->{min_timescale_value}) : $min_time;
+  $self->{calc}->{max_timescale_value} = ($self->_is_valid_config('max_timescale_value')) ? str2time($self->{config}->{max_timescale_value}) : $max_time;
+  $self->{calc}->{timescale_range} = $self->{calc}->{max_timescale_value} - $self->{calc}->{min_timescale_value};
 
-    # Calc the y axis scale values
-    $self->{calc}->{min_scale_value} = ($self->_is_valid_config('min_scale_value')) ? $self->{config}->{min_scale_value} : $min_value;
-    $self->{calc}->{max_scale_value} = ($self->_is_valid_config('max_scale_value')) ? $self->{config}->{max_scale_value} : $max_value;
-    $self->{calc}->{scale_range} = $self->{calc}->{max_scale_value} - $self->{calc}->{min_scale_value};
-    
-    my ($range,$division,$precision);
-    
-    if ($self->_is_valid_config('scale_divisions')) {
-        $division = $self->{config}->{scale_divisions};
+  # Calc the y axis scale values
+  $self->{calc}->{min_scale_value} = ($self->_is_valid_config('min_scale_value')) ? $self->{config}->{min_scale_value} : $min_value;
+  $self->{calc}->{max_scale_value} = ($self->_is_valid_config('max_scale_value')) ? $self->{config}->{max_scale_value} : $max_value;
+  $self->{calc}->{scale_range} = $self->{calc}->{max_scale_value} - $self->{calc}->{min_scale_value};
+  
+  my ($range,$division,$precision);
+  
+  if ($self->_is_valid_config('scale_divisions')) {
+    $division = $self->{config}->{scale_divisions};
 
-        if ($division >= 1) {
-            $precision = 0;   
-        }
-        else {
-            $precision = length($division) - 2;
-        }            
+    if ($division >= 1) {
+      $precision = 0;   
     }
     else {
-        # Find divisions, format and range
-        ($range,$division,$precision) = $self->_range_calc($self->{calc}->{scale_range});
-
-        # If a max value hasn't been set we can set a revised range and max value
-        if (! $self->_is_valid_config('max_scale_value')) {
-            $self->{calc}->{max_scale_value} = $self->{calc}->{min_scale_value} + $range;    
-            $self->{calc}->{scale_range} = $self->{calc}->{max_scale_value} - $self->{calc}->{min_scale_value};
-        }
+      $precision = length($division) - 2;
     }
-    $self->{calc}->{scale_division} = $division;    
-    
-    $self->{calc}->{y_label_format} = ($self->_is_valid_config('y_label_format')) ? $self->{config}->{y_label_format} : "%.${precision}f";
-    $self->{calc}->{data_value_format} = ($self->_is_valid_config('data_value_format')) ? $self->{config}->{data_value_format} : "%.${precision}f";
+  }
+  else {
+    # Find divisions, format and range
+    ($range,$division,$precision) = $self->_range_calc($self->{calc}->{scale_range});
+
+    # If a max value hasn't been set we can set a revised range and max value
+    if (! $self->_is_valid_config('max_scale_value')) {
+      $self->{calc}->{max_scale_value} = $self->{calc}->{min_scale_value} + $range;  
+      $self->{calc}->{scale_range} = $self->{calc}->{max_scale_value} - $self->{calc}->{min_scale_value};
+    }
+  }
+  $self->{calc}->{scale_division} = $division;
+  
+  $self->{calc}->{y_label_format} = ($self->_is_valid_config('y_label_format')) ? $self->{config}->{y_label_format} : "%.${precision}f";
+  $self->{calc}->{data_value_format} = ($self->_is_valid_config('data_value_format')) ? $self->{config}->{data_value_format} : "%.${precision}f";
 }
 
 1;
 __DATA__
 <?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
-	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+  "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 
 [% USE date %]
 [% stylesheet = 'included' %]
 
 [% IF config.style_sheet && config.style_sheet != '' %]
-	<?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>	
+  <?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>  
 [% ELSE %]
-	[% stylesheet = 'excluded' %]
+  [% stylesheet = 'excluded' %]
 [% END %]
 
 <svg width="[% config.width %]" height="[% config.height %]" viewBox="0 0 [% config.width %] [% config.height %]" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -607,274 +625,119 @@ __DATA__
 <![CDATA[
 /* Copy from here for external style sheet */
 .svgBackground{
-	fill:#ffffff;
+  fill:#ffffff;
 }
 .graphBackground{
-	fill:#f0f0f0;
+  fill:#f0f0f0;
 }
 
 /* graphs titles */
 .mainTitle{
-	text-anchor: middle;
-	fill: #000000;
-	font-size: 14px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  text-anchor: middle;
+  fill: #000000;
+  font-size: 14px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 .subTitle{
-	text-anchor: middle;
-	fill: #999999;
-	font-size: 12px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  text-anchor: middle;
+  fill: #999999;
+  font-size: 12px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .axis{
-	stroke: #000000;
-	stroke-width: 1px;
+  stroke: #000000;
+  stroke-width: 1px;
 }
 
 .guideLines{
-	stroke: #666666;
-	stroke-width: 1px;
-	stroke-dasharray: 5 5;
+  stroke: #666666;
+  stroke-width: 1px;
+  stroke-dasharray: 5 5;
 }
 
 .xAxisLabels{
-	text-anchor: middle;
-	fill: #000000;
-	font-size: 12px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  text-anchor: middle;
+  fill: #000000;
+  font-size: 12px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .yAxisLabels{
-	text-anchor: end;
-	fill: #000000;
-	font-size: 12px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  text-anchor: end;
+  fill: #000000;
+  font-size: 12px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .xAxisTitle{
-	text-anchor: middle;
-	fill: #ff0000;
-	font-size: 14px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  text-anchor: middle;
+  fill: #ff0000;
+  font-size: 14px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .yAxisTitle{
-	fill: #ff0000;
-	text-anchor: middle;
-	font-size: 14px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  fill: #ff0000;
+  text-anchor: middle;
+  font-size: 14px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 
 .dataPointLabel{
-	fill: #000000;
-	text-anchor:middle;
-	font-size: 10px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  fill: #000000;
+  text-anchor:middle;
+  font-size: 10px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 .staggerGuideLine{
-	fill: none;
-	stroke: #000000;
-	stroke-width: 0.5px;	
-}
-/* default fill styles */
-.fill1{
-	fill: #cc0000;
-	fill-opacity: 0.2;
-	stroke: none;
-}
-.fill2{
-	fill: #0000cc;
-	fill-opacity: 0.2;
-	stroke: none;
-}
-.fill3{
-	fill: #00cc00;
-	fill-opacity: 0.2;
-	stroke: none;
-}
-.fill4{
-	fill: #ffcc00;
-	fill-opacity: 0.2;
-	stroke: none;
-}
-.fill5{
-	fill: #00ccff;
-	fill-opacity: 0.2;
-	stroke: none;
-}
-.fill6{
-	fill: #ff00ff;
-	fill-opacity: 0.2;
-	stroke: none;
-}
-.fill7{
-	fill: #00ffff;
-	fill-opacity: 0.2;
-	stroke: none;
-}
-.fill8{
-	fill: #ffff00;
-	fill-opacity: 0.2;
-	stroke: none;
-}
-.fill9{
-	fill: #cc6666;
-	fill-opacity: 0.2;
-	stroke: none;
-}
-.fill10{
-	fill: #663399;
-	fill-opacity: 0.2;
-	stroke: none;
-}
-.fill11{
-    fill: #339900;
-    fill-opacity: 0.2;
-    stroke: none;
-}
-.fill12{
-    fill: #9966FF;
-    fill-opacity: 0.2;
-    stroke: none;
+  fill: none;
+  stroke: #000000;
+  stroke-width: 0.5px;  
 }
 
-/* default line styles */
-.line1{
-	fill: none;
-	stroke: #ff0000;
-	stroke-width: 1px;	
-}
-.line2{
-	fill: none;
-	stroke: #0000ff;
-	stroke-width: 1px;	
-}
-.line3{
-	fill: none;
-	stroke: #00ff00;
-	stroke-width: 1px;	
-}
-.line4{
-	fill: none;
-	stroke: #ffcc00;
-	stroke-width: 1px;	
-}
-.line5{
-	fill: none;
-	stroke: #00ccff;
-	stroke-width: 1px;	
-}
-.line6{
-	fill: none;
-	stroke: #ff00ff;
-	stroke-width: 1px;	
-}
-.line7{
-	fill: none;
-	stroke: #00ffff;
-	stroke-width: 1px;	
-}
-.line8{
-	fill: none;
-	stroke: #ffff00;
-	stroke-width: 1px;	
-}
-.line9{
-	fill: none;
-	stroke: #cc6666;
-	stroke-width: 1px;	
-}
-.line10{
-	fill: none;
-	stroke: #663399;
-	stroke-width: 1px;	
-}
-.line11{
-    fill: none;
-    stroke: #339900;
-    stroke-width: 1px;  
-}
-.line12{
-    fill: none;
-    stroke: #9966FF;
-    stroke-width: 1px;  
-}
+[% FOREACH dataset = data %]
+  [% color = '' %]
+  [% IF config.random_colors %]
+    [% color = random_color() %]
+  [% ELSE %]
+    [% color = predefined_color(loop.count) %]
+  [% END %]
+   
+  .fill[% loop.count %]{
+    fill: [% color %];
+    fill-opacity: 0.2;
+    stroke: none;
+  }
 
-/* default line styles */
-.key1,.fill1{
-	fill: #ff0000;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key2,.fill2{
-	fill: #0000ff;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key3,.fill3{
-	fill: #00ff00;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key4,.fill4{
-	fill: #ffcc00;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key5,.fill5{
-	fill: #00ccff;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key6,.fill6{
-	fill: #ff00ff;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key7,.fill7{
-	fill: #00ffff;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key8,.fill8{
-	fill: #ffff00;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key9,.fill9{
-	fill: #cc6666;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key10,.fill10{
-	fill: #663399;
-	stroke: none;
-	stroke-width: 1px;	
-}
-.key11,.fill11{
-    fill: #339900;
+  .line[% loop.count %]{
+    fill: none;
+    stroke: [% color %];
+    stroke-width: 1px;
+  }
+
+  .key[% loop.count %],.fill[% loop.count %]{
+    fill: [% color %];
     stroke: none;
-    stroke-width: 1px;  
-}
-.key12,.fill12{
-    fill: #9966FF;
-    stroke: none;
-    stroke-width: 1px;  
-}
+    stroke-width: 1px;
+  }
+
+  [% LAST IF (config.random_colors == 0 && loop.count == 12) %]
+[% END %]
+
 .keyText{
-	fill: #000000;
-	text-anchor:start;
-	font-size: 10px;
-	font-family: "Arial", sans-serif;
-	font-weight: normal;
+  fill: #000000;
+  text-anchor:start;
+  font-size: 10px;
+  font-family: "Arial", sans-serif;
+  font-weight: normal;
 }
 /* End copy for external style sheet */
 ]]>
@@ -882,21 +745,23 @@ __DATA__
 </defs>
 [% END %]
 
-<!-- Script to toggle paths when their key is clicked on -->
-<script language="JavaScript">
-function togglePath( series ) {
+[% IF config.key %]
+  <!-- Script to toggle paths when their key is clicked on -->
+  <script language="JavaScript">
+  function togglePath( series ) {
     var path    = document.getElementById('groupDataSeries' + series)
     var points  = document.getElementById('groupDataLabels' + series)
     var current = path.getAttribute('opacity');
     if ( path.getAttribute('opacity') == 0 ) {
-        path.setAttribute('opacity',1)
-        points.setAttribute('opacity',1)
+      path.setAttribute('opacity',1)
+      points.setAttribute('opacity',1)
     } else {
-        path.setAttribute('opacity',0)
-        points.setAttribute('opacity',0)
+      path.setAttribute('opacity',0)
+      points.setAttribute('opacity',0)
     }
-}
-</script>
+  }
+  </script>
+[% END %]
 
 <!-- svg bg -->
 <rect x="0" y="0" width="[% config.width %]" height="[% config.height %]" class="svgBackground"/>
@@ -918,19 +783,19 @@ function togglePath( series ) {
 <!-- CALC HEIGHT AND Y COORD DIMENSIONS -->
 [%# reduce height of graph area if there is labelling on x axis %]
 [% IF config.show_x_labels %][% h = h - 20 %][% END %]
-	
+  
 [%# reduce height if x labels are rotated %]
 [% x_label_allowance = 0 %]
 [% IF config.rotate_x_labels %]
-    [% x_label_allowance = (calc.max_x_label_length * char_width) - 20 %]
-    [% h = h - x_label_allowance %]
+  [% x_label_allowance = (calc.max_x_label_length * char_width) - 20 %]
+  [% h = h - x_label_allowance %]
 [% END %]
 
 [%# stagger x labels if overlapping occurs %]
 [% stagger = 0 %]
 [% IF config.show_x_labels && config.stagger_x_labels %]
-    [% stagger = 17 %]
-    [% h = h - stagger %]
+  [% stagger = 17 %]
+  [% h = h - stagger %]
 [% END %]
 
 [% IF config.show_x_title %][% h = h - 25 - stagger %][% END %]
@@ -946,13 +811,14 @@ function togglePath( series ) {
 [% key_box_size = 12 %]
 [% key_padding = 5 %]
 
-[% IF config.key && config.key_position == 'right' %][% w = w - (calc.max_key_size * (char_width - 1)) - (key_box_size * 3 ) %]
+[% IF config.key && config.key_position == 'right' %]
+  [% w = w - (calc.max_key_size * (char_width - 1)) - (key_box_size * 3 ) %]
 [% ELSIF config.key && config.key_position == 'bottom' %]
-    [% IF data.size < 4 %]
-        [% h = h - ((data.size + 1) * (key_box_size + key_padding))%]
-    [% ELSE %]
-        [% h = h - (4 * (key_box_size + key_padding))%]
-    [% END %]        
+  [% IF data.size < 4 %]
+    [% h = h - ((data.size + 1) * (key_box_size + key_padding))%]
+  [% ELSE %]
+    [% h = h - (4 * (key_box_size + key_padding))%]
+  [% END %]
 [% END %]
 
 <!-- min_scale_value [% calc.min_scale_value %] max_scale_value [% calc.max_scale_value %] -->
@@ -972,35 +838,35 @@ function togglePath( series ) {
 [% space_b4_y_axis = (date.format(calc.min_timescale_value,config.x_label_format).length / 2) * char_width %]
 
 [% IF config.show_x_labels %]
-    [% IF config.key && config.key_position == 'right' %]
-        [% w = w - space_b4_y_axis %]
-    [% ELSE %]
-        <!-- pad both sides -->
-        [% w = w - (space_b4_y_axis * 2) %]
-    [% END %]
-    [% x = x + space_b4_y_axis %]
+  [% IF config.key && config.key_position == 'right' %]
+    [% w = w - space_b4_y_axis %]
+  [% ELSE %]
+    <!-- pad both sides -->
+    [% w = w - (space_b4_y_axis * 2) %]
+  [% END %]
+  [% x = x + space_b4_y_axis %]
 [% ELSIF config.show_data_values %]
-    [% w = w - (max_value_length_px * 2) %]
-    [% x = x + max_value_length_px %]
+  [% w = w - (max_value_length_px * 2) %]
+  [% x = x + max_value_length_px %]
 [% END %]
 
 [% IF config.show_y_labels && space_b4_y_axis < max_value_length_px %]
-    <!-- allow slightly more padding if small labels -->
-    [% IF max_value_length < 2 %]
-        [% w = w - (max_value_length * (char_width * 2)) %]
-        [% x = x + (max_value_length * (char_width * 2)) %]
-    [% ELSE %]
-        [% w = w - max_value_length_px %]
-        [% x = x + max_value_length_px %]
-    [% END %]
-[% ELSIF config.show_y_labels && !config.show_x_labels %]
+  <!-- allow slightly more padding if small labels -->
+  [% IF max_value_length < 2 %]
+    [% w = w - (max_value_length * (char_width * 2)) %]
+    [% x = x + (max_value_length * (char_width * 2)) %]
+  [% ELSE %]
     [% w = w - max_value_length_px %]
     [% x = x + max_value_length_px %]
+  [% END %]
+[% ELSIF config.show_y_labels && !config.show_x_labels %]
+  [% w = w - max_value_length_px %]
+  [% x = x + max_value_length_px %]
 [% END %]
 
 [% IF config.show_y_title %]
-    [% w = w - 25 %]
-    [% x = x + 25 %]
+  [% w = w - 25 %]
+  [% x = x + 25 %]
 [% END %]
 
 <!-- min_timescale_value [% calc.min_timescale_value %] max_timescale_value [% calc.max_timescale_value %] -->
@@ -1008,20 +874,20 @@ function togglePath( series ) {
 [%# Missing data spans %]
 [% max_time_span = 0 %]
 [% IF (matches = config.max_time_span.match('(\d+) ?(\w+)?')) %]
-    [% max_time_span = matches.0 %]
-    [% IF (matches.1) %]
-        [% max_time_span_units = matches.1 %]
-    [% ELSE %]
-        [% max_time_span_units = 'days' %]
-    [% END %] 
-    <!-- max_time_span [% max_time_span %] max_time_span_units [% max_time_span_units %]-->
+  [% max_time_span = matches.0 %]
+  [% IF (matches.1) %]
+    [% max_time_span_units = matches.1 %]
+  [% ELSE %]
+    [% max_time_span_units = 'days' %]
+  [% END %] 
+  <!-- max_time_span [% max_time_span %] max_time_span_units [% max_time_span_units %]-->
 [% END %]
 
 <!-- //////////////////////////////  BUILD GRAPH AREA ////////////////////////////// -->
 [%# graph bg and clipping regions for lines/fill and clip extended to included data labels %]
 <rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]" class="graphBackground"/>
 <clipPath id="clipGraphArea">
-    <rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]"/>
+  <rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]"/>
 </clipPath> 
 
 <!-- axis -->
@@ -1036,47 +902,47 @@ function togglePath( series ) {
 
 <!-- x axis labels -->
 [% IF config.show_x_labels %]
-    <text x="[% x %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.min_timescale_value,config.x_label_format) %]</text>
-    [% last_label = date.format(calc.min_timescale_value,config.x_label_format) %]
-    [% IF config.timescale_divisions %]
-        [% IF (matches = config.timescale_divisions.match('(\d+) ?(\w+)?')) %]
-            [% timescale_division = matches.0 %]
-            [% IF (matches.1) %]
-                [% timescale_division_units = matches.1 %]
-            [% ELSE %]
-                [% timescale_division_units = 'days' %]
-            [% END %] 
-            <!-- timescale_division [% timescale_division %] timescale_division_units [% timescale_division_units %]-->
-            [% x_value = config.dateadd(calc.min_timescale_value,timescale_division,timescale_division_units) %]
-            [% count = 0 %]
-            [% WHILE ((x_value > calc.min_timescale_value) && ((x_value < calc.max_timescale_value))) %]
-                [% xpos = (dw * (x_value - calc.min_timescale_value)) + x %]
-                [% IF (config.stagger_x_labels && ((count % 2) == 0)) %]
-                    <path d="M[% xpos %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
-                    <text x="[% xpos %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(x_value,config.x_label_format) %]</text>        
-                [% ELSE %]
-                    <text x="[% xpos %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(x_value,config.x_label_format) %]</text>        
-                [% END %]
-                [% last_label = date.format(x_value,config.x_label_format) %]
-                [% x_value = config.dateadd(x_value,timescale_division,timescale_division_units) %]
-                [% count = count + 1 %]
-                [% LAST IF (count >= 999) %]
-            [% END %]            
-        [% END %]    
-    [% END %]
-    [% IF date.format(calc.max_timescale_value,config.x_label_format) != last_label %]
+  <text x="[% x %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.min_timescale_value,config.x_label_format) %]</text>
+  [% last_label = date.format(calc.min_timescale_value,config.x_label_format) %]
+  [% IF config.timescale_divisions %]
+    [% IF (matches = config.timescale_divisions.match('(\d+) ?(\w+)?')) %]
+      [% timescale_division = matches.0 %]
+      [% IF (matches.1) %]
+        [% timescale_division_units = matches.1 %]
+      [% ELSE %]
+        [% timescale_division_units = 'days' %]
+      [% END %] 
+      <!-- timescale_division [% timescale_division %] timescale_division_units [% timescale_division_units %]-->
+      [% x_value = config.dateadd(calc.min_timescale_value,timescale_division,timescale_division_units) %]
+      [% count = 0 %]
+      [% WHILE ((x_value > calc.min_timescale_value) && ((x_value < calc.max_timescale_value))) %]
+        [% xpos = (dw * (x_value - calc.min_timescale_value)) + x %]
         [% IF (config.stagger_x_labels && ((count % 2) == 0)) %]
-        <path d="M[% x + w %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
-        <text x="[% x + w %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.max_timescale_value,config.x_label_format) %]</text>        
+          <path d="M[% xpos %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
+          <text x="[% xpos %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(x_value,config.x_label_format) %]</text>
         [% ELSE %]
-        <text x="[% x + w %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.max_timescale_value,config.x_label_format) %]</text>
+          <text x="[% xpos %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(x_value,config.x_label_format) %]</text>
         [% END %]
+        [% last_label = date.format(x_value,config.x_label_format) %]
+        [% x_value = config.dateadd(x_value,timescale_division,timescale_division_units) %]
+        [% count = count + 1 %]
+        [% LAST IF (count >= 999) %]
+      [% END %]
     [% END %]
+  [% END %]
+  [% IF date.format(calc.max_timescale_value,config.x_label_format) != last_label %]
+    [% IF (config.stagger_x_labels && ((count % 2) == 0)) %]
+    <path d="M[% x + w %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
+    <text x="[% x + w %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.max_timescale_value,config.x_label_format) %]</text>
+    [% ELSE %]
+    <text x="[% x + w %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.max_timescale_value,config.x_label_format) %]</text>
+    [% END %]
+  [% END %]
 [% END %]
 
 <!-- y axis scaling -->
 [%# how much padding between largest bar and top of graph %]
-[% top_pad = h / 40 %]    
+[% top_pad = h / 40 %]
 
 [% dy = calc.scale_range %]
 [% dh = (h - top_pad) / dy %]
@@ -1085,21 +951,21 @@ function togglePath( series ) {
 [% count = 0 %]
 [% y_value = calc.min_scale_value %]
 [% IF config.show_y_labels %]
-    [% WHILE ((y_value == calc.min_scale_value) || (y_value == calc.max_scale_value) || ((y_value > calc.min_scale_value) && (y_value < calc.max_scale_value))) %]
-        [%- next_label = y_value FILTER format(calc.y_label_format) -%]
+  [% WHILE ((y_value == calc.min_scale_value) || (y_value == calc.max_scale_value) || ((y_value > calc.min_scale_value) && (y_value < calc.max_scale_value))) %]
+    [%- next_label = y_value FILTER format(calc.y_label_format) -%]
 		[%- IF count == 0 -%]
 			[%# no stroke for first line %]
-            <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>
+      <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>
 		[%- ELSE -%]
-            [% IF next_label != last_label %]
-                <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>
-                <path d="M[% x %] [% base_line - (dh * (y_value - calc.min_scale_value)) %] h[% w %]" class="guideLines"/>
-            [% END %]    
+      [% IF next_label != last_label %]
+        <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>
+        <path d="M[% x %] [% base_line - (dh * (y_value - calc.min_scale_value)) %] h[% w %]" class="guideLines"/>
+      [% END %]  
 		[%- END -%]
-        [%- y_value = y_value + calc.scale_division -%]
-        [%- last_label = next_label -%]
+    [%- y_value = y_value + calc.scale_division -%]
+    [%- last_label = next_label -%]
 		[%- count = count + 1 -%]
-        [%- LAST IF (count >= 999) -%]
+    [%- LAST IF (count >= 999) -%]
 	[% END %]
 [% END %]
 
@@ -1111,90 +977,90 @@ function togglePath( series ) {
 		[% ELSE %]
 			[% y_xtitle = 35 %]
 		[% END %]
-        <text x="[% (w / 2) + x %]" y="[% h + y + y_xtitle + stagger + x_label_allowance %]" class="xAxisTitle">[% config.x_title %]</text>
+    <text x="[% (w / 2) + x %]" y="[% h + y + y_xtitle + stagger + x_label_allowance %]" class="xAxisTitle">[% config.x_title %]</text>
 	[% END %]	
 
 <!-- y axis title -->
 	[% IF config.show_y_title %]
-            <text x="10" y="[% (h / 2) + y %]" transform="rotate(270,10,[% (h / 2) + y %])" class="yAxisTitle">[% config.y_title %]</text>
+      <text x="10" y="[% (h / 2) + y %]" transform="rotate(270,10,[% (h / 2) + y %])" class="yAxisTitle">[% config.y_title %]</text>
 	[% END %]
 
 <!-- //////////////////////////////  SHOW DATA ////////////////////////////// -->
 [% line = data.size %]
 <g id="groupData" class="data">
 [% FOREACH dataset = data.reverse %]
-    <g id="groupDataSeries[% line %]" class="dataSeries[% line %]" clip-path="url(#clipGraphArea)">
-    [% IF config.area_fill %]
-        [%# create alternate fill first (so line can overwrite if necessary) %]
-        [% xcount = 0 %]
-        [% FOREACH pair = dataset.pairs %]
-            [%- IF ((pair.0 >= calc.min_timescale_value) && (pair.0 <= calc.max_timescale_value)) -%]
-                [%- IF xcount == 0 -%][% lasttime = pair.0 %]<path d="M[% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line %][%- END -%]
-                [%- IF ((max_time_span) && (pair.0 > config.dateadd(lasttime,max_time_span,max_time_span_units))) -%]
-                    V [% base_line %] H [% (dw * (pair.0 - calc.min_timescale_value)) + x %] V [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
-                [%- ELSE -%]
-                    L [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
-                [%- END -%]    
-                [%- lasttime = pair.0 -%][%- xcount = xcount + 1 -%]
-            [%- END -%]
-        [% END %]
-        [% IF xcount > 0 %] V [% base_line %] Z" class="fill[% line %]"/> [% END %]
-    [% END %]
-
-    <!--- create line [% dataset.title %]-->
+  <g id="groupDataSeries[% line %]" class="dataSeries[% line %]" clip-path="url(#clipGraphArea)">
+  [% IF config.area_fill %]
+    [%# create alternate fill first (so line can overwrite if necessary) %]
     [% xcount = 0 %]
     [% FOREACH pair = dataset.pairs %]
-        [% IF ((pair.0 >= calc.min_timescale_value) && (pair.0 <= calc.max_timescale_value)) %]
-            [%- IF xcount == 0 -%][%- lasttime = pair.0 -%]<path d="M
-                [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
-            [%- ELSE -%]
-                [%- IF ((max_time_span) && (pair.0 > config.dateadd(lasttime,max_time_span,max_time_span_units))) -%]
-                    M [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
-                [%- ELSE -%]
-                    L [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
-                [%- END -%]        
-            [%- END -%]
-            [%- lasttime = pair.0 -%][%- xcount = xcount + 1 -%]
-        [%- END -%]   
+      [%- IF ((pair.0 >= calc.min_timescale_value) && (pair.0 <= calc.max_timescale_value)) -%]
+        [%- IF xcount == 0 -%][% lasttime = pair.0 %]<path d="M[% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line %][%- END -%]
+        [%- IF ((max_time_span) && (pair.0 > config.dateadd(lasttime,max_time_span,max_time_span_units))) -%]
+          V [% base_line %] H [% (dw * (pair.0 - calc.min_timescale_value)) + x %] V [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
+        [%- ELSE -%]
+          L [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
+        [%- END -%]  
+        [%- lasttime = pair.0 -%][%- xcount = xcount + 1 -%]
+      [%- END -%]
     [% END %]
-    [% IF xcount > 0 %] " class="line[% line %]"/> [% END %]
-    </g>
-    <g id="groupDataLabels[% line %]" class="dataLabels[% line %]">
-    [% IF config.show_data_points || config.show_data_values %]
-        [% FOREACH pair = dataset.pairs %]
-            [% IF ((pair.0 >= calc.min_timescale_value) && (pair.0 <= calc.max_timescale_value)) %]
-                <g class="dataLabel[% line %]" [% IF config.rollover_values %] opacity="0" [% END %]>
-                [% IF config.show_data_points %]
-                    <circle cx="[% (dw * (pair.0 - calc.min_timescale_value)) + x %]" cy="[% base_line - (dh * (pair.1 - calc.min_scale_value)) %]" r="2.5" class="fill[% line %]"
-                    [% IF config.rollover_values %]
-                        onmouseover="evt.target.parentNode.setAttribute('opacity',1);"
-                        onmouseout="evt.target.parentNode.setAttribute('opacity',0);"
-                    [% END %]
-                    [% IF pair.3.defined %]
-                        onclick="[% pair.3 %]"
-                    [% END %]
-                    ></circle>
-                [% END %]
-                [% IF config.show_data_values %]
-                    [%# datavalue shown %]
-                    [% IF (pair.2.defined) && (pair.2 != '') %][% point_label = pair.2 %][% ELSE %][% point_label = pair.1 FILTER format(calc.data_value_format) %][% END %]
-                    <text x="[% (dw * (pair.0 - calc.min_timescale_value)) + x %]" y="[% base_line - (dh * (pair.1 - calc.min_scale_value)) - 6 %]" class="dataPointLabel[% line %]"
-                    [% IF config.rollover_values %]
-                        onmouseover="evt.target.parentNode.setAttribute('opacity',1);"
-                        onmouseout="evt.target.parentNode.setAttribute('opacity',0);"
-                    [% END %]
-                    >[% point_label %]</text>
-                [% END %]
-                </g>
-            [% END %]    
+    [% IF xcount > 0 %] V [% base_line %] Z" class="fill[% line %]"/> [% END %]
+  [% END %]
+
+  <!--- create line [% dataset.title %]-->
+  [% xcount = 0 %]
+  [% FOREACH pair = dataset.pairs %]
+    [% IF ((pair.0 >= calc.min_timescale_value) && (pair.0 <= calc.max_timescale_value)) %]
+      [%- IF xcount == 0 -%][%- lasttime = pair.0 -%]<path d="M
+        [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
+      [%- ELSE -%]
+        [%- IF ((max_time_span) && (pair.0 > config.dateadd(lasttime,max_time_span,max_time_span_units))) -%]
+          M [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
+        [%- ELSE -%]
+          L [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
+        [%- END -%]    
+      [%- END -%]
+      [%- lasttime = pair.0 -%][%- xcount = xcount + 1 -%]
+    [%- END -%]   
+  [% END %]
+  [% IF xcount > 0 %] " class="line[% line %]"/> [% END %]
+  </g>
+  <g id="groupDataLabels[% line %]" class="dataLabels[% line %]">
+  [% IF config.show_data_points || config.show_data_values %]
+    [% FOREACH pair = dataset.pairs %]
+      [% IF ((pair.0 >= calc.min_timescale_value) && (pair.0 <= calc.max_timescale_value)) %]
+        <g class="dataLabel[% line %]" [% IF config.rollover_values %] opacity="0" [% END %]>
+        [% IF config.show_data_points %]
+          <circle cx="[% (dw * (pair.0 - calc.min_timescale_value)) + x %]" cy="[% base_line - (dh * (pair.1 - calc.min_scale_value)) %]" r="2.5" class="fill[% line %]"
+          [% IF config.rollover_values %]
+            onmouseover="evt.target.parentNode.setAttribute('opacity',1);"
+            onmouseout="evt.target.parentNode.setAttribute('opacity',0);"
+          [% END %]
+          [% IF pair.3.defined %]
+            onclick="[% pair.3 %]"
+          [% END %]
+          ></circle>
         [% END %]
+        [% IF config.show_data_values %]
+          [%# datavalue shown %]
+          [% IF (pair.2.defined) && (pair.2 != '') %][% point_label = pair.2 %][% ELSE %][% point_label = pair.1 FILTER format(calc.data_value_format) %][% END %]
+          <text x="[% (dw * (pair.0 - calc.min_timescale_value)) + x %]" y="[% base_line - (dh * (pair.1 - calc.min_scale_value)) - 6 %]" class="dataPointLabel[% line %]"
+          [% IF config.rollover_values %]
+            onmouseover="evt.target.parentNode.setAttribute('opacity',1);"
+            onmouseout="evt.target.parentNode.setAttribute('opacity',0);"
+          [% END %]
+          >[% point_label %]</text>
+        [% END %]
+        </g>
+      [% END %]  
     [% END %]
-    </g>
-    [% line = line - 1 %]
+  [% END %]
+  </g>
+  [% line = line - 1 %]
 [% END %]
 </g>
 
-<!-- //////////////////////////////// KEY /////// ////////////////////////// -->
+<!-- //////////////////////////////////// KEY ////////////////////////////// -->
 [% key_count = 1 %]
 [% IF config.key && config.key_position == 'right' %]
 	[% FOREACH dataset = data %]
@@ -1205,20 +1071,20 @@ function togglePath( series ) {
 [% ELSIF config.key && config.key_position == 'bottom' %]
 	[%# calc y position of start of key %]
 	[% y_key = base_line %]
-    [%# consider x title %]
+  [%# consider x title %]
 	[% IF config.show_x_title %][% y_key = base_line + 25 %][% END %]
-    [%# consider x label rotation and stagger %]
-    [% IF config.rotate_x_labels && config.show_x_labels %]
-        [% y_key = y_key + x_label_allowance %]
-    [% ELSIF config.show_x_labels && stagger < 1 %]
-        [% y_key = y_key + 20 %]
-    [% END %]
-    
+  [%# consider x label rotation and stagger %]
+  [% IF config.rotate_x_labels && config.show_x_labels %]
+    [% y_key = y_key + x_label_allowance %]
+  [% ELSIF config.show_x_labels && stagger < 1 %]
+    [% y_key = y_key + 20 %]
+  [% END %]
+  
 	[% y_key_start = y_key %]
 	[% x_key = x %]
 	[% FOREACH dataset = data %]
 		[% IF key_count == 4 || key_count == 7 || key_count == 10 %]
-		    [%# wrap key every 3 entries %]
+		  [%# wrap key every 3 entries %]
 			[% x_key = x_key + 200 %]
 			[% y_key = y_key - (key_box_size * 4) - 2 %]
 		[% END %]
@@ -1232,16 +1098,16 @@ function togglePath( series ) {
 <!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->
 <!-- main graph title -->
 [% IF config.show_graph_title %]
-    <text x="[% config.width / 2 %]" y="15" class="mainTitle">[% config.graph_title %]</text>
+  <text x="[% config.width / 2 %]" y="15" class="mainTitle">[% config.graph_title %]</text>
 [% END %]
 
 <!-- graph sub title -->
 [% IF config.show_graph_subtitle %]
-    [% IF config.show_graph_title %]
-        [% y_subtitle = 30 %]
-    [% ELSE %]
-        [% y_subtitle = 15 %]
-    [% END %]
-    <text x="[% config.width / 2 %]" y="[% y_subtitle %]" class="subTitle">[% config.graph_subtitle %]</text>
+  [% IF config.show_graph_title %]
+    [% y_subtitle = 30 %]
+  [% ELSE %]
+    [% y_subtitle = 15 %]
+  [% END %]
+  <text x="[% config.width / 2 %]" y="[% y_subtitle %]" class="subTitle">[% config.graph_subtitle %]</text>
 [% END %]
 </svg>
