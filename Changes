@@ -1,5 +1,8 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.14 - Mon Apr 05 2010
+  - Fixed some unit tests and the URL of the repository
+
 0.13 - Sat Apr 03 2010
   - Revised TT templates warnings due to undef values (bug # 44115)
   - Fixed the "used only once" warnings (bug # 43854, thank you Ia Hun)

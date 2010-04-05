@@ -20,6 +20,10 @@ This module requires these other modules and libraries:
   HTTP::Date >= 0.1
   Template >= 2.08
 
+Optionally, SVG::TT::Graph can use the following modules:
+  Compress::Zlib
+  XML::Tidy
+
 CONVERTING TO PNG
 
 Currently if you want to convert the SVG to PNG
@@ -30,7 +34,7 @@ perl converters, they're just not there yet.
 DEVELOPMENT
 
 The repository for the development of SVG::TT::Graph is:
-   git://github.com/rafl/moosex-declare.git
+   git://github.com/ranguard/svg-tt-graph.git
 
 COPYRIGHT AND LICENCE
 

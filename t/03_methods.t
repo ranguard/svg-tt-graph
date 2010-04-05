@@ -22,10 +22,10 @@ eval {
 };
 ok($@, 'Got error for method that is not in config');
 
-ok($graph->compress(),'default compress');
+ok(defined $graph->compress(),'default compress');
 is($graph->compress(0),0,'setting compress');
 is($graph->compress(1),1);
 
-ok($graph->tidy(),'default tidy');
+ok(defined $graph->tidy(),'default tidy');
 is($graph->tidy(0),0,'setting tidy');
 is($graph->tidy(1),1);

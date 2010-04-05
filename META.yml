@@ -28,4 +28,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/ranguard/svg-tt-graph.git
-version: 0.13
+version: 0.14
