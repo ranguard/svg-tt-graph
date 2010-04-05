@@ -1,13 +1,31 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         SVG-TT-Graph
-version:      0.09
-version_from: lib/SVG/TT/Graph.pm
-installdirs:  site
-requires:
-    DateTime:                      0.1
-    HTTP::Date:                    0.1
-    Template:                      2.08
-
+---
+abstract: 'Base object for generating SVG Graphs'
+author:
+  - 'Leo Lapworth (LLAP@cuckoo.org) and Stephen Morgan (TT and SVG)'
+build_requires:
+  ExtUtils::MakeMaker: 6.42
+  Test::More: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+generated_by: 'Module::Install version 0.93'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: SVG-TT-Graph
+no_index:
+  directory:
+    - inc
+    - t
+recommends:
+  Compress::Zlib: 0
+  XML::Tidy: 0
+requires:
+  DateTime: 0.1
+  HTTP::Date: 0.1
+  Template: 2.08
+resources:
+  license: http://dev.perl.org/licenses/
+  repository: git://github.com/ranguard/svg-tt-graph.git
+version: 0.14

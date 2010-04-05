@@ -16,15 +16,25 @@ To install this module type the following:
 DEPENDENCIES
 
 This module requires these other modules and libraries:
+  DateTime >= 0.1
+  HTTP::Date >= 0.1
+  Template >= 2.08
 
-  Template 2.08 +
-  
+Optionally, SVG::TT::Graph can use the following modules:
+  Compress::Zlib
+  XML::Tidy
+
 CONVERTING TO PNG
 
 Currently if you want to convert the SVG to PNG
 I'd suggest using Batik from http://xml.apache.org/,
 it is Java, I know there is work going on for the
 perl converters, they're just not there yet.
+
+DEVELOPMENT
+
+The repository for the development of SVG::TT::Graph is:
+   git://github.com/ranguard/svg-tt-graph.git
 
 COPYRIGHT AND LICENCE
 

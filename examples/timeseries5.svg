@@ -1,1449 +1,0 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
-
-	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-
-
-
-
-
-
-
-
-	
-
-
-
-<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-
-
-
-<!-- \\\\\\\\\\\\\\\\\\\\\\\\\\\\  -->
-
-<!-- Created with SVG::TT::Graph   -->
-
-<!-- Dave Meibusch                 -->
-
-<!-- ////////////////////////////  -->
-
-
-
-
-
-<defs>
-
-<style type="text/css">
-
-<![CDATA[
-
-/* Copy from here for external style sheet */
-
-.svgBackground{
-
-	fill:#ffffff;
-
-}
-
-.graphBackground{
-
-	fill:#f0f0f0;
-
-}
-
-
-
-/* graphs titles */
-
-.mainTitle{
-
-	text-anchor: middle;
-
-	fill: #000000;
-
-	font-size: 14px;
-
-	font-family: "Arial", sans-serif;
-
-	font-weight: normal;
-
-}
-
-.subTitle{
-
-	text-anchor: middle;
-
-	fill: #999999;
-
-	font-size: 12px;
-
-	font-family: "Arial", sans-serif;
-
-	font-weight: normal;
-
-}
-
-
-
-.axis{
-
-	stroke: #000000;
-
-	stroke-width: 1px;
-
-}
-
-
-
-.guideLines{
-
-	stroke: #666666;
-
-	stroke-width: 1px;
-
-	stroke-dasharray: 5 5;
-
-}
-
-
-
-.xAxisLabels{
-
-	text-anchor: middle;
-
-	fill: #000000;
-
-	font-size: 12px;
-
-	font-family: "Arial", sans-serif;
-
-	font-weight: normal;
-
-}
-
-
-
-.yAxisLabels{
-
-	text-anchor: end;
-
-	fill: #000000;
-
-	font-size: 12px;
-
-	font-family: "Arial", sans-serif;
-
-	font-weight: normal;
-
-}
-
-
-
-.xAxisTitle{
-
-	text-anchor: middle;
-
-	fill: #ff0000;
-
-	font-size: 14px;
-
-	font-family: "Arial", sans-serif;
-
-	font-weight: normal;
-
-}
-
-
-
-.yAxisTitle{
-
-	fill: #ff0000;
-
-	text-anchor: middle;
-
-	font-size: 14px;
-
-	font-family: "Arial", sans-serif;
-
-	font-weight: normal;
-
-}
-
-
-
-.dataPointLabel{
-
-	fill: #000000;
-
-	text-anchor:middle;
-
-	font-size: 10px;
-
-	font-family: "Arial", sans-serif;
-
-	font-weight: normal;
-
-}
-
-.staggerGuideLine{
-
-	fill: none;
-
-	stroke: #000000;
-
-	stroke-width: 0.5px;	
-
-}
-
-/* default fill styles */
-
-.fill1{
-
-	fill: #cc0000;
-
-	fill-opacity: 0.2;
-
-	stroke: none;
-
-}
-
-.fill2{
-
-	fill: #0000cc;
-
-	fill-opacity: 0.2;
-
-	stroke: none;
-
-}
-
-.fill3{
-
-	fill: #00cc00;
-
-	fill-opacity: 0.2;
-
-	stroke: none;
-
-}
-
-.fill4{
-
-	fill: #ffcc00;
-
-	fill-opacity: 0.2;
-
-	stroke: none;
-
-}
-
-.fill5{
-
-	fill: #00ccff;
-
-	fill-opacity: 0.2;
-
-	stroke: none;
-
-}
-
-.fill6{
-
-	fill: #ff00ff;
-
-	fill-opacity: 0.2;
-
-	stroke: none;
-
-}
-
-.fill7{
-
-	fill: #00ffff;
-
-	fill-opacity: 0.2;
-
-	stroke: none;
-
-}
-
-.fill8{
-
-	fill: #ffff00;
-
-	fill-opacity: 0.2;
-
-	stroke: none;
-
-}
-
-.fill9{
-
-	fill: #cc6666;
-
-	fill-opacity: 0.2;
-
-	stroke: none;
-
-}
-
-.fill10{
-
-	fill: #663399;
-
-	fill-opacity: 0.2;
-
-	stroke: none;
-
-}
-
-.fill11{
-
-    fill: #339900;
-
-    fill-opacity: 0.2;
-
-    stroke: none;
-
-}
-
-.fill12{
-
-    fill: #9966FF;
-
-    fill-opacity: 0.2;
-
-    stroke: none;
-
-}
-
-
-
-/* default line styles */
-
-.line1{
-
-	fill: none;
-
-	stroke: #ff0000;
-
-	stroke-width: 1px;	
-
-}
-
-.line2{
-
-	fill: none;
-
-	stroke: #0000ff;
-
-	stroke-width: 1px;	
-
-}
-
-.line3{
-
-	fill: none;
-
-	stroke: #00ff00;
-
-	stroke-width: 1px;	
-
-}
-
-.line4{
-
-	fill: none;
-
-	stroke: #ffcc00;
-
-	stroke-width: 1px;	
-
-}
-
-.line5{
-
-	fill: none;
-
-	stroke: #00ccff;
-
-	stroke-width: 1px;	
-
-}
-
-.line6{
-
-	fill: none;
-
-	stroke: #ff00ff;
-
-	stroke-width: 1px;	
-
-}
-
-.line7{
-
-	fill: none;
-
-	stroke: #00ffff;
-
-	stroke-width: 1px;	
-
-}
-
-.line8{
-
-	fill: none;
-
-	stroke: #ffff00;
-
-	stroke-width: 1px;	
-
-}
-
-.line9{
-
-	fill: none;
-
-	stroke: #cc6666;
-
-	stroke-width: 1px;	
-
-}
-
-.line10{
-
-	fill: none;
-
-	stroke: #663399;
-
-	stroke-width: 1px;	
-
-}
-
-.line11{
-
-    fill: none;
-
-    stroke: #339900;
-
-    stroke-width: 1px;  
-
-}
-
-.line12{
-
-    fill: none;
-
-    stroke: #9966FF;
-
-    stroke-width: 1px;  
-
-}
-
-
-
-/* default line styles */
-
-.key1,.fill1{
-
-	fill: #ff0000;
-
-	stroke: none;
-
-	stroke-width: 1px;	
-
-}
-
-.key2,.fill2{
-
-	fill: #0000ff;
-
-	stroke: none;
-
-	stroke-width: 1px;	
-
-}
-
-.key3,.fill3{
-
-	fill: #00ff00;
-
-	stroke: none;
-
-	stroke-width: 1px;	
-
-}
-
-.key4,.fill4{
-
-	fill: #ffcc00;
-
-	stroke: none;
-
-	stroke-width: 1px;	
-
-}
-
-.key5,.fill5{
-
-	fill: #00ccff;
-
-	stroke: none;
-
-	stroke-width: 1px;	
-
-}
-
-.key6,.fill6{
-
-	fill: #ff00ff;
-
-	stroke: none;
-
-	stroke-width: 1px;	
-
-}
-
-.key7,.fill7{
-
-	fill: #00ffff;
-
-	stroke: none;
-
-	stroke-width: 1px;	
-
-}
-
-.key8,.fill8{
-
-	fill: #ffff00;
-
-	stroke: none;
-
-	stroke-width: 1px;	
-
-}
-
-.key9,.fill9{
-
-	fill: #cc6666;
-
-	stroke: none;
-
-	stroke-width: 1px;	
-
-}
-
-.key10,.fill10{
-
-	fill: #663399;
-
-	stroke: none;
-
-	stroke-width: 1px;	
-
-}
-
-.key11,.fill11{
-
-    fill: #339900;
-
-    stroke: none;
-
-    stroke-width: 1px;  
-
-}
-
-.key12,.fill12{
-
-    fill: #9966FF;
-
-    stroke: none;
-
-    stroke-width: 1px;  
-
-}
-
-.keyText{
-
-	fill: #000000;
-
-	text-anchor:start;
-
-	font-size: 10px;
-
-	font-family: "Arial", sans-serif;
-
-	font-weight: normal;
-
-}
-
-/* End copy for external style sheet */
-
-]]>
-
-</style>
-
-</defs>
-
-
-<!-- svg bg -->
-
-<rect x="0" y="0" width="500" height="500" class="svgBackground"/>
-
-
-
-<!-- ///////////////// CALCULATE GRAPH AREA AND BOUNDARIES //////////////// -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- min_value 5 max_value 95 min_time 1062399600 max_time 1063134000 -->
-
-
-
-<!-- CALC HEIGHT AND Y COORD DIMENSIONS -->
-
-
-
-	
-
-
-
-
-
-
-
-
-
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-        
-    
-
-
-
-<!-- min_scale_value 0 max_scale_value 100 -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-<!-- CALC WIDTH AND X COORD DIMENSIONS -->
-
-
-
-
-
-
-    
-        <!-- pad both sides -->
-
-        
-    
-    
-
-
-
-
-
-
-
-    
-    
-
-
-
-<!-- min_timescale_value 1062370800 max_timescale_value 1063134000 -->
-
-
-
-
-
-
-
-
-<!-- //////////////////////////////  BUILD GRAPH AREA ////////////////////////////// -->
-
-
-<rect x="49" y="45" width="427" height="342" class="graphBackground"/>
-
-<clipPath id="clipGraphArea">
-
-    <rect x="49" y="45" width="427" height="342"/>
-
-</clipPath> 
-
-
-
-<!-- axis -->
-
-<path d="M49 45 v342" class="axis" id="xAxis"/>
-
-<path d="M49 387 h427" class="axis" id="yAxis"/>
-
-
-
-<!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
-
-<!-- x axis scaling -->
-
-
-
-<!-- dx 763200 dw 0.000559486373165618 -->
-
-
-
-<!-- x axis labels -->
-
-
-    <text x="49" y="402"  class="xAxisLabels">Monday</text>
-
-    
-    
-        
-            
-            
-                
-            
-            <!-- timescale_division 1 timescale_division_units days-->
-
-            
-            
-            
-                
-                
-                    <path d="M97.3396226415094 387 v17" class="staggerGuideLine" />
-
-                    <text x="97.3396226415094" y="419"  class="xAxisLabels">Tuesday</text>        
-
-                
-                
-                
-                
-                
-            
-                
-                
-                    <text x="145.679245283019" y="402"  class="xAxisLabels">Wednesday</text>        
-
-                
-                
-                
-                
-                
-            
-                
-                
-                    <path d="M194.018867924528 387 v17" class="staggerGuideLine" />
-
-                    <text x="194.018867924528" y="419"  class="xAxisLabels">Thursday</text>        
-
-                
-                
-                
-                
-                
-            
-                
-                
-                    <text x="242.358490566038" y="402"  class="xAxisLabels">Friday</text>        
-
-                
-                
-                
-                
-                
-            
-                
-                
-                    <path d="M290.698113207547 387 v17" class="staggerGuideLine" />
-
-                    <text x="290.698113207547" y="419"  class="xAxisLabels">Saturday</text>        
-
-                
-                
-                
-                
-                
-            
-                
-                
-                    <text x="339.037735849057" y="402"  class="xAxisLabels">Sunday</text>        
-
-                
-                
-                
-                
-                
-            
-                
-                
-                    <path d="M387.377358490566 387 v17" class="staggerGuideLine" />
-
-                    <text x="387.377358490566" y="419"  class="xAxisLabels">Monday</text>        
-
-                
-                
-                
-                
-                
-            
-                
-                
-                    <text x="435.716981132075" y="402"  class="xAxisLabels">Tuesday</text>        
-
-                
-                
-                
-                
-                
-            
-        
-    
-    
-
-
-
-<!-- y axis scaling -->
-
-
-
-
-
-
-
-<!-- dy 100 dh 3.3345 scale_division 10 max_scale_value 100-->
-
-
-
-
-
-
-    
-			
-            <text x="44" y="387" class="yAxisLabels">0</text>
-
-	
-            
-                <text x="44" y="353.655" class="yAxisLabels">10</text>
-
-                <path d="M49 353.655 h427" class="guideLines"/>
-
-            
-	
-            
-                <text x="44" y="320.31" class="yAxisLabels">20</text>
-
-                <path d="M49 320.31 h427" class="guideLines"/>
-
-            
-	
-            
-                <text x="44" y="286.965" class="yAxisLabels">30</text>
-
-                <path d="M49 286.965 h427" class="guideLines"/>
-
-            
-	
-            
-                <text x="44" y="253.62" class="yAxisLabels">40</text>
-
-                <path d="M49 253.62 h427" class="guideLines"/>
-
-            
-	
-            
-                <text x="44" y="220.275" class="yAxisLabels">50</text>
-
-                <path d="M49 220.275 h427" class="guideLines"/>
-
-            
-	
-            
-                <text x="44" y="186.93" class="yAxisLabels">60</text>
-
-                <path d="M49 186.93 h427" class="guideLines"/>
-
-            
-	
-            
-                <text x="44" y="153.585" class="yAxisLabels">70</text>
-
-                <path d="M49 153.585 h427" class="guideLines"/>
-
-            
-	
-            
-                <text x="44" y="120.24" class="yAxisLabels">80</text>
-
-                <path d="M49 120.24 h427" class="guideLines"/>
-
-            
-	
-            
-                <text x="44" y="86.895" class="yAxisLabels">90</text>
-
-                <path d="M49 86.895 h427" class="guideLines"/>
-
-            
-	
-            
-                <text x="44" y="53.55" class="yAxisLabels">100</text>
-
-                <path d="M49 53.55 h427" class="guideLines"/>
-
-            
-	
-
-
-
-<!-- //////////////////////////////  AXIS TITLES ////////////////////////////// -->
-
-<!-- x axis title -->
-
-	
-		
-			
-		
-        <text x="262.5" y="439" class="xAxisTitle">Time</text>
-
-	
-
-
-<!-- y axis title -->
-
-	
-            <text x="10" y="216" transform="rotate(270,10,216)" class="yAxisTitle">Bogons</text>
-
-	
-
-
-<!-- //////////////////////////////  SHOW DATA ////////////////////////////// -->
-
-
-<g id="groupData" class="data">
-
-
-    <g id="groupDataSeries1" class="dataSeries1" clip-path="url(#clipGraphArea)">
-
-    
-        
-        
-        <path d="M65.1132075471698 387
-                    L 65.1132075471698 353.655
-        
-                    L 89.2830188679245 343.6515
-        
-                    L 113.452830188679 310.3065
-        
-                    L 137.622641509434 303.6375
-        
-                    L 161.792452830189 273.627
-        
-                    L 185.962264150943 163.5885
-        
-                    L 210.132075471698 200.268
-        
-                    L 234.301886792453 236.9475
-        
-                    L 258.471698113208 273.627
-        
-                    L 282.641509433962 310.3065
-        
-                    L 306.811320754717 353.655
-        
-                    L 330.981132075472 370.3275
-        
-                    L 355.150943396226 306.972
-        
-                    L 379.320754716981 343.6515
-        
-                    L 403.490566037736 90.2295
-        
-                    L 427.660377358491 86.895
-        
-                    L 451.830188679245 70.2225
-        
-                    L 476 83.5605
-        
-         V 387 Z" class="fill1"/> 
-    
-
-
-    <!--- create line CPU usage-->
-
-    
-    
-        <path d="M
-
-                65.1132075471698 353.655
-    
-        
-                    L 89.2830188679245 343.6515
-    
-        
-                    L 113.452830188679 310.3065
-    
-        
-                    L 137.622641509434 303.6375
-    
-        
-                    L 161.792452830189 273.627
-    
-        
-                    L 185.962264150943 163.5885
-    
-        
-                    L 210.132075471698 200.268
-    
-        
-                    L 234.301886792453 236.9475
-    
-        
-                    L 258.471698113208 273.627
-    
-        
-                    L 282.641509433962 310.3065
-    
-        
-                    L 306.811320754717 353.655
-    
-        
-                    L 330.981132075472 370.3275
-    
-        
-                    L 355.150943396226 306.972
-    
-        
-                    L 379.320754716981 343.6515
-    
-        
-                    L 403.490566037736 90.2295
-    
-        
-                    L 427.660377358491 86.895
-    
-        
-                    L 451.830188679245 70.2225
-    
-        
-                    L 476 83.5605
-    
-     " class="line1"/> 
-    </g>
-
-    <g id="groupDataLabels1" class="dataLabels1">
-
-    
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="65.1132075471698" y="347.655" class="dataPointLabel1"
-
-                    
-                    ><a xlink:href="http://www.w3.org">A</a></text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="89.2830188679245" y="337.6515" class="dataPointLabel1"
-
-                    
-                    >B</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="113.452830188679" y="304.3065" class="dataPointLabel1"
-
-                    
-                    >C</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="137.622641509434" y="297.6375" class="dataPointLabel1"
-
-                    
-                    >D</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="161.792452830189" y="267.627" class="dataPointLabel1"
-
-                    
-                    >E</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="185.962264150943" y="157.5885" class="dataPointLabel1"
-
-                    
-                    >F</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="210.132075471698" y="194.268" class="dataPointLabel1"
-
-                    
-                    >G</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="234.301886792453" y="230.9475" class="dataPointLabel1"
-
-                    
-                    >H</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="258.471698113208" y="267.627" class="dataPointLabel1"
-
-                    
-                    >I</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="282.641509433962" y="304.3065" class="dataPointLabel1"
-
-                    
-                    >J</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="306.811320754717" y="347.655" class="dataPointLabel1"
-
-                    
-                    >K</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="330.981132075472" y="364.3275" class="dataPointLabel1"
-
-                    
-                    >L</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="355.150943396226" y="300.972" class="dataPointLabel1"
-
-                    
-                    >M</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="379.320754716981" y="337.6515" class="dataPointLabel1"
-
-                    
-                    >N</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="403.490566037736" y="84.2295" class="dataPointLabel1"
-
-                    
-                    >O</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="427.660377358491" y="80.895" class="dataPointLabel1"
-
-                    
-                    >P</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="451.830188679245" y="64.2225" class="dataPointLabel1"
-
-                    
-                    >Q</text>
-
-                
-                </g>
-
-            
-        
-            
-                <g class="dataLabel1" >
-
-                
-                
-                    
-                    
-                    <text x="476" y="77.5605" class="dataPointLabel1"
-
-                    
-                    >R</text>
-
-                
-                </g>
-
-            
-        
-    
-    </g>
-
-    
-
-</g>
-
-
-
-<!-- //////////////////////////////// KEY /////// ////////////////////////// -->
-
-
-
-	
-	
-    
-	
-    
-    
-    
-
-	
-	
-	
-		
-		<rect x="49" y="446" width="12" height="12" class="key1"/>
-
-
-
-		<text x="66" y="458" class="keyText">CPU usage</text>
-
-		
-	
-	
-
-
-	
-
-<!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->
-
-<!-- main graph title -->
-
-
-    <text x="250" y="15" class="mainTitle">Staggered timescale.</text>
-
-
-
-
-<!-- graph sub title -->
-
-
-    
-        
-    
-    <text x="250" y="30" class="subTitle">Labelled data points</text>
-
-
-</svg>
-
