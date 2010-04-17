@@ -737,20 +737,20 @@ __DATA__
 
 [% IF config.key %]
   <!-- Script to toggle paths when their key is clicked on -->
-  <script language="JavaScript">
+  <script language="JavaScript"><![CDATA[
   function togglePath( series ) {
-    var path    = document.getElementById('groupDataSeries' + series)
-    var points  = document.getElementById('groupDataLabels' + series)
+    var path    = document.getElementById('groupDataSeries' + series);
+    var points  = document.getElementById('groupDataLabels' + series);
     var current = path.getAttribute('opacity');
     if ( path.getAttribute('opacity') == 0 ) {
-      path.setAttribute('opacity',1)
-      points.setAttribute('opacity',1)
+      path.setAttribute('opacity',1);
+      points.setAttribute('opacity',1);
     } else {
-      path.setAttribute('opacity',0)
-      points.setAttribute('opacity',0)
+      path.setAttribute('opacity',0);
+      points.setAttribute('opacity',0);
     }
   }
-  </script>
+  ]]></script>
 [% END %]
 
 <!-- svg bg -->

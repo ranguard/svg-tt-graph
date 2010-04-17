@@ -458,7 +458,7 @@ __DATA__
 
 [% IF config.rollover_values %]
   <!-- Script to toggle paths when their key is clicked on -->
-  <script language="JavaScript">
+  <script language="JavaScript"><![CDATA[
   function togglePath( series ) {
     var text = document.getElementById('n' + series);
     if ( text.getAttribute('opacity') == 0 ) {
@@ -467,7 +467,7 @@ __DATA__
       text.setAttribute('opacity',0);
     }
   }
-  </script>
+  ]]></script>
 [% END %]
 
 <!-- svg bg -->

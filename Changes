@@ -1,5 +1,8 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.16 - Sun Apr 18 2010
+  - Javascript code in the piechart and timeseries put into a CDATA tag
+
 0.15 - Sat Apr 17 2010  
   - Method get_template() moved from SVG::TT::Graph::* to SVG::TT::Graph to avoid redundancy
   - Fixed bug in get_template(). The DATA filehandle is now read from the beginning
