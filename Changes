@@ -1,5 +1,12 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.15 - Sat Apr 17 2010  
+  - Method get_template() moved from SVG::TT::Graph::* to SVG::TT::Graph to avoid redundancy
+  - Fixed bug in get_template(). The DATA filehandle is now read from the beginning
+    at each get_template call
+  - Makefile.PL does not use autoinstall aymore (not a good practice for CPAN modules)
+  - Rollover improvements in piechart
+
 0.14 - Mon Apr 05 2010
   - Fixed some unit tests and the URL of the repository
 

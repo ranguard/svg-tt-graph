@@ -4,9 +4,9 @@ use strict;
 use Carp;
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);
-use vars qw($VERSION);
+use vars qw($VERSION $TEMPLATE_FH);
 $VERSION = $SVG::TT::Graph::VERSION;
-
+$TEMPLATE_FH = \*DATA;
 
 =head1 NAME
 
@@ -308,17 +308,6 @@ L<Compress::Zlib>,
 L<XML::Tidy>
 
 =cut
-
-sub get_template {
-  my $self = shift;
-  # read in template
-  my $template = '';
-  while(<DATA>) {
-    chomp;
-    $template .= $_ . "\n";
-  }
-  return $template;
-}
 
 sub _init {
   my $self = shift;

@@ -3,11 +3,11 @@ package SVG::TT::Graph;
 use strict;
 use Carp;
 
-use vars qw($VERSION $AUTOLOAD);
+use vars qw($VERSION $AUTOLOAD $TEMPLATE_FH);
 use Template;
 use POSIX;
 
-$VERSION = '0.14';
+$VERSION = '0.15';
 
 =head1 NAME
 
@@ -18,6 +18,9 @@ SVG::TT::Graph - Base object for generating SVG Graphs
   package SVG::TT::Graph::GRAPH_TYPE
   use SVG::TT::Graph;
   use base qw(SVG::TT::Graph);
+  use vars qw($VERSION);
+  $VERSION = $SVG::TT::Graph::VERSION;
+  $TEMPLATE_FH = \*DATA;
 
   sub _set_defaults {
     my $self = shift;
@@ -30,12 +33,6 @@ SVG::TT::Graph - Base object for generating SVG Graphs
     }
   }
 
-  sub get_template {
-    my $self = shift;
-    # read in template
-    my $template = 'set the template';
-    return $template;
-  }
   
   # optional - called when object is created
   sub _init {
@@ -43,10 +40,15 @@ SVG::TT::Graph - Base object for generating SVG Graphs
   # any testing you want to do.
   
   }
+
+  ...
   
   1;
-  
-  In your script...
+  __DATA__
+  <!-- SVG Template goes here  -->
+
+
+  In your script:
   
   use SVG::TT::Graph::GRAPH_TYPE;
   
@@ -177,6 +179,37 @@ sub clear_data {
   $self->{'data'} = \@data;
 }
 
+
+=head2 get_template()
+
+  print $graph->get_template();
+
+This method returns the TT template used for making the graph.
+
+=cut
+
+sub get_template {
+  my $self = shift;
+
+  # Template filehandle
+  my $class = ref($self);
+  my $template_fh = eval('$'.$class.'::TEMPLATE_FH');
+  croak $class . ' must have a template' if not $template_fh;
+
+  # Read in TT template
+  my $start = tell $template_fh;
+  my $template = '';
+  while(<$template_fh>) {
+    chomp;
+    $template .= $_ . "\n";
+  }
+
+  # This method may be used again, so return to start of filehandle 
+  seek $template_fh, $start, 0;
+
+  return $template;
+}
+
 =head2 burn()
 
   print $graph->burn();
@@ -198,8 +231,7 @@ sub burn {
         
   # perform any calculations prior to burn
   $self->calculations() if $self->can('calculations');
-  croak ref($self) . ' must have a get_template method.' 
-    unless $self->can('get_template');
+
   my $template = $self->get_template();
   my %vals = (
     'data'             => $self->{'data'},     # the data
