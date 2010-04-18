@@ -4,8 +4,9 @@ use strict;
 use Carp;
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);
-use vars qw($VERSION);
+use vars qw($VERSION $TEMPLATE_FH);
 $VERSION = $SVG::TT::Graph::VERSION;
+$TEMPLATE_FH = \*DATA;
 
 use Data::Dumper;
 use HTTP::Date;
@@ -372,17 +373,6 @@ L<XML::Tidy>
 
 =cut
 
-sub get_template {
-  my $self = shift;
-  # read in template
-  my $template = '';
-  while(<DATA>) {
-    chomp;
-    $template .= $_ . "\n";
-  }
-  return $template;
-}
-
 sub _init {
   my $self = shift;
 }
@@ -747,20 +737,20 @@ __DATA__
 
 [% IF config.key %]
   <!-- Script to toggle paths when their key is clicked on -->
-  <script language="JavaScript">
+  <script language="JavaScript"><![CDATA[
   function togglePath( series ) {
-    var path    = document.getElementById('groupDataSeries' + series)
-    var points  = document.getElementById('groupDataLabels' + series)
+    var path    = document.getElementById('groupDataSeries' + series);
+    var points  = document.getElementById('groupDataLabels' + series);
     var current = path.getAttribute('opacity');
     if ( path.getAttribute('opacity') == 0 ) {
-      path.setAttribute('opacity',1)
-      points.setAttribute('opacity',1)
+      path.setAttribute('opacity',1);
+      points.setAttribute('opacity',1);
     } else {
-      path.setAttribute('opacity',0)
-      points.setAttribute('opacity',0)
+      path.setAttribute('opacity',0);
+      points.setAttribute('opacity',0);
     }
   }
-  </script>
+  ]]></script>
 [% END %]
 
 <!-- svg bg -->

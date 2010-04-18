@@ -4,9 +4,9 @@ use strict;
 use Carp;
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);
-use vars qw($VERSION);
+use vars qw($VERSION $TEMPLATE_FH);
 $VERSION = $SVG::TT::Graph::VERSION;
-
+$TEMPLATE_FH = \*DATA;
 
 =head1 NAME
 
@@ -314,16 +314,6 @@ L<XML::Tidy>
 
 =cut
 
-sub get_template {
-  my $self = shift;
-  # read in template
-  my $template = '';
-  while(<DATA>) {
-    chomp;
-    $template .= $_ . "\n";
-  }
-  return $template;
-}
 
 sub _init {
   my $self = shift;
@@ -468,16 +458,16 @@ __DATA__
 
 [% IF config.rollover_values %]
   <!-- Script to toggle paths when their key is clicked on -->
-  <script language="JavaScript">
+  <script language="JavaScript"><![CDATA[
   function togglePath( series ) {
-    var text = document.getElementById('n' + series)
+    var text = document.getElementById('n' + series);
     if ( text.getAttribute('opacity') == 0 ) {
-      text.setAttribute('opacity',1)
+      text.setAttribute('opacity',1);
     } else {
-      text.setAttribute('opacity',0)
+      text.setAttribute('opacity',0);
     }
   }
-  </script>
+  ]]></script>
 [% END %]
 
 <!-- svg bg -->
@@ -507,7 +497,8 @@ __DATA__
 
 <!-- reduce height if graph has title or subtitle -->
 [% IF config.show_graph_title %][% h = h - 25 %][% END %]
-[% IF config.show_graph_subtitle %][% h = h - 10 %][% END %]
+[% IF config.show_graph_subtitle %][% y = y + 10 %][% END %]
+[% IF config.show_graph_subtitle %][% y = y + 10 %][% END %]
 
 <!-- set start/default coords of graph --> 
 [% x = w / 2 %]
@@ -644,7 +635,7 @@ __DATA__
       [% ye = re * sin(radians_half) FILTER format('%02.10f') %]
 
       <path id="w[% count %]" d="M[% px_start + xe %] [% pmin_scale_value + ye %] A[% r %] [% r %] 0 
-      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"/>
+      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
   
     [% ELSIF !config.expanded && config.expand_greatest %]
       [% IF data.0.data.$field == max_value %]
@@ -652,15 +643,15 @@ __DATA__
         [% xe = re * cos(radians_half) FILTER format('%02.10f') %]
         [% ye = re * sin(radians_half) FILTER format('%02.10f') %]
         <path id="w[% count %]" d="M[% px_start + xe %] [% pmin_scale_value + ye %] A[% r %] [% r %] 0 
-        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"/>
+        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
       [% ELSE %]
         <path id="w[% count %]" d="M[% px_start %] [% pmin_scale_value %] A[% r %] [% r %] 0 
-        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"/>
+        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
       [% END %]
   
     [% ELSE %]
       <path id="w[% count %]" d="M[% px_start %] [% pmin_scale_value %] A[% r %] [% r %] 0 
-      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"/>
+      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
     [% END %]
 
     <!-- show values next to wedges -->
@@ -683,8 +674,7 @@ __DATA__
 
     <!-- show rollover field names next to wedge values -->
     [% IF config.rollover_values %]
-      [% name_x_offset = 40 %]
-      <text id="n[% count %]" x="[% x + px_mid + text_x_offset + name_x_offset %]" y="[% y + py_mid + text_y_offset %]" opacity="0">[% field %]</text>
+        <text id="n[% count %]" x="[% x %]" y="[% y + r + e + padding %]" class="subTitle" opacity="0">[% field %]</text>
     [% END %]
     
     [% px_start = x + px_end %]

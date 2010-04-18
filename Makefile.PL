@@ -16,6 +16,4 @@ recommends 'Compress::Zlib';
 
 repository 'git://github.com/ranguard/svg-tt-graph.git';
 
-auto_install;
-
 WriteAll;
