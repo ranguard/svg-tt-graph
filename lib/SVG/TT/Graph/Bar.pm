@@ -62,6 +62,7 @@ title, subtitle etc.
     'show_data_values'       => 1,
 
     'min_scale_value'        => '0',
+    'max_scale_value'        => undef,
     'stagger_x_labels'       => 0,
     'rotate_x_labels'        => 0,
     'bar_gap'                => 1,
@@ -190,6 +191,11 @@ is '1', set to '0' if you don't want gaps.
 
 The point at which the Y axis starts, defaults to '0',
 if set to '' it will default to the minimum data value.
+
+=item max_scale_value()
+
+The maximum value for the Y axis.  If set to '', it will 
+default to the maximum data value.
 
 =item show_x_labels()
 
@@ -330,6 +336,7 @@ sub _set_defaults {
     'show_data_values'       => 1,
   
     'min_scale_value'        => '0',
+    'max_scale_value'        => '',
     'scale_divisions'        => '',
     'bar_gap'                => 1,
 
@@ -587,17 +594,25 @@ __DATA__
   [% min_scale_value = min_value %]
 [% END %]
 
+<!-- find ending value for scale on y axis -->
+[% IF config.max_scale_value || config.max_scale_value == '0' %]
+  [% max_scale_value = config.max_scale_value %]
+[% ELSE %]
+  <!-- setting highest value to be max_value as no max_scale_value defined -->
+  [% max_scale_value = max_value %]
+[% END %]
+	
 <!-- base line -->
 [% base_line = h + y %]
 
 <!-- how much padding between largest bar and top of graph -->
-[% IF (max_value - min_scale_value) == 0 %]
+[% IF (max_scale_value - min_scale_value) == 0 %]
   [% top_pad = 10 %]
 [% ELSE %]
-  [% top_pad = (max_value - min_scale_value) / 20 %]  
+  [% top_pad = (max_scale_value - min_scale_value) / 20 %]
 [% END %]  
 
-[% scale_range = (max_value + top_pad) - min_scale_value %]
+[% scale_range = (max_scale_value + top_pad) - min_scale_value %]
 
 <!-- default to 10 scale_divisions if none have been set -->
 [% IF config.scale_divisions %]
