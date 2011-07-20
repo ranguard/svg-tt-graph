@@ -75,13 +75,13 @@ SVG::TT::Graph - Base object for generating SVG Graphs
   $graph->config_option($config_value);
   
   # All graphs support SVGZ (compressed SVG) if 
-  # Compress::Zlib is available.
-  # either 'compress' => 1 config option, or
+  # Compress::Zlib is available. Use either the
+  # 'compress' => 1 config option, or:
   $graph->compress(1);
 
   # All graph SVGs can be tidied if XML::Tidy
-  # Compress::Zlib is installed.
-  # either 'tidy' => 1 config option, or
+  # is installed. Use either the 'tidy' => 1
+  # config option, or:
   $graph->tidy(1);
 
   print "Content-type: image/svg+xml\n\n";
