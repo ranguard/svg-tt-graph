@@ -7,7 +7,9 @@ use vars qw($VERSION $AUTOLOAD $TEMPLATE_FH);
 use Template;
 use POSIX;
 
-$VERSION = '0.16';
+require 5.6.1;
+
+$VERSION = '0.17';
 
 =head1 NAME
 
