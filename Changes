@@ -2,6 +2,9 @@ Revision history for Perl extension SVG::TT::Graph.
 
 0.xx
   - By default, do not compress() or tidy() the SVG
+  - SVG::TT::Graph::Line and SVG::TT::Graph::Timeseries have points styled as
+   '.dataPointNN', consistently with SVG::TT::Graph::BarLine (patch from Henrik
+   Pauli, #67834)
 
 0.16 - Sun Apr 18 2010
   - Javascript code in the piechart and timeseries put into a CDATA tag

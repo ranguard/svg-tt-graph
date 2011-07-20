@@ -808,7 +808,7 @@ __DATA__
     [% FOREACH field = config.fields %]
       [% IF config.show_data_points %]
         <!-- datapoint shown -->
-        <circle cx="[% (dw * xcount) + x %]" cy="[% base_line - ((dataset.data.$field - min_scale_value) * divider) %]" r="2.5" class="fill[% line %]"/>
+        <circle cx="[% (dw * xcount) + x %]" cy="[% base_line - ((dataset.data.$field - min_scale_value) * divider) %]" r="2.5" class="dataPoint[% line %]"/>
       [% END %]
             
       [% IF config.show_data_values %]
