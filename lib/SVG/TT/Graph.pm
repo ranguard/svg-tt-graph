@@ -7,7 +7,9 @@ use vars qw($VERSION $AUTOLOAD $TEMPLATE_FH);
 use Template;
 use POSIX;
 
-$VERSION = '0.16';
+require 5.6.1;
+
+$VERSION = '0.17';
 
 =head1 NAME
 
@@ -75,13 +77,13 @@ SVG::TT::Graph - Base object for generating SVG Graphs
   $graph->config_option($config_value);
   
   # All graphs support SVGZ (compressed SVG) if 
-  # Compress::Zlib is available.
-  # either 'compress' => 1 config option, or
+  # Compress::Zlib is available. Use either the
+  # 'compress' => 1 config option, or:
   $graph->compress(1);
 
   # All graph SVGs can be tidied if XML::Tidy
-  # Compress::Zlib is installed.
-  # either 'tidy' => 1 config option, or
+  # is installed. Use either the 'tidy' => 1
+  # config option, or:
   $graph->tidy(1);
 
   print "Content-type: image/svg+xml\n\n";
@@ -310,8 +312,7 @@ sub _cos_it {
   $graph->compress(1);
 
 If Compress::Zlib is installed, the content of the SVG file can be compressed.
-This get/set method controls whether or not to compress. The default is 1 if
-Compress::Zlib is available, 0 otherwise.
+This get/set method controls whether or not to compress. The default is 0 (off).
 
 =cut
 
@@ -319,11 +320,7 @@ sub compress {
   my ($self, $val) = @_;
   # set the default compress value
   if (not defined $self->{config}->{compress}) {
-    if ( eval "require Compress::Zlib" ) {
-      $self->{config}->{compress} = 1;
-    } else {
-      $self->{config}->{compress} = 0;
-    }
+    $self->{config}->{compress} = 0;
   }
   # set the user-defined compress value
   if (defined $val) {
@@ -340,7 +337,8 @@ sub compress {
 
 If XML::Tidy is installed, the content of the SVG file can be formatted in a
 prettier way. This get/set method controls whether or not to tidy. The default
-is 1 if XML::Tidy is available, 0 otherwise.
+is 0 (off). The limitations of tidy are described at this URL:
+L<http://search.cpan.org/~pip/XML-Tidy-1.12.B55J2qn/Tidy.pm#tidy%28%29>
 
 =cut
 
@@ -348,11 +346,7 @@ sub tidy {
   my ($self, $val) = @_;
   # set the default tidy value
   if (not defined $self->{config}->{tidy}) {
-    if ( eval "require XML::Tidy" ) {
-      $self->{config}->{tidy} = 1;
-    } else {
-      $self->{config}->{tidy} = 0;
-    }
+    $self->{config}->{tidy} = 0;
   }
   # set the user-defined tidy value
   if (defined $val) {

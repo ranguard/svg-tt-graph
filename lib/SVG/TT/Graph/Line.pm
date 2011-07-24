@@ -70,6 +70,7 @@ title, subtitle etc.
     'stacked'                => 0,
 
     'min_scale_value'        => '0',
+    'max_scale_value'        => undef,
     'area_fill'              => 0,
     'show_x_labels'          => 1,
     'stagger_x_labels'       => 0,
@@ -192,12 +193,19 @@ goes from one point to the next.
 
 =item stacked()
 
-Accumulates each data set. (i.e. Each point increased by sum of all previous series at same point). Default is 0, set to '1' to show.
+Accumulates each data set. (i.e. Each point increased by
+sum of all previous series at same point). Default is 0,
+set to '1' to show.
 
 =item min_scale_value()
 
 The point at which the Y axis starts, defaults to '0',
 if set to '' it will default to the minimum data value.
+
+=item max_scale_value()
+
+The maximum value for the Y axis.  If set to '', it will 
+default to the maximum data value.
 
 =item show_x_labels()
 
@@ -340,6 +348,7 @@ sub _set_defaults {
     'stacked'                => 0,
   
     'min_scale_value'        => '0',
+    'max_scale_value'        => '',
     'area_fill'              => 0,
     'show_x_labels'          => 1,
     'stagger_x_labels'       => 0,
@@ -615,17 +624,25 @@ __DATA__
   [% min_scale_value = min_value %]
 [% END %]
 
+<!-- find ending value for scale on y axis -->
+[% IF config.max_scale_value || config.max_scale_value == '0' %]
+  [% max_scale_value = config.max_scale_value %]
+[% ELSE %]
+  <!-- setting highest value to be max_value as no max_scale_value defined -->
+  [% max_scale_value = max_value %]
+[% END %]
+
 <!-- base line -->
 [% base_line = h + y %]
 
 <!-- how much padding between largest bar and top of graph -->
-[% IF (max_value - min_scale_value) == 0 %]
+[% IF (max_scale_value - min_scale_value) == 0 %]
   [% top_pad = 10 %]
 [% ELSE %]
-  [% top_pad = (max_value - min_scale_value) / 20 %]
+  [% top_pad = (max_scale_value - min_scale_value) / 20 %]
 [% END %]
 
-[% scale_range = (max_value + top_pad) - min_scale_value %]
+[% scale_range = (max_scale_value + top_pad) - min_scale_value %]
 
 <!-- default to 10 scale_divisions if none have been set -->
 [% IF config.scale_divisions %]
@@ -808,7 +825,7 @@ __DATA__
     [% FOREACH field = config.fields %]
       [% IF config.show_data_points %]
         <!-- datapoint shown -->
-        <circle cx="[% (dw * xcount) + x %]" cy="[% base_line - ((dataset.data.$field - min_scale_value) * divider) %]" r="2.5" class="fill[% line %]"/>
+        <circle cx="[% (dw * xcount) + x %]" cy="[% base_line - ((dataset.data.$field - min_scale_value) * divider) %]" r="2.5" class="dataPoint[% line %]"/>
       [% END %]
             
       [% IF config.show_data_values %]

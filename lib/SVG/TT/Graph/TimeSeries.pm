@@ -1021,7 +1021,7 @@ __DATA__
       [% IF ((pair.0 >= calc.min_timescale_value) && (pair.0 <= calc.max_timescale_value)) %]
         <g class="dataLabel[% line %]" [% IF config.rollover_values %] opacity="0" [% END %]>
         [% IF config.show_data_points %]
-          <circle cx="[% (dw * (pair.0 - calc.min_timescale_value)) + x %]" cy="[% base_line - (dh * (pair.1 - calc.min_scale_value)) %]" r="2.5" class="fill[% line %]"
+          <circle cx="[% (dw * (pair.0 - calc.min_timescale_value)) + x %]" cy="[% base_line - (dh * (pair.1 - calc.min_scale_value)) %]" r="2.5" class="dataPoint[% line %]"
           [% IF config.rollover_values %]
             onmouseover="evt.target.parentNode.setAttribute('opacity',1);"
             onmouseout="evt.target.parentNode.setAttribute('opacity',0);"
