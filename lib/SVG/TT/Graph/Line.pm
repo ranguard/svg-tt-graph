@@ -78,6 +78,8 @@ title, subtitle etc.
     'show_y_labels'          => 1,
     'scale_integers'         => 0,
     'scale_divisions'        => '20',
+    'format_x_axis'          => sub { return @_ },
+    'format_y_axis'          => sub { return @_ },
 
     'show_x_title'           => 0,
     'x_title'                => 'X Field names',
@@ -293,6 +295,20 @@ Whether to show a key, defaults to 0, set to
 Where the key should be positioned, defaults to
 'right', set to 'bottom' if you want to move it.
 
+=item format_x_axis()
+
+Allows a callback subroutine to be specified which will format a value on the x
+axis.  For example:
+
+    $graph->format_x_axis( sub { return '$' . $_[0] } );
+
+=item format_y_axis()
+
+Allows a callback subroutine to be specified which will format a value on the y
+axis.  For example:
+
+    $graph->format_y_axis( sub { return '$' . $_[0] } );
+
 =back
 
 =head1 EXAMPLES
@@ -356,6 +372,8 @@ sub _set_defaults {
     'show_y_labels'          => 1,
     'scale_integers'         => 0,
     'scale_divisions'        => '',
+    'format_x_axis'          => sub { return @_ },
+    'format_y_axis'          => sub { return @_ },
       
     'show_x_title'           => 0,
     'x_title'                => 'X Field names',
@@ -730,14 +748,14 @@ __DATA__
 [% IF config.show_x_labels %]
   [% FOREACH field = config.fields %]
     [% IF count == 0 %]
-      <text x="[% x %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x  - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field %]</text>
+      <text x="[% x %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x  - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% config.format_x_axis(field) %]</text>
       [% i = i - dw %]
     [% ELSE %]
       [% IF stagger_count == 2 %]
-        <text x="[% x + i %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + i  - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field %]</text>
+        <text x="[% x + i %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + i  - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% config.format_x_axis(field) %]</text>
         [% stagger_count = 0 %]
       [% ELSE %]
-        <text x="[% x + i %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + i - half_char_height %] [% base_line + 15 + stagger %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field %]</text>
+        <text x="[% x + i %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + i - half_char_height %] [% base_line + 15 + stagger %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% config.format_x_axis(field) %]</text>
         <path d="M[% x + i %] [% base_line %] v[% stagger %]" class="staggerGuideLine"/>
       [% END %]
     [% END %]
@@ -759,9 +777,9 @@ __DATA__
   [% WHILE (dy * count) < h %]
     [% IF count == 0 %]
       <!-- no stroke for first line -->
-      <text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% y_value %]</text>
+      <text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% config.format_y_axis(y_value) %]</text>
     [% ELSE %]
-      <text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% y_value %]</text>
+      <text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% config.format_y_axis(y_value) %]</text>
       <path d="M[% x %] [% base_line - (dy * count) %] h[% w %]" class="guideLines"/>
     [% END %]
     [% y_value = y_value + scale_division %]
