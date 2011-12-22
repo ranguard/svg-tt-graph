@@ -77,6 +77,8 @@ title, subtitle etc.
     'show_y_labels'                    => 1,
     'scale_integers'                   => 0,
     'show_secondary_y_labels'          => 1,
+    'y_label_formatter'                => sub { return @_ },
+    'x_label_formatter'                => sub { return @_ },
 
     'show_x_title'                     => 0,
     'x_title'                          => 'X Field names',
@@ -307,6 +309,18 @@ Whether to show a key, defaults to 0, set to
 Where the key should be positioned, defaults to
 'right', set to 'bottom' if you want to move it.
 
+=item x_label_formatter ()
+
+A callback subroutine which will format a label on the x axis.  For example:
+
+    $graph->x_label_formatter( sub { return '$' . $_[0] } );
+
+=item y_label_formatter()
+
+A callback subroutine which will format a label on the y axis.  For example:
+
+    $graph->y_label_formatter( sub { return '$' . $_[0] } );
+
 =back
 
 =head1 EXAMPLES
@@ -369,6 +383,8 @@ sub _set_defaults {
     'show_y_labels'                    => 1,
     'scale_integers'                   => 0,
     'show_secondary_y_labels'          => 1,
+    'x_label_formatter'                => sub { return @_ },
+    'y_label_formatter'                => sub { return @_ },
 
     'show_x_title'                     => 0,
     'x_title'                          => 'X Field names',
@@ -778,23 +794,24 @@ __DATA__
 
 <!-- x axis labels -->
 [% IF config.show_x_labels %]
-	[% FOREACH field = config.fields %]
-		[% IF count == 0 %]
-      <text x="[% x + (dw / 2) - (bar_gap / 2) %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + (dw / 2) - (bar_gap / 2) - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field %]</text>
-		  [% i = i - dw %]
-		[% ELSE %]
-			[% IF stagger_count == 2 %]
-				<text x="[% x + i + (dw / 2) - (bar_gap / 2) %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + i + (dw / 2) - (bar_gap / 2) - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field %]</text>
-				[% stagger_count = 0 %]
-			[% ELSE %]
-				<text x="[% x + i + (dw / 2) - (bar_gap / 2) %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + i + (dw / 2) - (bar_gap / 2) - half_char_height %] [% base_line + 15 + stagger %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field %]</text>
-				<path d="M[% x + i + (dw / 2) - (bar_gap / 2) %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
-			[% END %]
-		[% END %]
-	  [% i = i + dw %]
-	  [% count = count + 1 %]
-	  [% stagger_count = stagger_count + 1 %]
-	[% END %]
+  [% FOREACH field = config.fields %]
+    [% field_txt = config.x_label_formatter(field) %]
+    [% IF count == 0 %]
+      <text x="[% x + (dw / 2) - (bar_gap / 2) %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + (dw / 2) - (bar_gap / 2) - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field_txt %]</text>
+      [% i = i - dw %]
+    [% ELSE %]
+      [% IF stagger_count == 2 %]
+        <text x="[% x + i + (dw / 2) - (bar_gap / 2) %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + i + (dw / 2) - (bar_gap / 2) - half_char_height %] [% base_line + 15 %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field_txt %]</text>
+        [% stagger_count = 0 %]
+      [% ELSE %]
+        <text x="[% x + i + (dw / 2) - (bar_gap / 2) %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %]transform="rotate(90 [% x + i + (dw / 2) - (bar_gap / 2) - half_char_height %] [% base_line + 15 + stagger %])" style="text-anchor: start" [% END %]class="xAxisLabels">[% field_txt %]</text>
+        <path d="M[% x + i + (dw / 2) - (bar_gap / 2) %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
+      [% END %]
+    [% END %]
+    [% i = i + dw %]
+    [% count = count + 1 %]
+    [% stagger_count = stagger_count + 1 %]
+  [% END %]
 [% END %]
 
 
@@ -806,17 +823,18 @@ __DATA__
 [% count = 0 %]
 [% y_value = min_scale_value %]
 [% IF config.show_y_labels %]
-	[% WHILE (dy * count) < h %]
-		[% IF count == 0 %]
-  		<!-- no stroke for first line -->
-			<text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% y_value %]</text>
-		[% ELSE %]
-			<text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% y_value %]</text>
-			<path d="M[% x %] [% base_line - (dy * count) %] h[% w %]" class="guideLines"/>
-		[% END %]
-		[% y_value = y_value + scale_division %]
-		[% count = count + 1 %]
-	[% END %]
+  [% WHILE (dy * count) < h %]
+    [% y_value_txt = config.y_label_formatter(y_value) %]
+    [% IF count == 0 %]
+      <!-- no stroke for first line -->
+      <text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% y_value_txt %]</text>
+    [% ELSE %]
+      <text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% y_value_txt %]</text>
+      <path d="M[% x %] [% base_line - (dy * count) %] h[% w %]" class="guideLines"/>
+    [% END %]
+    [% y_value = y_value + scale_division %]
+    [% count = count + 1 %]
+  [% END %]
 [% END %]
 
 
