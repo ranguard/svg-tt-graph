@@ -81,6 +81,8 @@ date range limited by 32 bit signed integers (around 1902 to 2038).
     'x_label_format'    => '%Y-%m-%d %H:%M:%S',
     'stagger_x_labels'  => 0,
     'rotate_x_labels'   => 0,
+    'y_label_formatter' => sub { return @_ },
+    'x_label_formatter' => sub { return @_ },
     
     'show_data_points'  => 1,
     'show_data_values'  => 1,
@@ -340,6 +342,18 @@ Whether to show a key, defaults to 0, set to
 Where the key should be positioned, defaults to
 'right', set to 'bottom' if you want to move it.
 
+=item x_label_formatter ()
+
+A callback subroutine which will format a label on the x axis.  For example:
+
+    $graph->x_label_formatter( sub { return '$' . $_[0] } );
+
+=item y_label_formatter()
+
+A callback subroutine which will format a label on the y axis.  For example:
+
+    $graph->y_label_formatter( sub { return '$' . $_[0] } );
+
 =back
 
 =head1 EXAMPLES
@@ -410,6 +424,8 @@ sub _set_defaults {
     'rotate_x_labels'     => 0,
     'timescale_divisions' => '',
     'x_label_format'      => '%Y-%m-%d %H:%M:%S',
+    'x_label_formatter'   => sub { return @_ },
+    'y_label_formatter'   => sub { return @_ },
   
     'show_x_title'        => 0,
     'x_title'             => 'X Field names',
@@ -892,7 +908,8 @@ __DATA__
 
 <!-- x axis labels -->
 [% IF config.show_x_labels %]
-  <text x="[% x %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.min_timescale_value,config.x_label_format) %]</text>
+  [% x_value_txt = config.x_label_formatter(date.format(calc.min_timescale_value,config.x_label_format)) %]
+  <text x="[% x %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
   [% last_label = date.format(calc.min_timescale_value,config.x_label_format) %]
   [% IF config.timescale_divisions %]
     [% IF (matches = config.timescale_divisions.match('(\d+) ?(\w+)?')) %]
@@ -906,12 +923,13 @@ __DATA__
       [% x_value = config.dateadd(calc.min_timescale_value,timescale_division,timescale_division_units) %]
       [% count = 0 %]
       [% WHILE ((x_value > calc.min_timescale_value) && ((x_value < calc.max_timescale_value))) %]
+        [% x_value_txt = config.x_label_formatter(date.format(x_value,config.x_label_format)) %]
         [% xpos = (dw * (x_value - calc.min_timescale_value)) + x %]
         [% IF (config.stagger_x_labels && ((count % 2) == 0)) %]
           <path d="M[% xpos %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
-          <text x="[% xpos %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(x_value,config.x_label_format) %]</text>
+          <text x="[% xpos %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
         [% ELSE %]
-          <text x="[% xpos %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(x_value,config.x_label_format) %]</text>
+          <text x="[% xpos %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
         [% END %]
         [% last_label = date.format(x_value,config.x_label_format) %]
         [% x_value = config.dateadd(x_value,timescale_division,timescale_division_units) %]
@@ -921,11 +939,12 @@ __DATA__
     [% END %]
   [% END %]
   [% IF date.format(calc.max_timescale_value,config.x_label_format) != last_label %]
+    [% x_value_txt = config.x_label_formatter(date.format(calc.max_timescale_value,config.x_label_format)) %]
     [% IF (config.stagger_x_labels && ((count % 2) == 0)) %]
     <path d="M[% x + w %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
-    <text x="[% x + w %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.max_timescale_value,config.x_label_format) %]</text>
+    <text x="[% x + w %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
     [% ELSE %]
-    <text x="[% x + w %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% date.format(calc.max_timescale_value,config.x_label_format) %]</text>
+    <text x="[% x + w %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
     [% END %]
   [% END %]
 [% END %]
@@ -943,6 +962,7 @@ __DATA__
 [% IF config.show_y_labels %]
   [% WHILE ((y_value == calc.min_scale_value) || (y_value == calc.max_scale_value) || ((y_value > calc.min_scale_value) && (y_value < calc.max_scale_value))) %]
     [%- next_label = y_value FILTER format(calc.y_label_format) -%]
+    [%- next_label = config.y_label_formatter(next_label) -%]
 		[%- IF count == 0 -%]
 			[%# no stroke for first line %]
       <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>

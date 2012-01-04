@@ -69,6 +69,8 @@ title, subtitle etc.
     'stagger_x_labels'       => 0,
     'show_y_labels'          => 1,
     'scale_integers'         => 0,
+    'y_label_formatter'      => sub { return @_ },
+    'x_label_formatter'      => sub { return @_ },
 
     'show_x_title'           => 0,
     'x_title'                => 'X Field names',
@@ -270,6 +272,18 @@ Whether to show a key, defaults to 0, set to
 Where the key should be positioned, defaults to
 'right', set to 'bottom' if you want to move it.
 
+=item x_label_formatter ()
+
+A callback subroutine which will format a label on the x axis.  For example:
+
+    $graph->x_label_formatter( sub { return '$' . $_[0] } );
+
+=item y_label_formatter()
+
+A callback subroutine which will format a label on the y axis.  For example:
+
+    $graph->y_label_formatter( sub { return '$' . $_[0] } );
+
 =back
 
 =head1 EXAMPLES
@@ -331,6 +345,8 @@ sub _set_defaults {
     'stagger_x_labels'       => 0,
     'show_y_labels'          => 1,
     'scale_integers'         => 0,
+    'x_label_formatter'      => sub { return @_ },
+    'y_label_formatter'      => sub { return @_ },
   
     'show_x_title'           => 0,
     'x_title'                => 'X Field names',
@@ -654,10 +670,11 @@ __DATA__
 [% IF config.show_y_labels %]
   [% FOREACH field = config.fields %]
     [% IF count == 0 %]
-      <text x="[% x - 10 %]" y="[% base_line - (dh / 2) %]" class="yAxisLabels">[% field %]</text>
+      [% field_txt = config.y_label_formatter(field) %]
+      <text x="[% x - 10 %]" y="[% base_line - (dh / 2) %]" class="yAxisLabels">[% field_txt %]</text>
       [% i = i - dh %]
     [% ELSE %]
-      <text x="[% x - 10 %]" y="[% base_line - i - (dh / 2) %]" class="yAxisLabels">[% field %]</text>
+      <text x="[% x - 10 %]" y="[% base_line - i - (dh / 2) %]" class="yAxisLabels">[% field_txt %]</text>
     [% END %]
     [% i = i + dh %]
     [% count = count + 1 %]
@@ -677,14 +694,20 @@ __DATA__
   [% WHILE (dx * count) < w %]
     [% IF count == 0 %]
       <!-- no stroke for first line -->
-      <text x="[% x + (dx * count) %]" y="[% base_line + 15 %]" class="xAxisLabels">[% y_value FILTER format('%2.0f') %]</text>
+      [% y_value_txt = y_value FILTER format('%2.0f') %]
+      [% y_value_txt = config.y_label_formatter(y_value_txt) %]
+      <text x="[% x + (dx * count) %]" y="[% base_line + 15 %]" class="xAxisLabels">[% y_value_txt %]</text>
     [% ELSE %]
       [% IF stagger_count == 2 %]
-        <text x="[% x + (dx * count) %]" y="[% base_line + 15 %]" class="xAxisLabels" style="text-anchor: middle;">[% y_value FILTER format('%2.01f') %]</text>
+        [% y_value_txt = y_value FILTER format('%2.01f') %]
+        [% y_value_txt = config.y_label_formatter(y_value_txt) %]
+        <text x="[% x + (dx * count) %]" y="[% base_line + 15 %]" class="xAxisLabels" style="text-anchor: middle;">[% y_value_txt %]</text>
         <path d="M[% x + (dx * count) %] [% base_line %] V[% y %]" class="guideLines"/>
         [% stagger_count = 0 %]
       [% ELSE %]
-        <text x="[% x + (dx * count) %]" y="[% base_line + 15 + stagger %]" class="xAxisLabels" style="text-anchor: middle;">[% y_value FILTER format('%2.01f') %]</text>
+        [% y_value_txt = y_value FILTER format('%2.01f') %]
+        [% y_value_txt = config.y_label_formatter(y_value_txt) %]
+        <text x="[% x + (dx * count) %]" y="[% base_line + 15 + stagger %]" class="xAxisLabels" style="text-anchor: middle;">[% y_value_txt %]</text>
         <path d="M[% x + (dx * count) %] [% base_line %] V[% y %]" class="guideLines"/>
         <path d="M[% x + (dx * count) %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
       [% END %]
