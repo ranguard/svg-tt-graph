@@ -1,5 +1,8 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.18 - Thu  5 Jan 2012
+  - Added format_x_axis, format_y_axis callback options (Eric Johnson)
+
 0.17 - Wed Jul 20 2011
   - By default, do not compress() or tidy() the SVG
   - Line and Timeseries graphs now have points styled as '.dataPointNN',
