@@ -519,6 +519,13 @@ Leo Lapworth <LLAP@cuckoo.org>
 
 Florent Angly <florent.angly@gmail.com>
 
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2003, Leo Lapworth 
+
+This module is free software; you can redistribute it or 
+modify it under the same terms as Perl itself.
+
 =head1 SEE ALSO
 
 L<SVG::TT::Graph::Line>,
@@ -529,12 +536,5 @@ L<SVG::TT::Graph::Pie>,
 L<SVG::TT::Graph::TimeSeries>,
 L<Compress::Zlib>,
 L<XML::Tidy>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2003, Leo Lapworth 
-
-This module is free software; you can redistribute it or 
-modify it under the same terms as Perl itself. 
 
 =cut
