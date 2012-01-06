@@ -316,6 +316,10 @@ Stephen Morgan for creating the TT template and SVG.
 
 Leo Lapworth (LLAP@cuckoo.org)
 
+=head1 MAINTAINER
+
+Florent Angly <florent.angly@gmail.com>
+
 =head1 SEE ALSO
 
 L<SVG::TT::Graph>,

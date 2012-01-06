@@ -509,9 +509,13 @@ Todd Caine for heads up on reparsing the template (but not using atm)
 David Meibusch for TimeSeries and a load of other ideas
 Thanks for all the patches supplied by Andrew Ruthven and others
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Leo Lapworth (LLAP@cuckoo.org) and Stephen Morgan (TT and SVG)
+Leo Lapworth <LLAP@cuckoo.org> and Stephen Morgan (TT and SVG)
+
+=head1 MAINTAINER
+
+Florent Angly <florent.angly@gmail.com>
 
 =head1 SEE ALSO
 

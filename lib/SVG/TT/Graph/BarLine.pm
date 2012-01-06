@@ -338,7 +338,11 @@ Stephen Morgan for creating the TT template and SVG.
 
 =head1 AUTHOR
 
-Leo Lapworth (LLAP@cuckoo.org)
+Leo Lapworth <LLAP@cuckoo.org>
+
+=head1 MAINTAINER
+
+Florent Angly <florent.angly@gmail.com>
 
 =head1 SEE ALSO
 
