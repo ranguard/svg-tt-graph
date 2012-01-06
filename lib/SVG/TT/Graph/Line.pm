@@ -320,12 +320,10 @@ None by default.
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks:
-Foxtons for letting us put this on CPAN
-Todd Caine for heads up on reparsing the template (but not using atm)
-David Meibusch for TimeSeries and a load of other ideas
-Stephen Morgan for creating the TT template and SVG
-All the patches supplied by Andrew Ruthven and others
+Thanks to Foxtons for letting us put this on CPAN, Todd Caine for heads up on
+reparsing the template (but not using atm), David Meibusch for TimeSeries and a
+load of other ideas, Stephen Morgan for creating the TT template and SVG, and
+thanks for all the patches by Andrew Ruthven and others.
 
 =head1 AUTHOR
 
