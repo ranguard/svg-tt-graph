@@ -317,6 +317,15 @@ Copyright (C) 2003, Leo Lapworth
 This module is free software; you can redistribute it or 
 modify it under the same terms as Perl itself.
 
+=head1 BUGS
+
+Please report any bugs or feature requests to bug-graph-svg-tt@rt.cpan.org, or
+through the web interface at http://rt.cpan.org.
+
+The Graph::SVG::TT development repository is located on GitHub at
+L<http://github.com/ranguard/svg-tt-graph>. Get the latest development version
+using: git clone git://github.com/ranguard/svg-tt-graph.git
+
 =head1 SEE ALSO
 
 L<SVG::TT::Graph>,
