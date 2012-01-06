@@ -580,7 +580,7 @@ __DATA__
 
 [% max_key_size = 0 %]  
 [% FOREACH y_label = config.fields %]
-   <!-- find largest dataset title for Key size -->
+  <!-- find largest dataset title for Key size -->
   [% IF max_key_size < data.0.title.length %]
     [% max_key_size = data.0.title.length %]
   [% END %]

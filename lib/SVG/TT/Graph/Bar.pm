@@ -617,7 +617,7 @@ __DATA__
   <!-- setting highest value to be max_value as no max_scale_value defined -->
   [% max_scale_value = max_value %]
 [% END %]
-	
+
 <!-- base line -->
 [% base_line = h + y %]
 
