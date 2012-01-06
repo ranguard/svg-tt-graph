@@ -17,7 +17,7 @@ SVG::TT::Graph - Base object for generating SVG Graphs
 
 =head1 SYNOPSIS
 
-  package SVG::TT::Graph::GRAPH_TYPE
+  package SVG::TT::Graph::GRAPH_TYPE;
   use SVG::TT::Graph;
   use base qw(SVG::TT::Graph);
   use vars qw($VERSION);
