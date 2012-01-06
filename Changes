@@ -1,5 +1,9 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.xx
+  - Fixed warning messages with missing data title (#69691, reported by dean@fragfest.com.au,
+    patch by Florent Angly)
+
 0.18 - Thu  5 Jan 2012
   - Added format_x_axis, format_y_axis callback options (Eric Johnson)
 

@@ -547,8 +547,10 @@ __DATA__
     [% IF dataset.data.$field != '' %]
       [% max_y_value = max_y_value + dataset.data.$field %]
     [% END %]
-    [% IF max_key_size < dataset.title.length %]
-      [% max_key_size = dataset.title.length %]
+    [% IF dataset.title %]
+      [% IF max_key_size < dataset.title.length %]
+        [% max_key_size = dataset.title.length %]
+      [% END %]
     [% END %]
   [% END %]
 
