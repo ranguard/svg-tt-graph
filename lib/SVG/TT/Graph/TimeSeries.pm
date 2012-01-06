@@ -838,7 +838,7 @@ __DATA__
 [%# label width in pixels %]
 [% max_value_length_px = max_value_length * char_width %]
 [%# If the y labels are shown but the size of the x labels are small, pad for y labels %]
-	
+
 <!-- CALC WIDTH AND X COORD DIMENSIONS -->
 [%# reduce width of graph area if there is large labelling on x axis %]
 [% space_b4_y_axis = (date.format(calc.min_timescale_value,config.x_label_format).length / 2) * char_width %]
@@ -963,37 +963,37 @@ __DATA__
   [% WHILE ((y_value == calc.min_scale_value) || (y_value == calc.max_scale_value) || ((y_value > calc.min_scale_value) && (y_value < calc.max_scale_value))) %]
     [%- next_label = y_value FILTER format(calc.y_label_format) -%]
     [%- next_label = config.y_label_formatter(next_label) -%]
-		[%- IF count == 0 -%]
-			[%# no stroke for first line %]
+    [%- IF count == 0 -%]
+      [%# no stroke for first line %]
       <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>
-		[%- ELSE -%]
+    [%- ELSE -%]
       [% IF next_label != last_label %]
         <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>
         <path d="M[% x %] [% base_line - (dh * (y_value - calc.min_scale_value)) %] h[% w %]" class="guideLines"/>
       [% END %]  
-		[%- END -%]
+    [%- END -%]
     [%- y_value = y_value + calc.scale_division -%]
     [%- last_label = next_label -%]
-		[%- count = count + 1 -%]
+    [%- count = count + 1 -%]
     [%- LAST IF (count >= 999) -%]
-	[% END %]
+  [% END %]
 [% END %]
 
 <!-- //////////////////////////////  AXIS TITLES ////////////////////////////// -->
 <!-- x axis title -->
-	[% IF config.show_x_title %]
-		[% IF !config.show_x_labels %]
-			[% y_xtitle = 15 %]
-		[% ELSE %]
-			[% y_xtitle = 35 %]
-		[% END %]
+  [% IF config.show_x_title %]
+    [% IF !config.show_x_labels %]
+      [% y_xtitle = 15 %]
+    [% ELSE %]
+      [% y_xtitle = 35 %]
+    [% END %]
     <text x="[% (w / 2) + x %]" y="[% h + y + y_xtitle + stagger + x_label_allowance %]" class="xAxisTitle">[% config.x_title %]</text>
-	[% END %]	
+  [% END %]
 
 <!-- y axis title -->
-	[% IF config.show_y_title %]
+  [% IF config.show_y_title %]
       <text x="10" y="[% (h / 2) + y %]" transform="rotate(270,10,[% (h / 2) + y %])" class="yAxisTitle">[% config.y_title %]</text>
-	[% END %]
+  [% END %]
 
 <!-- //////////////////////////////  SHOW DATA ////////////////////////////// -->
 [% line = data.size %]
@@ -1073,16 +1073,16 @@ __DATA__
 <!-- //////////////////////////////////// KEY ////////////////////////////// -->
 [% key_count = 1 %]
 [% IF config.key && config.key_position == 'right' %]
-	[% FOREACH dataset = data %]
-		<rect x="[% x + w + 20 %]" y="[% y + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]" onclick="togglePath([% key_count %]);"/>
-		<text x="[% x + w + 20 + key_box_size + key_padding %]" y="[% y + (key_box_size * key_count) + (key_count * key_padding) + key_box_size %]" class="keyText">[% dataset.title %]</text>
-		[% key_count = key_count + 1 %]
-	[% END %]
+  [% FOREACH dataset = data %]
+    <rect x="[% x + w + 20 %]" y="[% y + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]" onclick="togglePath([% key_count %]);"/>
+    <text x="[% x + w + 20 + key_box_size + key_padding %]" y="[% y + (key_box_size * key_count) + (key_count * key_padding) + key_box_size %]" class="keyText">[% dataset.title %]</text>
+    [% key_count = key_count + 1 %]
+  [% END %]
 [% ELSIF config.key && config.key_position == 'bottom' %]
-	[%# calc y position of start of key %]
-	[% y_key = base_line %]
+  [%# calc y position of start of key %]
+  [% y_key = base_line %]
   [%# consider x title %]
-	[% IF config.show_x_title %][% y_key = base_line + 25 %][% END %]
+  [% IF config.show_x_title %][% y_key = base_line + 25 %][% END %]
   [%# consider x label rotation and stagger %]
   [% IF config.rotate_x_labels && config.show_x_labels %]
     [% y_key = y_key + x_label_allowance %]
@@ -1090,21 +1090,21 @@ __DATA__
     [% y_key = y_key + 20 %]
   [% END %]
   
-	[% y_key_start = y_key %]
-	[% x_key = x %]
-	[% FOREACH dataset = data %]
-		[% IF key_count == 4 || key_count == 7 || key_count == 10 %]
-		  [%# wrap key every 3 entries %]
-			[% x_key = x_key + 200 %]
-			[% y_key = y_key - (key_box_size * 4) - 2 %]
-		[% END %]
-		<rect x="[% x_key %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + stagger %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]" onclick="togglePath([% key_count %]);"/>
-		<text x="[% x_key + key_box_size + key_padding %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + key_box_size + stagger %]" class="keyText">[% dataset.title %]</text>
-		[% key_count = key_count + 1 %]
-	[% END %]
-	
+  [% y_key_start = y_key %]
+  [% x_key = x %]
+  [% FOREACH dataset = data %]
+    [% IF key_count == 4 || key_count == 7 || key_count == 10 %]
+      [%# wrap key every 3 entries %]
+      [% x_key = x_key + 200 %]
+      [% y_key = y_key - (key_box_size * 4) - 2 %]
+    [% END %]
+    <rect x="[% x_key %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + stagger %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]" onclick="togglePath([% key_count %]);"/>
+    <text x="[% x_key + key_box_size + key_padding %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + key_box_size + stagger %]" class="keyText">[% dataset.title %]</text>
+    [% key_count = key_count + 1 %]
+  [% END %]
+  
 [% END %]
-	
+
 <!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->
 <!-- main graph title -->
 [% IF config.show_graph_title %]
