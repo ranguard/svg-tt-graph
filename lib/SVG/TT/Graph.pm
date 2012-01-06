@@ -9,7 +9,7 @@ use POSIX;
 
 require 5.6.1;
 
-$VERSION = '0.18';
+$VERSION = '0.19';
 
 =head1 NAME
 
