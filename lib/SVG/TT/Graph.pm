@@ -504,14 +504,16 @@ None by default.
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to Foxtons for letting us put this on CPAN.
+Thanks:
+Foxtons for letting us put this on CPAN
 Todd Caine for heads up on reparsing the template (but not using atm)
 David Meibusch for TimeSeries and a load of other ideas
-Thanks for all the patches supplied by Andrew Ruthven and others
+Stephen Morgan for creating the TT template and SVG
+All the patches supplied by Andrew Ruthven and others
 
-=head1 AUTHORS
+=head1 AUTHOR
 
-Leo Lapworth <LLAP@cuckoo.org> and Stephen Morgan (TT and SVG)
+Leo Lapworth <LLAP@cuckoo.org>
 
 =head1 MAINTAINER
 
