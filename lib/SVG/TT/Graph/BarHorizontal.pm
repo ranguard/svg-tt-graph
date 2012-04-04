@@ -692,8 +692,8 @@ __DATA__
 <!-- y axis labels -->
 [% IF config.show_y_labels %]
   [% FOREACH field = config.fields %]
+    [% field_txt = config.y_label_formatter(field) %]
     [% IF count == 0 %]
-      [% field_txt = config.y_label_formatter(field) %]
       <text x="[% x - 10 %]" y="[% base_line - (dh / 2) %]" class="yAxisLabels">[% field_txt %]</text>
       [% i = i - dh %]
     [% ELSE %]
