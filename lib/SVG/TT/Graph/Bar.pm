@@ -781,8 +781,8 @@ __DATA__
 [% y_value = min_scale_value %]
 [% IF config.show_y_labels %]
   [% WHILE (dy * count) < h %]
-    [% IF count == 0 %]
     [% y_value_txt = config.y_label_formatter(y_value) %]
+    [% IF count == 0 %]
     <!-- no stroke for first line -->
       <text x="[% x - 5 %]" y="[% base_line - (dy * count) %]" class="yAxisLabels">[% y_value_txt %]</text>
     [% ELSE %]
