@@ -205,8 +205,8 @@ Format specifier to for data values (as per printf).
 
 Maximum span for a line between data points on the X-axis. If this span is
 exceeded, the points are not connected. This is useful for skipping missing data
-sections. This is also handy if you just want an XY scatter plot, without line
-joining the data points.
+sections. If you set this value to something smaller than 0 (e.g. -1), you will
+get an XY scatter plot with no line joining the data points.
 
 =item stacked()
 
