@@ -9,11 +9,11 @@ use POSIX;
 
 require 5.6.1;
 
-$VERSION = '0.20';
+$VERSION = '0.21';
 
 =head1 NAME
 
-SVG::TT::Graph - Base object for generating SVG Graphs
+SVG::TT::Graph - Base module for generating SVG graphics
 
 =head1 SYNOPSIS
 
@@ -91,10 +91,30 @@ SVG::TT::Graph - Base object for generating SVG Graphs
 
 =head1 DESCRIPTION
 
-This package should be used as a base for creating SVG graphs. If XML::Tidy is
-installed, the SVG files generated are tidied.
+This package is a base module for creating graphs in Scalable Vector Format
+(SVG). Do not use this module directly. Instead, use one of the following
+modules to create the plot of your choice:
 
-See SVG::TT::Graph::Line for an example.
+=over
+
+=item L<SVG::TT::Graph::Line>
+
+=item L<SVG::TT::Graph::Bar>
+
+=item L<SVG::TT::Graph::BarHorizontal>
+
+=item L<SVG::TT::Graph::BarLine>
+
+=item L<SVG::TT::Graph::Pie>
+
+=item L<SVG::TT::Graph::TimeSeries>
+
+=item L<SVG::TT::Graph::XY>
+
+=back
+
+If XML::Tidy is installed, the SVG files generated can be tidied. If
+Compress::Zlib is available, the SVG files can also be compressed to SVGZ.
 
 =cut
 

@@ -14,6 +14,7 @@ lib/SVG/TT/Graph/BarLine.pm
 lib/SVG/TT/Graph/Line.pm
 lib/SVG/TT/Graph/Pie.pm
 lib/SVG/TT/Graph/TimeSeries.pm
+lib/SVG/TT/Graph/XY.pm
 Makefile.PL
 MANIFEST
 META.yml
@@ -25,6 +26,7 @@ script/synopsis_bar_line.pl
 script/synopsis_line.pl
 script/synopsis_pie.pl
 script/synopsis_timeseries.pl
+script/synopsis_xy.pl
 script/timeseries.pl
 t/01_main.t
 t/02_basic.t
