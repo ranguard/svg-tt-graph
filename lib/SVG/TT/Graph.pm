@@ -253,10 +253,12 @@ sub burn {
   my %config = (
     POST_CHOMP   => 1,
     INCLUDE_PATH => '/',
+    #STRICT      => 1, # we should probably enable this for strict checking
     #DEBUG       => 'undef', # TT warnings on, useful for debugging, finding undef values
   );
   my $tt = Template->new( \%config );
   my $file;
+
   my $template_response = $tt->process( \$template, \%vals, \$file );
   if($tt->error()) {
     croak "Template error: " . $tt->error . "\n" if $tt->error;
@@ -541,6 +543,7 @@ L<SVG::TT::Graph::BarHorizontal>,
 L<SVG::TT::Graph::BarLine>,
 L<SVG::TT::Graph::Pie>,
 L<SVG::TT::Graph::TimeSeries>,
+L<SVG::TT::Graph::XY>,
 L<Compress::Zlib>,
 L<XML::Tidy>
 
