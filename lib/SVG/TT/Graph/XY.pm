@@ -1,4 +1,4 @@
-package SVG::TT::Graph::TimeSeries;
+package SVG::TT::Graph::XY;
 
 use strict;
 use Carp;
@@ -8,24 +8,19 @@ use vars qw($VERSION $TEMPLATE_FH);
 $VERSION = $SVG::TT::Graph::VERSION;
 $TEMPLATE_FH = \*DATA;
 
-use Data::Dumper;
-use HTTP::Date;
-use DateTime;
-use POSIX;
-
 
 =head1 NAME
 
-SVG::TT::Graph::TimeSeries - Create presentation quality SVG line graphs of time series easily
+SVG::TT::Graph::XY - Create presentation quality SVG line graphs of XY data points easily
 
 =head1 SYNOPSIS
 
-  use SVG::TT::Graph::TimeSeries;
+  use SVG::TT::Graph::XY;
 
-  my @data_cpu = ('2003-09-03 09:30:00',23,'2003-09-03 09:45:00',54,'2003-09-03 10:00:00',67,'2003-09-03 10:15:00',12);
-  my @data_disk = ('2003-09-03 09:00:00',12,'2003-09-03 10:00:00',26,'2003-09-03 11:00:00',23);
+  my @data_cpu  = (0.3, 23, 0.5, 54, 1.0, 67, 1.8, 12);
+  my @data_disk = (0.45, 12, 0.51, 26, 0.53, 23);
   
-  my $graph = SVG::TT::Graph::TimeSeries->new({
+  my $graph = SVG::TT::Graph::XY->new({
     'height' => '500',
     'width'  => '300',
   });
@@ -46,39 +41,33 @@ SVG::TT::Graph::TimeSeries - Create presentation quality SVG line graphs of time
 =head1 DESCRIPTION
 
 This object aims to allow you to easily create high quality
-SVG line graphs of time series. You can either use the default style sheet
+SVG line graphs of XY data. You can either use the default style sheet
 or supply your own. Either way there are many options which can
 be configured to give you control over how the graph is
 generated - with or without a key, data elements at each point,
 title, subtitle etc.
-All times must be given a format parseable by L<HTTP::Date>.
-The L<DateTime> module is used for all date/time calculations.
-
-Note that the module is currently limited to the Unix-style epoch-based
-date range limited by 32 bit signed integers (around 1902 to 2038).
 
 =head1 METHODS
 
 =head2 new()
 
-  use SVG::TT::Graph::TimeSeries;
+  use SVG::TT::Graph::XY;
   
-  my $graph = SVG::TT::Graph::TimeSeries->new({
+  my $graph = SVG::TT::Graph::XY->new({
   
     # Optional - defaults shown
     'height'              => 500,
     'width'               => 300,
 
     'show_y_labels'       => 1,
-    'scale_divisions'     => '',
-    'min_scale_value'     => 0,
-    'max_scale_value'     => '',
+    'yscale_divisions'    => '',
+    'min_yscale_value'    => 0,
+    'max_yscale_value'    => '',
 
     'show_x_labels'       => 1,    
-    'timescale_divisions' => '',
-    'min_timescale_value' => '',
-    'max_timescale_value' => '',
-    'x_label_format'      => '%Y-%m-%d %H:%M:%S',
+    'xscale_divisions'    => '',
+    'min_xscale_value'    => '',
+    'max_xscale_value'    => '',
     'stagger_x_labels'    => 0,
     'rotate_x_labels'     => 0,
     'y_label_formatter'   => sub { return @_ },
@@ -88,7 +77,7 @@ date range limited by 32 bit signed integers (around 1902 to 2038).
     'show_data_values'    => 1,
     'rollover_values'     => 0,
     
-    'area_fill'           => 0,
+    'area_fill'           => 0,    
 
     'show_x_title'        => 0,
     'x_title'             => 'X Field names',
@@ -114,9 +103,9 @@ to using the internal style sheet.
 
 =head2 add_data()
 
-  my @data_cpu = ('2003-09-03 09:30:00',23,'2003-09-03 09:45:00',54,'2003-09-03 10:00:00',67,'2003-09-03 10:15:00',12);
+  my @data_cpu  = (0.3, 23, 0.5, 54, 1.0, 67, 1.8, 12);
   or
-  my @data_cpu = (['2003-09-03 09:30:00',23],['2003-09-03 09:45:00',54],['2003-09-03 10:00:00',67],['2003-09-03 10:15:00',12]);
+  my @data_cpu = ([0.3,23], [0.5,54], [1.0,67], [1.8,12]);
 
   $graph->add_data({
     'data' => \@data_cpu,
@@ -124,7 +113,7 @@ to using the internal style sheet.
   });
 
 This method allows you to add data to the graph object.
-The data is expected to be a list of time, value pairs.
+The data is expected to be a list of pairs of numbers.
 It can be called several times to add more data sets in.
 
 =head2 clear_data()
@@ -212,30 +201,30 @@ Used in combination with show_data_values and/or show_data_points.
 
 Format specifier to for data values (as per printf).
 
-=item max_time_span()
+=item max_x_span()
 
-Maximum timespan for a line between data points. If this span is exceeded, the points are not connected.
-This is useful for skipping missing data sections.
-The expected form is:
-    '<integer> [years | months | days | hours | minutes | seconds]'
+Maximum span for a line between data points on the X-axis. If this span is
+exceeded, the points are not connected. This is useful for skipping missing data
+sections. This is also handy if you just want an XY scatter plot, without line
+joining the data points.
 
 =item stacked()
 
-Accumulates each data set. (i.e. Each point increased by sum of all previous series at same time). Default is 0, set to '1' to show.
-All data series have the same number of points and must have the same sequence of time values
-for this option. 
+Accumulates each data set. (i.e. Each point increased by
+sum of all previous series at same point). Default is 0,
+set to '1' to show.
 
-=item min_scale_value()
+=item min_yscale_value()
 
 The point at which the Y axis starts, defaults to '0',
 if set to '' it will default to the minimum data value.
 
-=item max_scale_value()
+=item max_yscale_value()
 
 The point at which the Y axis ends,
 if set to '' it will default to the maximum data value.
 
-=item scale_divisions()
+=item yscale_divisions()
 
 This defines the gap between markers on the Y axis,
 default is a 10th of the range, e.g. you will have
@@ -248,12 +237,6 @@ graph won't generate.
 Whether to show labels on the X axis or not, defaults
 to 1, set to '0' if you want to turn them off.
 
-=item x_label_format()
-
-Format string for presenting the X axis labels.
-The POSIX strftime() function is used for formatting 
-(see strftime man pages and LC_TIME locale information).
-
 =item show_y_labels()
 
 Whether to show labels on the Y axis or not, defaults
@@ -263,15 +246,11 @@ to 1, set to '0' if you want to turn them off.
 
 Format string for presenting the Y axis labels (as per printf).
 
-=item timescale_divisions()
+=item xscale_divisions()
 
 This defines the gap between markers on the X axis.
 Default is the entire range (only start and end axis 
 labels).
-The expected form is:
-    '<integer> [years | months | days | hours | minutes | seconds]'
-The default time period if not provided is 'days'.
-These time periods are used by the L<DateTime::Duration> methods.
 
 =item stagger_x_labels()
 
@@ -284,17 +263,15 @@ Default it '0', to turn on set to '1'.
 This turns the X axis labels by 90 degrees.
 Default it '0', to turn on set to '1'.
 
-=item min_timescale_value()
+=item min_xscale_value()
 
-This sets the minimum timescale value (X axis).
-Any data points before this time will not be shown.
-The date/time is expected in ISO format: YYYY-MM-DD hh:mm:ss.
+This sets the minimum X value. Any data points before this value will not be
+shown.
 
-=item max_timescale_value()
+=item max_xscale_value()
 
-This sets the maximum timescale value (X axis).
-Any data points after this time will not be shown.
-The date/time is expected in ISO format: YYYY-MM-DD hh:mm:ss.
+This sets the maximum X value. Any data points after this value will not be
+shown.
 
 =item show_x_title()
 
@@ -303,7 +280,7 @@ default is 0, set to '1' to show.
 
 =item x_title()
 
-What the title under X axis should be, e.g. 'Months'.
+What the title under X axis should be, e.g. 'Parameter X'.
 
 =item show_y_title()
 
@@ -367,14 +344,11 @@ None by default.
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to Foxtons for letting us put this on CPAN, Todd Caine for heads up on
-reparsing the template (but not using atm), David Meibusch for TimeSeries and a
-load of other ideas, Stephen Morgan for creating the TT template and SVG, and
-thanks for all the patches by Andrew Ruthven and others.
+This module was largely based on SVG::TT::Graph::TimeSeries by David Meibusch.
 
 =head1 AUTHOR
 
-David Meibusch <David.Meibusch@adc.com>
+Florent Angly <florent.angly@gmail.com>
 
 =head1 MAINTAINER
 
@@ -431,21 +405,20 @@ sub _set_defaults {
     'show_data_values'    => 1,
     'rollover_values'     => 0,
 
-    'max_time_span'       => '',
+    'max_x_span'          => '',
         
     'area_fill'           => 0,
         
     'show_y_labels'       => 1,   
-    'scale_divisions'     => '',
-    'min_scale_value'     => '0',
+    'yscale_divisions'    => '',
+    'min_yscale_value'    => '0',
         
     'stacked'             => 0,
 
     'show_x_labels'       => 1,
     'stagger_x_labels'    => 0,
     'rotate_x_labels'     => 0,
-    'timescale_divisions' => '',
-    'x_label_format'      => '%Y-%m-%d %H:%M:%S',
+    'xscale_divisions'    => '',
     'x_label_formatter'   => sub { return @_ },
     'y_label_formatter'   => sub { return @_ },
   
@@ -462,9 +435,6 @@ sub _set_defaults {
 
     'key'                 => 0,
     'key_position'        => 'right', # bottom or right
-        
-    'dateadd'             => \&dateadd,
-
   );
   
   while( my ($key,$value) = each %default ) {
@@ -485,9 +455,9 @@ sub add_data {
     $self->{'data'} = \@data;
   }
 
-  # convert to sorted (by ascending time) array of [ time, value ]
+  # convert to sorted (by ascending numeric value) array of [ x, y ]
   my @new_data = ();
-  my ($i,$time,@pair);
+  my ($i,$x,@pair);
 
   $i = 0;
   while ($i < @{$conf->{'data'}}) {
@@ -500,20 +470,6 @@ sub add_data {
       $pair[0] = $conf->{'data'}->[$i++];
       $pair[1] = $conf->{'data'}->[$i++];
     }
-    
-    $time = str2time($pair[0]);
-    # special case for time-only values
-    if ((!defined $time) && ($pair[0] =~ m/^\w*(\d+:\d+:\d+)|(\d+:\d+)\w*$/))  {
-      $time = str2time('1970-1-1 '.$pair[0]);
-    }
-    
-    croak sprintf("Series %d contains an illegal datetime value %s at sample %d.",
-      scalar(@{$self->{'data'}}),
-      $pair[0],
-      $i / 2)
-    unless (defined $time);
-    
-    $pair[0] = $time;
     push @new_data, [ @pair ];
   }
   
@@ -529,11 +485,11 @@ sub add_data {
       unless (scalar(@sorted) == scalar(@$prev));
     
     for (my $i = 0; $i < @sorted; $i++) {
-      # check the time value matches
-      croak sprintf("Series %d can not be stacked on previous series. Mismatched timestamp at sample %d (time %s).",
+      # check the x value matches
+      croak sprintf("Series %d can not be stacked on previous series. Mismatched x value at sample %d (x %s).",
         scalar(@{$self->{'data'}}),
         $i,
-        HTTP::Date::time2iso($sorted[$i][0]))
+        $sorted[$i][0])
       unless ($sorted[$i][0] == $prev->[$i][0]);
        
       $sorted[$i][1] += $prev->[$i][1];
@@ -550,56 +506,47 @@ sub add_data {
   return 1;
 }
 
-# Helper function for doing date/time calculations
-# Current implementations of DateTime can be slow :-(
-sub dateadd {
-  my ($epoch,$value,$unit) = @_;
-  my $dt = DateTime->from_epoch(epoch => $epoch);
-  $dt->add( $unit => $value );
-  return $dt->epoch();
-}
-
 # override calculations to set a few calculated values, mainly for scaling
 sub calculations {
   my $self = shift;
   
   # run through the data and calculate maximum and minimum values
-  my ($max_key_size,$max_time,$min_time,$max_value,$min_value,$max_x_label_length,$x_label);
+  my ($max_key_size, $max_x, $min_x, $max_y, $min_y, $max_x_label_length, $x_label);
   
   foreach my $dataset (@{$self->{data}}) {
     $max_key_size = length($dataset->{title}) if ((!defined $max_key_size) || ($max_key_size < length($dataset->{title})));
     
     foreach my $pair (@{$dataset->{pairs}}) {
-      $max_time = $pair->[0] if ((!defined $max_time) || ($max_time < $pair->[0]));
-      $min_time = $pair->[0] if ((!defined $min_time) || ($min_time > $pair->[0]));
-      $max_value = $pair->[1] if (($pair->[1] ne '') && ((!defined $max_value) || ($max_value < $pair->[1])));
-      $min_value = $pair->[1] if (($pair->[1] ne '') && ((!defined $min_value) || ($min_value > $pair->[1])));
-      
-      $x_label = strftime($self->{config}->{x_label_format},localtime($pair->[0]));
+      $max_x = $pair->[0] if ((!defined $max_x) || ($max_x < $pair->[0]));
+      $min_x = $pair->[0] if ((!defined $min_x) || ($min_x > $pair->[0]));
+      $max_y = $pair->[1] if (($pair->[1] ne '') && ((!defined $max_y) || ($max_y < $pair->[1])));
+      $min_y = $pair->[1] if (($pair->[1] ne '') && ((!defined $min_y) || ($min_y > $pair->[1])));
+
+      $x_label = $pair->[0];
       $max_x_label_length = length($x_label) if ((!defined $max_x_label_length) || ($max_x_label_length < length($x_label)));
     }
   }
   $self->{calc}->{max_key_size} = $max_key_size;
-  $self->{calc}->{max_time} = $max_time;
-  $self->{calc}->{min_time} = $min_time;
-  $self->{calc}->{max_value} = $max_value;
-  $self->{calc}->{min_value} = $min_value;
+  $self->{calc}->{max_x} = $max_x;
+  $self->{calc}->{min_x} = $min_x;
+  $self->{calc}->{max_y} = $max_y;
+  $self->{calc}->{min_y} = $min_y;
   $self->{calc}->{max_x_label_length} = $max_x_label_length;
 
   # Calc the x axis scale values
-  $self->{calc}->{min_timescale_value} = ($self->_is_valid_config('min_timescale_value')) ? str2time($self->{config}->{min_timescale_value}) : $min_time;
-  $self->{calc}->{max_timescale_value} = ($self->_is_valid_config('max_timescale_value')) ? str2time($self->{config}->{max_timescale_value}) : $max_time;
-  $self->{calc}->{timescale_range} = $self->{calc}->{max_timescale_value} - $self->{calc}->{min_timescale_value};
+  $self->{calc}->{min_xscale_value} = ($self->_is_valid_config('min_xscale_value')) ? $self->{config}->{min_xscale_value} : $min_x;
+  $self->{calc}->{max_xscale_value} = ($self->_is_valid_config('max_xscale_value')) ? $self->{config}->{max_xscale_value} : $max_x;
+  $self->{calc}->{xscale_range} = $self->{calc}->{max_xscale_value} - $self->{calc}->{min_xscale_value};
 
   # Calc the y axis scale values
-  $self->{calc}->{min_scale_value} = ($self->_is_valid_config('min_scale_value')) ? $self->{config}->{min_scale_value} : $min_value;
-  $self->{calc}->{max_scale_value} = ($self->_is_valid_config('max_scale_value')) ? $self->{config}->{max_scale_value} : $max_value;
-  $self->{calc}->{scale_range} = $self->{calc}->{max_scale_value} - $self->{calc}->{min_scale_value};
+  $self->{calc}->{min_yscale_value} = ($self->_is_valid_config('min_yscale_value')) ? $self->{config}->{min_yscale_value} : $min_y;
+  $self->{calc}->{max_yscale_value} = ($self->_is_valid_config('max_yscale_value')) ? $self->{config}->{max_yscale_value} : $max_y;
+  $self->{calc}->{yscale_range} = $self->{calc}->{max_yscale_value} - $self->{calc}->{min_yscale_value};
   
   my ($range,$division,$precision);
   
-  if ($self->_is_valid_config('scale_divisions')) {
-    $division = $self->{config}->{scale_divisions};
+  if ($self->_is_valid_config('yscale_divisions')) {
+    $division = $self->{config}->{yscale_divisions};
 
     if ($division >= 1) {
       $precision = 0;   
@@ -610,15 +557,15 @@ sub calculations {
   }
   else {
     # Find divisions, format and range
-    ($range,$division,$precision) = $self->_range_calc($self->{calc}->{scale_range});
+    ($range, $division, $precision) = $self->_range_calc($self->{calc}->{yscale_range});
 
     # If a max value hasn't been set we can set a revised range and max value
-    if (! $self->_is_valid_config('max_scale_value')) {
-      $self->{calc}->{max_scale_value} = $self->{calc}->{min_scale_value} + $range;  
-      $self->{calc}->{scale_range} = $self->{calc}->{max_scale_value} - $self->{calc}->{min_scale_value};
+    if (! $self->_is_valid_config('max_yscale_value')) {
+      $self->{calc}->{max_yscale_value} = $self->{calc}->{min_yscale_value} + $range;  
+      $self->{calc}->{yscale_range} = $self->{calc}->{max_yscale_value} - $self->{calc}->{min_yscale_value};
     }
   }
-  $self->{calc}->{scale_division} = $division;
+  $self->{calc}->{yscale_division} = $division;
   
   $self->{calc}->{y_label_format} = ($self->_is_valid_config('y_label_format')) ? $self->{config}->{y_label_format} : "%.${precision}f";
   $self->{calc}->{data_value_format} = ($self->_is_valid_config('data_value_format')) ? $self->{config}->{data_value_format} : "%.${precision}f";
@@ -630,7 +577,6 @@ __DATA__
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
   "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 
-[% USE date %]
 [% stylesheet = 'included' %]
 
 [% IF config.style_sheet && config.style_sheet != '' %]
@@ -806,7 +752,7 @@ __DATA__
 [% char_width = 8 %]
 [% half_char_height = 2.5 %]
 
-<!-- min_value [% calc.min_value %] max_value [% calc.max_value %] min_time [% calc.min_time %] max_time [% calc.max_time %] -->
+<!-- min_y [% calc.min_y %] max_y [% calc.max_y %] min_x [% calc.min_x %] max_x [% calc.max_x %] -->
 
 <!-- CALC HEIGHT AND Y COORD DIMENSIONS -->
 [%# reduce height of graph area if there is labelling on x axis %]
@@ -849,21 +795,21 @@ __DATA__
   [% END %]
 [% END %]
 
-<!-- min_scale_value [% calc.min_scale_value %] max_scale_value [% calc.max_scale_value %] -->
+<!-- min_yscale_value [% calc.min_yscale_value %] max_yscale_value [% calc.max_yscale_value %] -->
 
 [%# base line %]
 [% base_line = h + y %]
 
 [%# find the string length of max value %]
-[% max_value_length = calc.max_scale_value.length %]
+[% max_y_length = calc.max_yscale_value.length %]
 
 [%# label width in pixels %]
-[% max_value_length_px = max_value_length * char_width %]
+[% max_y_length_px = max_y_length * char_width %]
 [%# If the y labels are shown but the size of the x labels are small, pad for y labels %]
 
 <!-- CALC WIDTH AND X COORD DIMENSIONS -->
 [%# reduce width of graph area if there is large labelling on x axis %]
-[% space_b4_y_axis = (date.format(calc.min_timescale_value,config.x_label_format).length / 2) * char_width %]
+[% space_b4_y_axis = (calc.min_xscale_value.length / 2) * char_width %]
 
 [% IF config.show_x_labels %]
   [% IF config.key && config.key_position == 'right' %]
@@ -874,22 +820,22 @@ __DATA__
   [% END %]
   [% x = x + space_b4_y_axis %]
 [% ELSIF config.show_data_values %]
-  [% w = w - (max_value_length_px * 2) %]
-  [% x = x + max_value_length_px %]
+  [% w = w - (max_y_length_px * 2) %]
+  [% x = x + max_y_length_px %]
 [% END %]
 
-[% IF config.show_y_labels && space_b4_y_axis < max_value_length_px %]
+[% IF config.show_y_labels && space_b4_y_axis < max_y_length_px %]
   <!-- allow slightly more padding if small labels -->
-  [% IF max_value_length < 2 %]
-    [% w = w - (max_value_length * (char_width * 2)) %]
-    [% x = x + (max_value_length * (char_width * 2)) %]
+  [% IF max_y_length < 2 %]
+    [% w = w - (max_y_length * (char_width * 2)) %]
+    [% x = x + (max_y_length * (char_width * 2)) %]
   [% ELSE %]
-    [% w = w - max_value_length_px %]
-    [% x = x + max_value_length_px %]
+    [% w = w - max_y_length_px %]
+    [% x = x + max_y_length_px %]
   [% END %]
 [% ELSIF config.show_y_labels && !config.show_x_labels %]
-  [% w = w - max_value_length_px %]
-  [% x = x + max_value_length_px %]
+  [% w = w - max_y_length_px %]
+  [% x = x + max_y_length_px %]
 [% END %]
 
 [% IF config.show_y_title %]
@@ -897,18 +843,13 @@ __DATA__
   [% x = x + 25 %]
 [% END %]
 
-<!-- min_timescale_value [% calc.min_timescale_value %] max_timescale_value [% calc.max_timescale_value %] -->
+<!-- min_xscale_value [% calc.min_xscale_value %] max_xscale_value [% calc.max_xscale_value %] -->
 
 [%# Missing data spans %]
-[% max_time_span = 0 %]
-[% IF (matches = config.max_time_span.match('(\d+) ?(\w+)?')) %]
-  [% max_time_span = matches.0 %]
-  [% IF (matches.1) %]
-    [% max_time_span_units = matches.1 %]
-  [% ELSE %]
-    [% max_time_span_units = 'days' %]
-  [% END %] 
-  <!-- max_time_span [% max_time_span %] max_time_span_units [% max_time_span_units %]-->
+[% max_x_span = 0 %]
+[% IF config.max_x_span %]
+  [% max_x_span = config.max_x_span %]
+  <!-- max_x_span [% max_x_span %] -->
 [% END %]
 
 <!-- //////////////////////////////  BUILD GRAPH AREA ////////////////////////////// -->
@@ -924,44 +865,41 @@ __DATA__
 
 <!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
 <!-- x axis scaling -->
-[% dx = calc.timescale_range %]
+[% dx = calc.xscale_range %]
 [% dw = w / dx %]
 <!-- dx [% dx %] dw [% dw %] -->
 
 <!-- x axis labels -->
 [% IF config.show_x_labels %]
-  [% x_value_txt = config.x_label_formatter(date.format(calc.min_timescale_value,config.x_label_format)) %]
+  [% x_value_txt = config.x_label_formatter(calc.min_xscale_value) %]
   <text x="[% x %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
-  [% last_label = date.format(calc.min_timescale_value,config.x_label_format) %]
-  [% IF config.timescale_divisions %]
-    [% IF (matches = config.timescale_divisions.match('(\d+) ?(\w+)?')) %]
-      [% timescale_division = matches.0 %]
-      [% IF (matches.1) %]
-        [% timescale_division_units = matches.1 %]
+  [% last_label = calc.min_xscale_value %]
+
+  [% IF config.xscale_divisions %]
+
+    [% xscale_division = config.xscale_divisions %]
+    [% x_value = calc.min_xscale_value + xscale_division %]
+
+    [% count = 0 %]
+    [% WHILE ((x_value > calc.min_xscale_value) && ((x_value < calc.max_xscale_value))) %]
+      [% x_value_txt = config.x_label_formatter(x_value) %]
+      [% xpos = (dw * (x_value - calc.min_xscale_value)) + x %]
+      [% IF (config.stagger_x_labels && ((count % 2) == 0)) %]
+        <path d="M[% xpos %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
+        <text x="[% xpos %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
       [% ELSE %]
-        [% timescale_division_units = 'days' %]
-      [% END %] 
-      <!-- timescale_division [% timescale_division %] timescale_division_units [% timescale_division_units %]-->
-      [% x_value = config.dateadd(calc.min_timescale_value,timescale_division,timescale_division_units) %]
-      [% count = 0 %]
-      [% WHILE ((x_value > calc.min_timescale_value) && ((x_value < calc.max_timescale_value))) %]
-        [% x_value_txt = config.x_label_formatter(date.format(x_value,config.x_label_format)) %]
-        [% xpos = (dw * (x_value - calc.min_timescale_value)) + x %]
-        [% IF (config.stagger_x_labels && ((count % 2) == 0)) %]
-          <path d="M[% xpos %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
-          <text x="[% xpos %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
-        [% ELSE %]
-          <text x="[% xpos %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
-        [% END %]
-        [% last_label = date.format(x_value,config.x_label_format) %]
-        [% x_value = config.dateadd(x_value,timescale_division,timescale_division_units) %]
-        [% count = count + 1 %]
-        [% LAST IF (count >= 999) %]
+        <text x="[% xpos %]" y="[% base_line + 15 %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% xpos  - half_char_height %] [% base_line + 15 %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
       [% END %]
+      [% last_label = x_value %]
+      [% x_value = x_value + xscale_division %]
+      [% count = count + 1 %]
+      [% LAST IF (count >= 999) %]
     [% END %]
+
   [% END %]
-  [% IF date.format(calc.max_timescale_value,config.x_label_format) != last_label %]
-    [% x_value_txt = config.x_label_formatter(date.format(calc.max_timescale_value,config.x_label_format)) %]
+
+  [% IF calc.max_xscale_value != last_label %]
+    [% x_value_txt = config.x_label_formatter(calc.max_xscale_value) %]
     [% IF (config.stagger_x_labels && ((count % 2) == 0)) %]
     <path d="M[% x + w %] [% base_line %] v[% stagger %]" class="staggerGuideLine" />
     <text x="[% x + w %]" y="[% base_line + 15 + stagger %]" [% IF config.rotate_x_labels %] transform="rotate(90 [% x + w - half_char_height %] [% base_line + 15 + stagger %]) translate(-10,0)" style="text-anchor: start" [% END %] class="xAxisLabels">[% x_value_txt %]</text>
@@ -975,26 +913,26 @@ __DATA__
 [%# how much padding between largest bar and top of graph %]
 [% top_pad = h / 40 %]
 
-[% dy = calc.scale_range %]
+[% dy = calc.yscale_range %]
 [% dh = (h - top_pad) / dy %]
-<!-- dy [% dy %] dh [% dh %] scale_division [% calc.scale_division %] max_scale_value [% calc.max_scale_value %]-->
+<!-- dy [% dy %] dh [% dh %] yscale_division [% calc.yscale_division %] max_yscale_value [% calc.max_yscale_value %]-->
 
 [% count = 0 %]
-[% y_value = calc.min_scale_value %]
+[% y_value = calc.min_yscale_value %]
 [% IF config.show_y_labels %]
-  [% WHILE ((y_value == calc.min_scale_value) || (y_value == calc.max_scale_value) || ((y_value > calc.min_scale_value) && (y_value < calc.max_scale_value))) %]
+  [% WHILE ((y_value == calc.min_yscale_value) || (y_value == calc.max_yscale_value) || ((y_value > calc.min_yscale_value) && (y_value < calc.max_yscale_value))) %]
     [%- next_label = y_value FILTER format(calc.y_label_format) -%]
     [%- next_label = config.y_label_formatter(next_label) -%]
     [%- IF count == 0 -%]
       [%# no stroke for first line %]
-      <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>
+      <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_yscale_value)) %]" class="yAxisLabels">[% next_label %]</text>
     [%- ELSE -%]
       [% IF next_label != last_label %]
-        <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>
-        <path d="M[% x %] [% base_line - (dh * (y_value - calc.min_scale_value)) %] h[% w %]" class="guideLines"/>
+        <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_yscale_value)) %]" class="yAxisLabels">[% next_label %]</text>
+        <path d="M[% x %] [% base_line - (dh * (y_value - calc.min_yscale_value)) %] h[% w %]" class="guideLines"/>
       [% END %]  
     [%- END -%]
-    [%- y_value = y_value + calc.scale_division -%]
+    [%- y_value = y_value + calc.yscale_division -%]
     [%- last_label = next_label -%]
     [%- count = count + 1 -%]
     [%- LAST IF (count >= 999) -%]
@@ -1026,14 +964,14 @@ __DATA__
     [%# create alternate fill first (so line can overwrite if necessary) %]
     [% xcount = 0 %]
     [% FOREACH pair = dataset.pairs %]
-      [%- IF ((pair.0 >= calc.min_timescale_value) && (pair.0 <= calc.max_timescale_value)) -%]
-        [%- IF xcount == 0 -%][% lasttime = pair.0 %]<path d="M[% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line %][%- END -%]
-        [%- IF ((max_time_span) && (pair.0 > config.dateadd(lasttime,max_time_span,max_time_span_units))) -%]
-          V [% base_line %] H [% (dw * (pair.0 - calc.min_timescale_value)) + x %] V [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
+      [%- IF ((pair.0 >= calc.min_xscale_value) && (pair.0 <= calc.max_xscale_value)) -%]
+        [%- IF xcount == 0 -%][% lastx = pair.0 %]<path d="M[% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line %][%- END -%]
+        [%- IF ((max_x_span) && (pair.0 > lastx + max_x_span)) -%]
+          V [% base_line %] H [% (dw * (pair.0 - calc.min_xscale_value)) + x %] V [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
         [%- ELSE -%]
-          L [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
+          L [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
         [%- END -%]  
-        [%- lasttime = pair.0 -%][%- xcount = xcount + 1 -%]
+        [%- lastx = pair.0 -%][%- xcount = xcount + 1 -%]
       [%- END -%]
     [% END %]
     [% IF xcount > 0 %] V [% base_line %] Z" class="fill[% line %]"/> [% END %]
@@ -1042,17 +980,17 @@ __DATA__
   <!--- create line [% dataset.title %]-->
   [% xcount = 0 %]
   [% FOREACH pair = dataset.pairs %]
-    [% IF ((pair.0 >= calc.min_timescale_value) && (pair.0 <= calc.max_timescale_value)) %]
-      [%- IF xcount == 0 -%][%- lasttime = pair.0 -%]<path d="M
-        [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
+    [% IF ((pair.0 >= calc.min_xscale_value) && (pair.0 <= calc.max_xscale_value)) %]
+      [%- IF xcount == 0 -%][%- lastx = pair.0 -%]<path d="M
+        [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
       [%- ELSE -%]
-        [%- IF ((max_time_span) && (pair.0 > config.dateadd(lasttime,max_time_span,max_time_span_units))) -%]
-          M [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
+        [%- IF ((max_x_span) && (pair.0 > lastx + max_x_span)) -%]
+          M [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
         [%- ELSE -%]
-          L [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
+          L [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
         [%- END -%]    
       [%- END -%]
-      [%- lasttime = pair.0 -%][%- xcount = xcount + 1 -%]
+      [%- lastx = pair.0 -%][%- xcount = xcount + 1 -%]
     [%- END -%]   
   [% END %]
   [% IF xcount > 0 %] " class="line[% line %]"/> [% END %]
@@ -1060,10 +998,10 @@ __DATA__
   <g id="groupDataLabels[% line %]" class="dataLabels[% line %]">
   [% IF config.show_data_points || config.show_data_values %]
     [% FOREACH pair = dataset.pairs %]
-      [% IF ((pair.0 >= calc.min_timescale_value) && (pair.0 <= calc.max_timescale_value)) %]
+      [% IF ((pair.0 >= calc.min_xscale_value) && (pair.0 <= calc.max_xscale_value)) %]
         <g class="dataLabel[% line %]" [% IF config.rollover_values %] opacity="0" [% END %]>
         [% IF config.show_data_points %]
-          <circle cx="[% (dw * (pair.0 - calc.min_timescale_value)) + x %]" cy="[% base_line - (dh * (pair.1 - calc.min_scale_value)) %]" r="2.5" class="dataPoint[% line %]"
+          <circle cx="[% (dw * (pair.0 - calc.min_xscale_value)) + x %]" cy="[% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]" r="2.5" class="dataPoint[% line %]"
           [% IF config.rollover_values %]
             onmouseover="evt.target.parentNode.setAttribute('opacity',1);"
             onmouseout="evt.target.parentNode.setAttribute('opacity',0);"
@@ -1076,7 +1014,7 @@ __DATA__
         [% IF config.show_data_values %]
           [%# datavalue shown %]
           [% IF (pair.2.defined) && (pair.2 != '') %][% point_label = pair.2 %][% ELSE %][% point_label = pair.1 FILTER format(calc.data_value_format) %][% END %]
-          <text x="[% (dw * (pair.0 - calc.min_timescale_value)) + x %]" y="[% base_line - (dh * (pair.1 - calc.min_scale_value)) - 6 %]" class="dataPointLabel[% line %]"
+          <text x="[% (dw * (pair.0 - calc.min_xscale_value)) + x %]" y="[% base_line - (dh * (pair.1 - calc.min_yscale_value)) - 6 %]" class="dataPointLabel[% line %]"
           [% IF config.rollover_values %]
             onmouseover="evt.target.parentNode.setAttribute('opacity',1);"
             onmouseout="evt.target.parentNode.setAttribute('opacity',0);"

@@ -2,7 +2,7 @@ use lib qw( ./blib/lib ../blib/lib );
 
 # Test using the methods to set the config
 
-use Test::More tests => 77;
+use Test::More tests => 90;
 
 BEGIN { use_ok( 'SVG::TT::Graph' ); }
 BEGIN { use_ok( 'SVG::TT::Graph::Pie' ); }
@@ -11,10 +11,11 @@ BEGIN { use_ok( 'SVG::TT::Graph::Bar' ); }
 BEGIN { use_ok( 'SVG::TT::Graph::BarHorizontal' ); }
 BEGIN { use_ok( 'SVG::TT::Graph::BarLine' ); }
 BEGIN { use_ok( 'SVG::TT::Graph::TimeSeries' ); }
+BEGIN { use_ok( 'SVG::TT::Graph::XY' ); }
 
 my @fields = qw(Jan Feb Mar);
 
-my @types = qw(Line Bar BarHorizontal Pie BarLine TimeSeries);
+my @types = qw(Line Bar BarHorizontal Pie BarLine TimeSeries XY);
 foreach my $type (@types) {
 
   my $module = "SVG::TT::Graph::$type";
