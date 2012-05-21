@@ -404,6 +404,7 @@ L<SVG::TT::Graph::Bar>,
 L<SVG::TT::Graph::BarHorizontal>,
 L<SVG::TT::Graph::BarLine>,
 L<SVG::TT::Graph::Pie>,
+L<SVG::TT::Graph::XY>,
 L<Compress::Zlib>,
 L<XML::Tidy>
 
