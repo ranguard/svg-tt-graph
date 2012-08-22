@@ -694,7 +694,7 @@ __DATA__
       [% text_x_offset = 0-wedge_text_pad %]
       [% text_y_offset = 0-wedge_text_pad %]
     [% END %]
-    <text id="d[% count %]" x="[% x + px_mid + text_x_offset %]" y="[% y + py_mid + text_y_offset %]">[% IF config.show_data_labels %][% field %][% END %][% IF config.show_actual_values %][[% data.0.data.$field %]][% END %][% IF config.show_percent %][% percent %]%[% END %]</text>
+    <text id="d[% count %]" x="[% x + px_mid + text_x_offset %]" y="[% y + py_mid + text_y_offset %]" class="dataPointLabel">[% IF config.show_data_labels %][% field %][% END %][% IF config.show_actual_values %][[% data.0.data.$field %]][% END %][% IF config.show_percent %][% percent %]%[% END %]</text>
 
     <!-- show rollover field names next to wedge values -->
     [% IF config.rollover_values %]
