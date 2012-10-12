@@ -798,6 +798,12 @@ __DATA__
 [% dy = y_marker_height.match('(\d+[\.\d\d])').0 %]
 [% count = 0 %]
 [% y_value = min_scale_value %]
+
+[% IF ((min_scale_value > max_scale_value) && (scale_division > 0)) %]
+    <!-- Reversed y range -->
+    [% scale_division = -1 * scale_division %]
+[% END %]
+
 [% IF config.show_y_labels %]
   [% WHILE (dy * count) < h %]
     [% y_value_txt = config.y_label_formatter(y_value) %]
