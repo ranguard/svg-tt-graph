@@ -981,13 +981,21 @@ __DATA__
 <!-- dy [% dy %] dh [% dh %] scale_division [% calc.scale_division %] max_scale_value [% calc.max_scale_value %]-->
 
 [% count = 0 %]
-[% y_value = calc.min_scale_value %]
+[% last_label = '' %]
+[% IF (calc.min_scale_value > calc.max_scale_value) %]
+    <!-- Reversed y range -->
+    [% y_value = calc.max_scale_value %]
+    [% reversed = 1 %]
+[% ELSE %]
+    [% y_value = calc.min_scale_value %]
+    [% reversed = 0 %]
+[% END %]
 [% IF config.show_y_labels %]
-  [% WHILE ((y_value == calc.min_scale_value) || (y_value == calc.max_scale_value) || ((y_value > calc.min_scale_value) && (y_value < calc.max_scale_value))) %]
+  [% WHILE ((y_value == calc.min_scale_value) || (y_value == calc.max_scale_value) || ((y_value > calc.min_scale_value) && (y_value < calc.max_scale_value)) || ((y_value > calc.max_scale_value) && (y_value < calc.min_scale_value) && reversed )) %]
     [%- next_label = y_value FILTER format(calc.y_label_format) -%]
     [%- next_label = config.y_label_formatter(next_label) -%]
-    [%- IF count == 0 -%]
-      [%# no stroke for first line %]
+    [%- IF ((count == 0) && (reversed == 0)) -%]
+      [%# no stroke for first line unless reversed %]
       <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>
     [%- ELSE -%]
       [% IF next_label != last_label %]
