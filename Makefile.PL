@@ -14,6 +14,7 @@ requires 'HTTP::Date'      => 0.1;
 recommends 'XML::Tidy';
 recommends 'Compress::Zlib';
 
-repository 'git://github.com/ranguard/svg-tt-graph.git';
+resources bugtracker => 'https://github.com/ranguard/svg-tt-graph/issues';
+resources repository => 'git://github.com/ranguard/svg-tt-graph.git';
 
 WriteAll;

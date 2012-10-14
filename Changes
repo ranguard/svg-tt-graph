@@ -1,5 +1,10 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.22 Sun 14 Oct 2012 09:43:58
+    - Link to github for issue tracking
+    - Allow reversed y-axis (elnjensen)
+    - Add missing class for data point labels (snabb)
+
 0.21
   - New type of graph available: XY (written by Florent Angly, but largely based
     on the TimeSeries module by David Meibusch)
