@@ -1,3 +1,4 @@
+use lib qw(lib);
 use SVG::TT::Graph::XY;
 
 my @data_cpu  = (0.3, 23, 0.5, 54, 1.0, 67, 1.8, 12);

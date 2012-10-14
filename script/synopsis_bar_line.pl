@@ -1,3 +1,4 @@
+use lib qw(lib);
 use SVG::TT::Graph::BarLine;
 
 my @fields = qw(Jan Feb Mar);

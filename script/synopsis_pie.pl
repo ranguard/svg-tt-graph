@@ -1,3 +1,4 @@
+use lib qw(lib);
 use SVG::TT::Graph::Pie;
 
 my @fields = qw(Jan Feb Mar);
