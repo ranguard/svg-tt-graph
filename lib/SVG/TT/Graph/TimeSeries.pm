@@ -935,6 +935,9 @@ __DATA__
 <!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
 <!-- x axis scaling -->
 [% dx = calc.timescale_range %]
+[% IF dx == 0 %]
+  [% dx = 1 %]
+[% END %]
 [% dw = w / dx %]
 <!-- dx [% dx %] dw [% dw %] -->
 
@@ -986,6 +989,9 @@ __DATA__
 [% top_pad = h / 40 %]
 
 [% dy = calc.scale_range %]
+[% IF dy == 0 %]
+  [% dy = 1 %]
+[% END %]
 [% dh = (h - top_pad) / dy %]
 <!-- dy [% dy %] dh [% dh %] scale_division [% calc.scale_division %] max_scale_value [% calc.max_scale_value %]-->
 

@@ -682,6 +682,9 @@ __DATA__
 <!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
 <!-- get number of data points on y scale -->
 [% dy = config.fields.size %]
+[% IF dy == 0 %]
+  [% dy = 1 %]
+[% END %]
 
 <!-- get distribution heights on y axis -->
 [% data_widths_y = h / dy %]
@@ -708,6 +711,9 @@ __DATA__
 
 <!-- distribute x scale -->
 [% dx = scale_range / scale_division %]
+[% IF dx == 0 %]
+  [% dx = 1 %]
+[% END %]
 <!-- ensure x_data_points butt up to edge of graph -->
 [% scale_division_height = w / dx %]
 [% dx = scale_division_height.match('(\d+[\.\d\d])').0 %]
