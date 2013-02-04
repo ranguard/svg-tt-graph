@@ -759,6 +759,9 @@ __DATA__
 [% dx = config.fields.size %]
 <!-- ensure x_data_points butt up to edge of graph -->
 [% dx = dx - 1 %]
+[% IF dx == 0 %]
+  [% dx = 1 %]
+[% END %]
 
 <!-- get distribution width on x axis -->
 [% data_widths_x = w / dx %]
@@ -793,6 +796,9 @@ __DATA__
 
 <!-- distribute Y scale -->
 [% dy = scale_range / scale_division %]
+[% IF dy == 0 %]
+  [% dy = 1 %]
+[% END %]
 <!-- ensure y_data_points butt up to edge of graph -->
 [% y_marker_height = h / dy %]
 [% dy = y_marker_height.match('(\d+[\.\d\d])').0 %]

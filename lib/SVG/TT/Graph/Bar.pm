@@ -674,7 +674,9 @@ __DATA__
 <!-- JUMP THE GUN AND CALC BAR WIDTHS AS THESE ARE USED FOR PADDING IF LARGE X LABELS ARE USED -->
 <!-- get number of data points on x scale -->
 [% dx = config.fields.size %]
-
+[% IF dx == 0 %]
+  [% dx = 1 %]
+[% END %]
 <!-- get distribution width on x axis -->
 [% data_widths_x = w / dx %]
 [% dw = data_widths_x FILTER format('%2.02f') %]
@@ -732,7 +734,9 @@ __DATA__
 <!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
 <!-- get number of data points on x scale -->
 [% dx = config.fields.size %]
-
+[% IF dx == 0 %]
+  [% dx = 1 %]
+[% END %]
 <!-- get distribution width on x axis -->
 [% data_widths_x = w / dx %]
 [% dw = data_widths_x.match('(\d+[\.\d\d])').0 %]
@@ -775,6 +779,9 @@ __DATA__
 
 <!-- distribute Y scale -->
 [% dy = scale_range / scale_division %]
+[% IF dy == 0 %]
+  [% dy = 1 %]
+[% END %]
 <!-- ensure y_data_points butt up to edge of graph -->
 [% y_marker_height = h / dy %]
 [% dy = y_marker_height.match('(\d+[\.\d\d])').0 %]

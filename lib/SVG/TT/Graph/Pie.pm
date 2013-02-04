@@ -628,7 +628,11 @@ __DATA__
     [% value_half = data.0.data.$field / 2 %]
     
     <!-- calc percentage -->
-    [% percent = (100 / total) * value FILTER format('%2.0f')%]    
+    [% IF total == 0 %]
+      [% percent = 0 %]
+    [% ELSE %]
+      [% percent = (100 / total) * value FILTER format('%2.0f')%]
+    [% END %]
 
     [% values = values + value %]
     
@@ -639,8 +643,13 @@ __DATA__
       [% values_half = values_half + last_value_half + value_half %]
     [% END %]
 
-    [% degrees = (values / total) * 360 %]
-    [% degrees_half = (values_half / total) * 360 %]  
+    [% IF total == 0 %]
+      [% degrees = 0 %]
+      [% degrees_half = 0 %]
+    [% ELSE %]
+      [% degrees = (values / total) * 360 %]
+      [% degrees_half = (values_half / total) * 360 %]
+    [% END %]
     
     [% radians = degrees * (Pi / 180) %]
     [% radians_half = degrees_half * (Pi / 180) %]
@@ -752,7 +761,11 @@ __DATA__
   [% END %]
 
   [% FOREACH field = config.fields %]
-    [% percent = (100 / total) * data.0.data.$field FILTER format('%2.0f')%]
+    [% IF total == 0 %]
+      [% percent = 0 %]
+    [% ELSE %]
+      [% percent = (100 / total) * data.0.data.$field FILTER format('%2.0f')%]
+    [% END %]
     <rect x="[% x_off %]" y="[% y_off + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="[% IF config.style_sheet_field_names %][% field %]_key[% ELSE %]key[% key_count %][% END %]"/>
     <text x="[% x_off + key_box_size + key_padding %]" y="[% y_off + (key_box_size * key_count) + (key_count * key_padding) + key_box_size %]" class="keyText">[% IF config.show_key_data_labels %][% field %][% END %] [% IF config.show_key_actual_values %][[% data.0.data.$field %]][% END %] [% IF config.show_key_percent %][% percent %]%[% END %]</text>  
     [% key_count = key_count + 1 %]
