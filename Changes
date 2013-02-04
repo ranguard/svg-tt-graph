@@ -1,5 +1,9 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.23 Mon 4 Feb 2013 21:14:40
+    - fix division by zero errors in all graph types (Carsten Wolff)
+    - Doc clarification (elnjensen)
+
 0.22 Sun 14 Oct 2012 09:43:58
     - Link to github for issue tracking
     - Allow reversed y-axis (elnjensen)
