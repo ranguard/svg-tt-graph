@@ -2,7 +2,6 @@ use lib qw( ./blib/lib ../blib/lib );
 
 # Test using the methods to set the config
 
-# was 90 plus new attr for TITLE attribute
 use Test::More tests => 98;
 
 BEGIN { use_ok( 'SVG::TT::Graph' ); }
