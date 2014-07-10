@@ -68,10 +68,12 @@ title, subtitle etc.
     'show_x_labels'          => 1,
     'stagger_x_labels'       => 0,
     'show_y_labels'          => 1,
-    'show_y_fields'	     => 0,
     'scale_integers'         => 0,
     'y_label_formatter'      => sub { return @_ },
     'x_label_formatter'      => sub { return @_ },
+
+    'show_path_title'	     => 0,
+    'show_y_fields'	     => 0,
 
     'show_x_title'           => 0,
     'x_title'                => 'X Field names',
@@ -208,13 +210,6 @@ Default it '0', to turn on set to '1'.
 Whether to show labels on the Y axis or not, defaults
 to 1, set to '0' if you want to turn them off.
 
-=item show_y_fields()
-
-Whether to show field values as title elements in path tag,
-defaults to 0, set to '1' to turn on. Suggest on single
-add_data graphs, for overlapping graphs leave off to see
-the title value used in the add_data call.
-
 =item scale_integers()
 
 Ensures only whole numbers are used as the scale divisions.
@@ -291,6 +286,18 @@ A callback subroutine which will format a label on the x axis.  For example:
 A callback subroutine which will format a label on the y axis.  For example:
 
     $graph->y_label_formatter( sub { return '$' . $_[0] } );
+
+=item show_path_title()
+
+Whether to add the title attribute to the data path tags,
+which will show "tooltips" when hovering over the bar area.
+
+=item show_y_fields()
+
+Whether to show field values as title elements in path tag,
+defaults to 0, set to '1' to turn on. Suggest on single
+add_data graphs, for overlapping graphs leave off to see
+the title value used in the add_data call.
 
 =back
 
@@ -376,10 +383,12 @@ sub _set_defaults {
     'show_x_labels'          => 1,
     'stagger_x_labels'       => 0,
     'show_y_labels'          => 1,
-    'show_y_fields'	     => 0,
     'scale_integers'         => 0,
     'x_label_formatter'      => sub { return @_ },
     'y_label_formatter'      => sub { return @_ },
+
+    'show_path_title'	     => 0,
+    'show_y_fields'	     => 0,
   
     'show_x_title'           => 0,
     'x_title'                => 'X Field names',
@@ -799,13 +808,15 @@ __DATA__
   [% dcount = 1 %]
 
   [% FOREACH dataset = data %]
-<!-- <path d="M[% x %] [% base_line - (dh * xcount) - dh %] H[% x + (dataset.data.$field * divider) %] v[% bar_width %] H[% x %] Z" class="fill[% dcount %]"/> -->
-<!-- 7/8/2014 Michael Mayer-Oakes - added key and field data as TITLE element -->
-[% IF config.show_y_fields %]
-<path d="M[% x %] [% base_line - (dh * xcount) - dh %] H[% x + (dataset.data.$field * divider) %] v[% bar_width %] H[% x %] Z" class="fill[% dcount %]"><title>[% dataset.data.$field %] - [% field %]</title></path>
-[% ELSE %]
-<path d="M[% x %] [% base_line - (dh * xcount) - dh %] H[% x + (dataset.data.$field * divider) %] v[% bar_width %] H[% x %] Z" class="fill[% dcount %]"><title>[% dataset.data.$field %] - [% dataset.title %]</title></path>
-[% END %]
+    [% IF config.show_path_title %]
+      [% IF config.show_y_fields %]
+	<path d="M[% x %] [% base_line - (dh * xcount) - dh %] H[% x + (dataset.data.$field * divider) %] v[% bar_width %] H[% x %] Z" class="fill[% dcount %]"><title>[% dataset.data.$field %] - [% field %]</title></path>
+      [% ELSE %]
+	<path d="M[% x %] [% base_line - (dh * xcount) - dh %] H[% x + (dataset.data.$field * divider) %] v[% bar_width %] H[% x %] Z" class="fill[% dcount %]"><title>[% dataset.data.$field %] - [% dataset.title %]</title></path>
+      [% END %]
+    [% ELSE %]
+      <path d="M[% x %] [% base_line - (dh * xcount) - dh %] H[% x + (dataset.data.$field * divider) %] v[% bar_width %] H[% x %] Z" class="fill[% dcount %]"/>
+    [% END %]
 
     [% IF config.show_data_values %]
       <text x="[% x + (dataset.data.$field * divider) + 5 %]" y="[% base_line - (dh * xcount) - dh + (dh / 2) %]" class="dataPointLabel" style="text-anchor: start;">[% dataset.data.$field %]</text>
