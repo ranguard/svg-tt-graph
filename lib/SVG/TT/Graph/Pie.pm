@@ -75,6 +75,8 @@ title, subtitle etc.
     'show_actual_values'      => 0,
     'show_percent'            => 1,
     'rollover_values'         => 0,
+    'show_path_title'	      => 0,
+    'show_title_fields'	      => 0,
 
     # data on key:
     'show_key_data_labels'    => 1,
@@ -251,6 +253,18 @@ to '1', can be set to '0'.
 
 Shows data field and value when the mouse is over a piechart wedge.
 
+=item show_path_title()
+
+Whether to add the title attribute to the data path tags,
+which will show "tooltips" when hovering over the bar area.
+
+=item show_title_fields()
+
+Whether to show field values as title elements in path tag,
+defaults to 0, set to '1' to turn on. Suggest on single
+add_data graphs, for overlapping graphs leave off to see
+the title value used in the add_data call.
+
 =item show_key_data_labels()
 
 Show label on the key, defaults
@@ -373,6 +387,8 @@ sub _set_defaults {
     'show_actual_values'      => 0,
     'show_percent'            => 1,
     'rollover_values'         => 0,
+    'show_path_title'	      => 0,
+    'show_title_fields'	      => 0,
 
     'key'                     => 0, 
     'show_key_data_labels'    => 1,
@@ -668,7 +684,7 @@ __DATA__
       [% ye = re * sin(radians_half) FILTER format('%02.10f') %]
 
       <path id="w[% count %]" d="M[% px_start + xe %] [% pmin_scale_value + ye %] A[% r %] [% r %] 0 
-      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
+      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]
   
     [% ELSIF !config.expanded && config.expand_greatest %]
       [% IF data.0.data.$field == max_value %]
@@ -676,15 +692,25 @@ __DATA__
         [% xe = re * cos(radians_half) FILTER format('%02.10f') %]
         [% ye = re * sin(radians_half) FILTER format('%02.10f') %]
         <path id="w[% count %]" d="M[% px_start + xe %] [% pmin_scale_value + ye %] A[% r %] [% r %] 0 
-        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
+        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]
       [% ELSE %]
         <path id="w[% count %]" d="M[% px_start %] [% pmin_scale_value %] A[% r %] [% r %] 0 
-        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
+        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]
       [% END %]
   
     [% ELSE %]
       <path id="w[% count %]" d="M[% px_start %] [% pmin_scale_value %] A[% r %] [% r %] 0 
-      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
+      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]
+    [% END %]
+
+    [% IF config.show_path_title %]
+      [% IF config.show_title_fields %]
+	><title>[% data.0.data.$field %] - [% field %]</title></path>
+      [% ELSE %]
+	><title>[% data.0.data.$field %] - [% data.0.title %]</title></path>
+      [% END %]
+    [% ELSE %]
+      />
     [% END %]
 
     <!-- show values next to wedges -->

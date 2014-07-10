@@ -2,7 +2,8 @@ use lib qw( ./blib/lib ../blib/lib );
 
 # Test using the methods to set the config
 
-use Test::More tests => 91;
+# was 90 plus new attr for TITLE attribute
+use Test::More tests => 98;
 
 BEGIN { use_ok( 'SVG::TT::Graph' ); }
 BEGIN { use_ok( 'SVG::TT::Graph::Pie' ); }
@@ -34,8 +35,12 @@ foreach my $type (@types) {
     is($graph->show_y_labels(),0,'new show_y_labels match');
   }
 
-  if ($module eq 'SVG::TT::Graph::BarHorizontal') {
-    ok(defined $graph->show_y_fields, 'default show_y_fields');
+  if ($module eq 'SVG::TT::Graph::BarHorizontal' 
+      || $module eq 'SVG::TT::Graph::Bar'
+      || $module eq 'SVG::TT::Graph::BarLine'
+      || $module eq 'SVG::TT::Graph::Pie') {
+    ok(defined $graph->show_title_fields, 'default show_title_fields');
+    ok(defined $graph->show_path_title, 'default show_path_title');
   }
 
   eval {

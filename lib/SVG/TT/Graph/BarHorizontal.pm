@@ -73,7 +73,7 @@ title, subtitle etc.
     'x_label_formatter'      => sub { return @_ },
 
     'show_path_title'	     => 0,
-    'show_y_fields'	     => 0,
+    'show_title_fields'	     => 0,
 
     'show_x_title'           => 0,
     'x_title'                => 'X Field names',
@@ -292,7 +292,7 @@ A callback subroutine which will format a label on the y axis.  For example:
 Whether to add the title attribute to the data path tags,
 which will show "tooltips" when hovering over the bar area.
 
-=item show_y_fields()
+=item show_title_fields()
 
 Whether to show field values as title elements in path tag,
 defaults to 0, set to '1' to turn on. Suggest on single
@@ -388,7 +388,7 @@ sub _set_defaults {
     'y_label_formatter'      => sub { return @_ },
 
     'show_path_title'	     => 0,
-    'show_y_fields'	     => 0,
+    'show_title_fields'	     => 0,
   
     'show_x_title'           => 0,
     'x_title'                => 'X Field names',
@@ -809,7 +809,7 @@ __DATA__
 
   [% FOREACH dataset = data %]
     [% IF config.show_path_title %]
-      [% IF config.show_y_fields %]
+      [% IF config.show_title_fields %]
 	<path d="M[% x %] [% base_line - (dh * xcount) - dh %] H[% x + (dataset.data.$field * divider) %] v[% bar_width %] H[% x %] Z" class="fill[% dcount %]"><title>[% dataset.data.$field %] - [% field %]</title></path>
       [% ELSE %]
 	<path d="M[% x %] [% base_line - (dh * xcount) - dh %] H[% x + (dataset.data.$field * divider) %] v[% bar_width %] H[% x %] Z" class="fill[% dcount %]"><title>[% dataset.data.$field %] - [% dataset.title %]</title></path>
