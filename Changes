@@ -1,5 +1,11 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.24 Wed 9 Jul 2014 19:23:11
+    - Added TITLE attribute to PATH tag in SHOW DATA section (mikejbwhoo)
+    - Added config.show_y_fields to allow for fields array element to
+      be shown instead of title attribute used in add_data, looks nice
+      when creating non-overlapping bars (mikejbwhoo)
+
 0.23 Mon 4 Feb 2013 21:14:40
     - fix division by zero errors in all graph types (Carsten Wolff)
     - Doc clarification (elnjensen)

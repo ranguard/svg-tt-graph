@@ -2,7 +2,7 @@ use lib qw( ./blib/lib ../blib/lib );
 
 # Test using the methods to set the config
 
-use Test::More tests => 90;
+use Test::More tests => 91;
 
 BEGIN { use_ok( 'SVG::TT::Graph' ); }
 BEGIN { use_ok( 'SVG::TT::Graph::Pie' ); }
@@ -32,6 +32,10 @@ foreach my $type (@types) {
     is($graph->show_y_labels(),1,'default show_y_labels match');
     is($graph->show_y_labels('0'),0,'setting show_y_labels match');
     is($graph->show_y_labels(),0,'new show_y_labels match');
+  }
+
+  if ($module eq 'SVG::TT::Graph::BarHorizontal') {
+    ok(defined $graph->show_y_fields, 'default show_y_fields');
   }
 
   eval {
