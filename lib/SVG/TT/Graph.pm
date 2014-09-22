@@ -9,7 +9,7 @@ use POSIX;
 
 require 5.6.1;
 
-$VERSION = '0.23';
+$VERSION = '0.24';
 
 =head1 NAME
 
@@ -35,48 +35,48 @@ SVG::TT::Graph - Base module for generating SVG graphics
     }
   }
 
-  
+
   # optional - called when object is created
   sub _init {
     my $self = shift;
   # any testing you want to do.
-  
+
   }
 
   ...
-  
+
   1;
   __DATA__
   <!-- SVG Template goes here  -->
 
 
   In your script:
-  
+
   use SVG::TT::Graph::GRAPH_TYPE;
-  
+
   my $width = '500',
   my $heigh = '300',
   my @fields = qw(field_1 field_2 field_3);
-  
+
   my $graph = SVG::TT::Graph::GRAPH_TYPE->new({
     # Required for some graph types
     'fields'           => \@fields,
     # .. other config options
     'height' => '500',
   });
-  
+
   my @data = qw(23 56 32);
   $graph->add_data({
     'data' => \@data,
     'title' => 'Sales 2002',
   });
-  
+
   # find a config options value
   my $config_value = $graph->config_option();
   # set a config option value
   $graph->config_option($config_value);
-  
-  # All graphs support SVGZ (compressed SVG) if 
+
+  # All graphs support SVGZ (compressed SVG) if
   # Compress::Zlib is available. Use either the
   # 'compress' => 1 config option, or:
   $graph->compress(1);
@@ -160,7 +160,7 @@ This method allows you do add data to the graph object.
 It can be called several times to add more data sets in.
 
 =cut
-  
+
 sub add_data {
   my ($self, $conf) = @_;
   # create an array
@@ -168,9 +168,9 @@ sub add_data {
     my @data;
     $self->{'data'} = \@data;
   }
-  
-  croak 'no fields array ref' 
-  unless defined $self->{'config'}->{'fields'} 
+
+  croak 'no fields array ref'
+  unless defined $self->{'config'}->{'fields'}
     && ref($self->{'config'}->{'fields'}) eq 'ARRAY';
 
   if(defined $conf->{'data'} && ref($conf->{'data'}) eq 'ARRAY') {
@@ -226,7 +226,7 @@ sub get_template {
     $template .= $_ . "\n";
   }
 
-  # This method may be used again, so return to start of filehandle 
+  # This method may be used again, so return to start of filehandle
   seek $template_fh, $start, 0;
 
   return $template;
@@ -246,11 +246,11 @@ been added to the graph object.
 
 sub burn {
   my $self = shift;
-  
+
   # Check we have at least one data value
-  croak "No data available" 
+  croak "No data available"
     unless scalar(@{$self->{'data'}}) > 0;
-        
+
   # perform any calculations prior to burn
   $self->calculations() if $self->can('calculations');
 
@@ -264,8 +264,8 @@ sub burn {
     'predefined_color' => \&_predefined_color,
     'random_color'     => \&_random_color,
   );
-  
-  # euu - hack!! - maybe should just be a method 
+
+  # euu - hack!! - maybe should just be a method
   $self->{sin} = \&_sin_it;
   $self->{cos} = \&_cos_it;
 
@@ -308,12 +308,12 @@ sub burn {
   # compress SVG if required
   if ($self->compress()) {
     if (eval "require Compress::Zlib") {
-      $file = Compress::Zlib::memGzip($file); 
+      $file = Compress::Zlib::memGzip($file);
     } else {
       croak "Error compressing the SVG file: Compress::Zlib does not seem to be installed properly";
     }
   }
-    
+
   return $file;
 }
 
@@ -417,14 +417,14 @@ sub _range_calc () {
   my ($max,$division);
   my $count = 0;
   my $value = $range;
-  
+
   if ($value == 0) {
     # Can't do much really
     $division = 0.2;
     $max = 1;
     return ($max,$division,1);
   }
-  
+
   if (($value < 1) and ($value > 0)) {
     while ($value < 1) {
       $value *= 10;
@@ -447,7 +447,7 @@ sub _range_calc () {
     }
     $max = ceil($range / $division) * $division;
   }
-  
+
   if (int($max / $division) <= 2) {
     $division /= 5;
     $max = ceil($range / $division) * $division;
@@ -456,9 +456,9 @@ sub _range_calc () {
     $division /= 2;
     $max = ceil($range / $division) * $division;
   }
-  
+
   if ($division >= 1) {
-    $count = 0;  
+    $count = 0;
   }
   else {
     $count = length($division) - 2;
@@ -469,7 +469,7 @@ sub _range_calc () {
 
 
 # Returns true if config value exists, is defined and not ''
-sub _is_valid_config() { 
+sub _is_valid_config() {
   my ($self,$name) = @_;
   return ((exists $self->{config}->{$name}) && (defined $self->{config}->{$name}) && ($self->{config}->{$name} ne ''));
 }
@@ -541,9 +541,9 @@ Florent Angly <florent.angly@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2003, Leo Lapworth 
+Copyright (C) 2003, Leo Lapworth
 
-This module is free software; you can redistribute it or 
+This module is free software; you can redistribute it or
 modify it under the same terms as Perl itself.
 
 =head1 SEE ALSO
