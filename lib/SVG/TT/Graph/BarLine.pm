@@ -25,12 +25,12 @@ SVG::TT::Graph::BarLine - Create presentation quality SVG bar-line graphs easily
     'width'  => '300',
     'fields' => \@fields,
   });
-  
+
   $graph->add_data({
     'data'  => \@data_sales_02,
     'title' => 'Sales 2002',
   });
-  
+
   $graph->add_data({
     'data'  => \@data_sales_03,
     'title' => 'Sales 2003',
@@ -53,14 +53,14 @@ title, subtitle etc.
 =head2 new()
 
   use SVG::TT::Graph::BarLine;
-  
+
   # Field names along the X axis
   my @fields = qw(Jan Feb Mar);
-  
+
   my $graph = SVG::TT::Graph::BarLine->new({
     # Required
     'fields'                           => \@fields,
-  
+
     # Optional - defaults shown
     'height'                           => '500',
     'width'                            => '300',
@@ -100,7 +100,7 @@ title, subtitle etc.
 
     'key'                              => 0,
     'key_position'                     => 'right',
- 
+
     # Stylesheet defaults
     'style_sheet'                      => '/includes/graph.css', # internal stylesheet
     'random_colors'                    => 0,
@@ -146,7 +146,7 @@ been added to the graph object.
 
   my $value = $graph->method();
   my $confirmed_new_value = $graph->method($value);
-  
+
 The following is a list of the methods which are available
 to change the config of the graph object after it has been
 created.
@@ -226,7 +226,7 @@ to 1, set to '0' if you want to turn them off.
 =item scale_integers()
 
 Ensures only whole numbers are used as the scale divisions.
-Default it '0', to turn on set to '1'. This has no effect if 
+Default it '0', to turn on set to '1'. This has no effect if
 scale divisions are less than 1.
 
 =item show_secondary_y_labels()
@@ -347,37 +347,6 @@ http://leo.cuckoo.org/projects/SVG-TT-Graph/
 
 None by default.
 
-=head1 ACKNOWLEDGEMENTS
-
-Thanks to Foxtons for letting us put this on CPAN, Todd Caine for heads up on
-reparsing the template (but not using atm), David Meibusch for TimeSeries and a
-load of other ideas, Stephen Morgan for creating the TT template and SVG, and
-thanks for all the patches by Andrew Ruthven and others.
-
-=head1 AUTHOR
-
-Leo Lapworth <LLAP@cuckoo.org>
-
-=head1 MAINTAINER
-
-Florent Angly <florent.angly@gmail.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2003, Leo Lapworth 
-
-This module is free software; you can redistribute it or 
-modify it under the same terms as Perl itself.
-
-=head1 BUGS
-
-Please report any bugs or feature requests to bug-graph-svg-tt@rt.cpan.org, or
-through the web interface at http://rt.cpan.org.
-
-The Graph::SVG::TT development repository is located on GitHub at
-L<http://github.com/ranguard/svg-tt-graph>. Get the latest development version
-using: git clone git://github.com/ranguard/svg-tt-graph.git
-
 =head1 SEE ALSO
 
 L<SVG::TT::Graph>,
@@ -394,15 +363,15 @@ L<XML::Tidy>
 
 sub _init {
   my $self = shift;
-  croak "fields was not supplied or is empty" 
-  unless defined $self->{'config'}->{fields} 
+  croak "fields was not supplied or is empty"
+  unless defined $self->{'config'}->{fields}
     && ref($self->{'config'}->{fields}) eq 'ARRAY'
     && scalar(@{$self->{'config'}->{fields}}) > 0;
 }
 
 sub _set_defaults {
   my $self = shift;
-  
+
   my %default = (
     'width'                            => '500',
     'height'                           => '300',
@@ -411,7 +380,7 @@ sub _set_defaults {
     'random_colors'                    => 0,
 
     'show_data_values'                 => 1,
-  
+
     'min_scale_value'                  => '0',
     'scale_divisions'                  => '',
     'bar_gap'                          => 1,
@@ -430,22 +399,22 @@ sub _set_defaults {
 
     'show_x_title'                     => 0,
     'x_title'                          => 'X Field names',
-  
+
     'show_y_title'                     => 0,
     'show_secondary_y_title'           => 0,
     'y_title_text_direction'           => 'bt',
     'secondary_y_title_text_direction' => 'bt',
     'y_title'                          => 'Y Scale',
     'secondary_y_title'                => 'Y Scale 2',
-  
+
     'show_graph_title'                 => 0,
     'graph_title'                      => 'Graph Title',
     'show_graph_subtitle'              => 0,
     'graph_subtitle'                   => 'Graph Sub Title',
-    'key'                              => 0, 
+    'key'                              => 0,
     'key_position'                     => 'right', # bottom or right
   );
-  
+
   while( my ($key,$value) = each %default ) {
     $self->{config}->{$key} = $value;
   }
@@ -594,13 +563,13 @@ __DATA__
 [% END %]
 <!-- svg bg -->
 <rect x="0" y="0" width="[% config.width %]" height="[% config.height %]" class="svgBackground"/>
-  
+
 <!-- ///////////////// CALCULATE GRAPH AREA AND BOUNDARIES //////////////// -->
 <!-- get dimensions of actual graph area (NOT SVG area) -->
 [% w = config.width %]
 [% h = config.height %]
 
-<!-- set start/default coords of graph --> 
+<!-- set start/default coords of graph -->
 [% x = 0 %]
 [% y = 0 %]
 
@@ -655,26 +624,26 @@ __DATA__
     [% max_x_label_length = max_x_label_size * char_width %]
     [% h = h - max_x_label_length %]
   [% END %]
-  
+
   <!-- stagger x labels if overlapping occurs -->
   [% stagger = 0 %]
   [% IF config.stagger_x_labels %]
     [% stagger = 17 %]
     [% h = h - stagger %]
   [% END %]
-  
+
   [% IF config.show_x_title %][% h = h - title_height - stagger %][% END %]
-  
+
   <!-- pad top of graph if y axis has data labels so labels do not get chopped off -->
   [% IF config.show_y_labels %][% h = h - 10 %][% y = y + 10 %][% END %]
-  
+
   <!-- reduce height if graph has title or subtitle -->
   [% IF config.show_graph_title %][% h = h - title_height %][% y = y + title_height %][% END %]
   [% IF config.show_graph_subtitle %][% h = h - 10 %][% y = y + 10 %][% END %]
-  
+
 <!-- reduce graph dimensions if there is a KEY -->
   [% key_box_size = 12 %]
-  
+
   [% IF config.key && config.key_position == 'right' %]
     [% IF config.show_secondary_y_title %]
       [% w = w - (max_key_size * (char_width - 1)) - (key_box_size * 3 ) %]
@@ -686,7 +655,7 @@ __DATA__
       [% h = h - ((data.size + 1) * (key_box_size + key_padding))%]
     [% ELSE %]
       [% h = h - (4 * (key_box_size + key_padding))%]
-    [% END %]        
+    [% END %]
   [% END %]
 
   <!-- find start value for scale on y axis -->
@@ -696,24 +665,24 @@ __DATA__
     <!-- setting lowest value to be min_value as no min_scale_value defined -->
     [% min_scale_value = min_value %]
   [% END %]
-  
+
   <!-- base line -->
   [% base_line = h + y %]
-  
+
   <!-- how much padding between largest bar and top of graph -->
   [% IF (max_value - min_scale_value) == 0 %]
     [% top_pad = 10 %]
   [% ELSE %]
     [% top_pad = (max_value - min_scale_value) / 20 %]
   [% END %]
-  
+
   <!-- how much padding between largest bar and top of graph for secondary y axis -->
   [% IF (secondary_max_value - min_scale_value) == 0 %]
     [% secondary_top_pad = 10 %]
   [% ELSE %]
     [% secondary_top_pad = (secondary_max_value - min_scale_value) / 20 %]
   [% END %]
-  
+
   [% scale_range = (max_value + top_pad) - min_scale_value %]
   [% secondary_scale_range = (secondary_max_value + secondary_top_pad) - min_scale_value %]
 
@@ -723,7 +692,7 @@ __DATA__
   [% ELSE %]
     [% scale_division = scale_range / 10 FILTER format('%2.01f') %]
   [% END %]
-  
+
   <!-- default to 10 scale_divisions if none have been set for secondary y axis -->
   [% IF config.scale_divisions %]
     [% secondary_scale_division = config.scale_divisions %]
@@ -738,7 +707,7 @@ __DATA__
       [% scale_division = scale_division FILTER format('%2.0f') %]
     [% END %]
   [% END %]
-  
+
 <!-- JUMP THE GUN AND CALC BAR WIDTHS AS THESE ARE USED FOR PADDING IF LARGE X LABELS ARE USED -->
 <!-- get number of data points on x scale -->
 [% dx = config.fields.size %]
@@ -972,7 +941,7 @@ __DATA__
 [% FOREACH field = config.fields %]
   [% IF xcount == 1 %] L [% END %]
     [% (dw * xcount) + x + (bar_width / 2) %] [% base_line - (data.1.data.$field * secondary_divider) %]
-    [% xcount = xcount + 1 %]       
+    [% xcount = xcount + 1 %]
   [% END %]" class="line[% line %]"/>
 
   [% xcount = 0 %]
@@ -981,12 +950,12 @@ __DATA__
       <!-- datapoint shown -->
       <circle cx="[% (dw * xcount) + x + (bar_width / 2) %]" cy="[% base_line - (data.1.data.$field * secondary_divider) %]" r="2.5" class="dataPoint[% line %]"/>
     [% END %]
-            
+
     [% IF config.show_data_values %]
       <!-- datavalue shown -->
       <text x="[% (dw * xcount) + x + (bar_width / 2) %]" y="[% base_line - (data.1.data.$field * secondary_divider) - 6 %]" class="dataPointLabel">[% data.1.data.$field %]</text>
     [% END %]
-  [% xcount = xcount + 1 %]       
+  [% xcount = xcount + 1 %]
 [% END %]
 
 
@@ -1008,7 +977,7 @@ __DATA__
   [% ELSIF config.show_x_labels && stagger < 1 %]
     [% y_key = y_key + 20 %]
   [% END %]
-  
+
   [% y_key_start = y_key %]
   [% x_key = x %]
   [% FOREACH dataset = data %]
@@ -1021,7 +990,7 @@ __DATA__
     <text x="[% x_key + key_box_size + key_padding %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + key_box_size + stagger %]" class="keyText">[% dataset.title %]</text>
     [% key_count = key_count + 1 %]
   [% END %]
-  
+
 [% END %]
 
 <!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->

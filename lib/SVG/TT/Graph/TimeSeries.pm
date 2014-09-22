@@ -24,12 +24,12 @@ SVG::TT::Graph::TimeSeries - Create presentation quality SVG line graphs of time
 
   my @data_cpu = ('2003-09-03 09:30:00',23,'2003-09-03 09:45:00',54,'2003-09-03 10:00:00',67,'2003-09-03 10:15:00',12);
   my @data_disk = ('2003-09-03 09:00:00',12,'2003-09-03 10:00:00',26,'2003-09-03 11:00:00',23);
-  
+
   my $graph = SVG::TT::Graph::TimeSeries->new({
     'height' => '500',
     'width'  => '300',
   });
-  
+
   $graph->add_data({
     'data'  => \@data_cpu,
     'title' => 'CPU',
@@ -39,7 +39,7 @@ SVG::TT::Graph::TimeSeries - Create presentation quality SVG line graphs of time
     'data'  => \@data_disk,
     'title' => 'Disk',
   });
-  
+
   print "Content-type: image/svg+xml\n\n";
   print $graph->burn();
 
@@ -62,9 +62,9 @@ date range limited by 32 bit signed integers (around 1902 to 2038).
 =head2 new()
 
   use SVG::TT::Graph::TimeSeries;
-  
+
   my $graph = SVG::TT::Graph::TimeSeries->new({
-  
+
     # Optional - defaults shown
     'height'              => 500,
     'width'               => 300,
@@ -74,7 +74,7 @@ date range limited by 32 bit signed integers (around 1902 to 2038).
     'min_scale_value'     => 0,
     'max_scale_value'     => '',
 
-    'show_x_labels'       => 1,    
+    'show_x_labels'       => 1,
     'timescale_divisions' => '',
     'min_timescale_value' => '',
     'max_timescale_value' => '',
@@ -83,11 +83,11 @@ date range limited by 32 bit signed integers (around 1902 to 2038).
     'rotate_x_labels'     => 0,
     'y_label_formatter'   => sub { return @_ },
     'x_label_formatter'   => sub { return @_ },
-    
+
     'show_data_points'    => 1,
     'show_data_values'    => 1,
     'rollover_values'     => 0,
-    
+
     'area_fill'           => 0,
 
     'show_x_title'        => 0,
@@ -156,7 +156,7 @@ been added to the graph object.
 
   my $value = $graph->method();
   my $confirmed_new_value = $graph->method($value);
-  
+
 The following is a list of the methods which are available
 to change the config of the graph object after it has been
 created.
@@ -232,7 +232,7 @@ The expected form is:
 
 Accumulates each data set. (i.e. Each point increased by sum of all previous series at same time). Default is 0, set to '1' to show.
 All data series have the same number of points and must have the same sequence of time values
-for this option. 
+for this option.
 
 =item min_scale_value()
 
@@ -260,7 +260,7 @@ to 1, set to '0' if you want to turn them off.
 =item x_label_format()
 
 Format string for presenting the X axis labels.
-The POSIX strftime() function is used for formatting 
+The POSIX strftime() function is used for formatting
 (see strftime man pages and LC_TIME locale information).
 
 =item show_y_labels()
@@ -275,7 +275,7 @@ Format string for presenting the Y axis labels (as per printf).
 =item timescale_divisions()
 
 This defines the gap between markers on the X axis.
-Default is the entire range (only start and end axis 
+Default is the entire range (only start and end axis
 labels).
 The expected form is:
     '<integer> [years | months | days | hours | minutes | seconds]'
@@ -367,43 +367,12 @@ A callback subroutine which will format a label on the y axis.  For example:
 
 =head1 EXAMPLES
 
-For examples look at the project home page 
+For examples look at the project home page
 http://leo.cuckoo.org/projects/SVG-TT-Graph/
 
 =head1 EXPORT
 
 None by default.
-
-=head1 ACKNOWLEDGEMENTS
-
-Thanks to Foxtons for letting us put this on CPAN, Todd Caine for heads up on
-reparsing the template (but not using atm), David Meibusch for TimeSeries and a
-load of other ideas, Stephen Morgan for creating the TT template and SVG, and
-thanks for all the patches by Andrew Ruthven and others.
-
-=head1 AUTHOR
-
-David Meibusch <David.Meibusch@adc.com>
-
-=head1 MAINTAINER
-
-Florent Angly <florent.angly@gmail.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2003, Leo Lapworth 
-
-This module is free software; you can redistribute it or 
-modify it under the same terms as Perl itself.
-
-=head1 BUGS
-
-Please report any bugs or feature requests to bug-graph-svg-tt@rt.cpan.org, or
-through the web interface at http://rt.cpan.org.
-
-The Graph::SVG::TT development repository is located on GitHub at
-L<http://github.com/ranguard/svg-tt-graph>. Get the latest development version
-using: git clone git://github.com/ranguard/svg-tt-graph.git
 
 =head1 SEE ALSO
 
@@ -425,15 +394,15 @@ sub _init {
 
 sub _set_defaults {
   my $self = shift;
-    
+
   my @fields = ();
 
   my %default = (
     'fields'              => \@fields,
-        
+
     'width'               => '500',
     'height'              => '300',
-        
+
     'style_sheet'         => '',
     'random_colors'       => 0,
 
@@ -442,13 +411,13 @@ sub _set_defaults {
     'rollover_values'     => 0,
 
     'max_time_span'       => '',
-        
+
     'area_fill'           => 0,
-        
-    'show_y_labels'       => 1,   
+
+    'show_y_labels'       => 1,
     'scale_divisions'     => '',
     'min_scale_value'     => '0',
-        
+
     'stacked'             => 0,
 
     'show_x_labels'       => 1,
@@ -458,13 +427,13 @@ sub _set_defaults {
     'x_label_format'      => '%Y-%m-%d %H:%M:%S',
     'x_label_formatter'   => sub { return @_ },
     'y_label_formatter'   => sub { return @_ },
-  
+
     'show_x_title'        => 0,
     'x_title'             => 'X Field names',
-  
+
     'show_y_title'        => 0,
     'y_title'             => 'Y Scale',
-  
+
     'show_graph_title'    => 0,
     'graph_title'         => 'Graph Title',
     'show_graph_subtitle' => 0,
@@ -472,11 +441,11 @@ sub _set_defaults {
 
     'key'                 => 0,
     'key_position'        => 'right', # bottom or right
-        
+
     'dateadd'             => \&dateadd,
 
   );
-  
+
   while( my ($key,$value) = each %default ) {
     $self->{config}->{$key} = $value;
   }
@@ -510,34 +479,34 @@ sub add_data {
       $pair[0] = $conf->{'data'}->[$i++];
       $pair[1] = $conf->{'data'}->[$i++];
     }
-    
+
     $time = str2time($pair[0]);
     # special case for time-only values
     if ((!defined $time) && ($pair[0] =~ m/^\w*(\d+:\d+:\d+)|(\d+:\d+)\w*$/))  {
       $time = str2time('1970-1-1 '.$pair[0]);
     }
-    
+
     croak sprintf("Series %d contains an illegal datetime value %s at sample %d.",
       scalar(@{$self->{'data'}}),
       $pair[0],
       $i / 2)
     unless (defined $time);
-    
+
     $pair[0] = $time;
     push @new_data, [ @pair ];
   }
-  
+
   my @sorted = sort {@{$a}[0] <=> @{$b}[0]} @new_data;
-  
-  # if stacked, we accumulate the 
+
+  # if stacked, we accumulate the
   if (($self->{config}->{stacked}) && (@{$self->{'data'}})) {
     my $prev = $self->{'data'}->[@{$self->{'data'}} - 1]->{pairs};
-    
+
     # check our length matches previous
     croak sprintf("Series %d can not be stacked on previous series. Mismatched length.",
       scalar(@{$self->{'data'}}))
       unless (scalar(@sorted) == scalar(@$prev));
-    
+
     for (my $i = 0; $i < @sorted; $i++) {
       # check the time value matches
       croak sprintf("Series %d can not be stacked on previous series. Mismatched timestamp at sample %d (time %s).",
@@ -545,15 +514,15 @@ sub add_data {
         $i,
         HTTP::Date::time2iso($sorted[$i][0]))
       unless ($sorted[$i][0] == $prev->[$i][0]);
-       
+
       $sorted[$i][1] += $prev->[$i][1];
     }
   }
-  
+
   my %store = (
     'pairs' => \@sorted,
   );
-  
+
   $store{'title'} = $conf->{'title'} if defined $conf->{'title'};
   push (@{$self->{'data'}},\%store);
 
@@ -572,19 +541,19 @@ sub dateadd {
 # override calculations to set a few calculated values, mainly for scaling
 sub calculations {
   my $self = shift;
-  
+
   # run through the data and calculate maximum and minimum values
   my ($max_key_size,$max_time,$min_time,$max_value,$min_value,$max_x_label_length,$x_label);
-  
+
   foreach my $dataset (@{$self->{data}}) {
     $max_key_size = length($dataset->{title}) if ((!defined $max_key_size) || ($max_key_size < length($dataset->{title})));
-    
+
     foreach my $pair (@{$dataset->{pairs}}) {
       $max_time = $pair->[0] if ((!defined $max_time) || ($max_time < $pair->[0]));
       $min_time = $pair->[0] if ((!defined $min_time) || ($min_time > $pair->[0]));
       $max_value = $pair->[1] if (($pair->[1] ne '') && ((!defined $max_value) || ($max_value < $pair->[1])));
       $min_value = $pair->[1] if (($pair->[1] ne '') && ((!defined $min_value) || ($min_value > $pair->[1])));
-      
+
       $x_label = strftime($self->{config}->{x_label_format},localtime($pair->[0]));
       $max_x_label_length = length($x_label) if ((!defined $max_x_label_length) || ($max_x_label_length < length($x_label)));
     }
@@ -605,14 +574,14 @@ sub calculations {
   $self->{calc}->{min_scale_value} = ($self->_is_valid_config('min_scale_value')) ? $self->{config}->{min_scale_value} : $min_value;
   $self->{calc}->{max_scale_value} = ($self->_is_valid_config('max_scale_value')) ? $self->{config}->{max_scale_value} : $max_value;
   $self->{calc}->{scale_range} = $self->{calc}->{max_scale_value} - $self->{calc}->{min_scale_value};
-  
+
   my ($range,$division,$precision);
-  
+
   if ($self->_is_valid_config('scale_divisions')) {
     $division = $self->{config}->{scale_divisions};
 
     if ($division >= 1) {
-      $precision = 0;   
+      $precision = 0;
     }
     else {
       $precision = length($division) - 2;
@@ -624,12 +593,12 @@ sub calculations {
 
     # If a max value hasn't been set we can set a revised range and max value
     if (! $self->_is_valid_config('max_scale_value')) {
-      $self->{calc}->{max_scale_value} = $self->{calc}->{min_scale_value} + $range;  
+      $self->{calc}->{max_scale_value} = $self->{calc}->{min_scale_value} + $range;
       $self->{calc}->{scale_range} = $self->{calc}->{max_scale_value} - $self->{calc}->{min_scale_value};
     }
   }
   $self->{calc}->{scale_division} = $division;
-  
+
   $self->{calc}->{y_label_format} = ($self->_is_valid_config('y_label_format')) ? $self->{config}->{y_label_format} : "%.${precision}f";
   $self->{calc}->{data_value_format} = ($self->_is_valid_config('data_value_format')) ? $self->{config}->{data_value_format} : "%.${precision}f";
 }
@@ -644,7 +613,7 @@ __DATA__
 [% stylesheet = 'included' %]
 
 [% IF config.style_sheet && config.style_sheet != '' %]
-  <?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>  
+  <?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>
 [% ELSE %]
   [% stylesheet = 'excluded' %]
 [% END %]
@@ -738,7 +707,7 @@ __DATA__
 .staggerGuideLine{
   fill: none;
   stroke: #000000;
-  stroke-width: 0.5px;  
+  stroke-width: 0.5px;
 }
 
 [% FOREACH dataset = data %]
@@ -748,7 +717,7 @@ __DATA__
   [% ELSE %]
     [% color = predefined_color(loop.count) %]
   [% END %]
-   
+
   .fill[% loop.count %]{
     fill: [% color %];
     fill-opacity: 0.2;
@@ -821,7 +790,7 @@ __DATA__
 <!-- CALC HEIGHT AND Y COORD DIMENSIONS -->
 [%# reduce height of graph area if there is labelling on x axis %]
 [% IF config.show_x_labels %][% h = h - 20 %][% END %]
-  
+
 [%# reduce height if x labels are rotated %]
 [% x_label_allowance = 0 %]
 [% IF config.rotate_x_labels %]
@@ -917,7 +886,7 @@ __DATA__
     [% max_time_span_units = matches.1 %]
   [% ELSE %]
     [% max_time_span_units = 'days' %]
-  [% END %] 
+  [% END %]
   <!-- max_time_span [% max_time_span %] max_time_span_units [% max_time_span_units %]-->
 [% END %]
 
@@ -926,7 +895,7 @@ __DATA__
 <rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]" class="graphBackground"/>
 <clipPath id="clipGraphArea">
   <rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]"/>
-</clipPath> 
+</clipPath>
 
 <!-- axis -->
 <path d="M[% x %] [% y %] v[% h %]" class="axis" id="xAxis"/>
@@ -953,7 +922,7 @@ __DATA__
         [% timescale_division_units = matches.1 %]
       [% ELSE %]
         [% timescale_division_units = 'days' %]
-      [% END %] 
+      [% END %]
       <!-- timescale_division [% timescale_division %] timescale_division_units [% timescale_division_units %]-->
       [% x_value = config.dateadd(calc.min_timescale_value,timescale_division,timescale_division_units) %]
       [% count = 0 %]
@@ -1016,7 +985,7 @@ __DATA__
       [% IF next_label != last_label %]
         <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_scale_value)) %]" class="yAxisLabels">[% next_label %]</text>
         <path d="M[% x %] [% base_line - (dh * (y_value - calc.min_scale_value)) %] h[% w %]" class="guideLines"/>
-      [% END %]  
+      [% END %]
     [%- END -%]
     [%- y_value = y_value + calc.scale_division -%]
     [%- last_label = next_label -%]
@@ -1056,7 +1025,7 @@ __DATA__
           V [% base_line %] H [% (dw * (pair.0 - calc.min_timescale_value)) + x %] V [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
         [%- ELSE -%]
           L [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
-        [%- END -%]  
+        [%- END -%]
         [%- lasttime = pair.0 -%][%- xcount = xcount + 1 -%]
       [%- END -%]
     [% END %]
@@ -1074,10 +1043,10 @@ __DATA__
           M [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
         [%- ELSE -%]
           L [% (dw * (pair.0 - calc.min_timescale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_scale_value)) %]
-        [%- END -%]    
+        [%- END -%]
       [%- END -%]
       [%- lasttime = pair.0 -%][%- xcount = xcount + 1 -%]
-    [%- END -%]   
+    [%- END -%]
   [% END %]
   [% IF xcount > 0 %] " class="line[% line %]"/> [% END %]
   </g>
@@ -1108,7 +1077,7 @@ __DATA__
           >[% point_label %]</text>
         [% END %]
         </g>
-      [% END %]  
+      [% END %]
     [% END %]
   [% END %]
   </g>
@@ -1135,7 +1104,7 @@ __DATA__
   [% ELSIF config.show_x_labels && stagger < 1 %]
     [% y_key = y_key + 20 %]
   [% END %]
-  
+
   [% y_key_start = y_key %]
   [% x_key = x %]
   [% FOREACH dataset = data %]
@@ -1148,7 +1117,7 @@ __DATA__
     <text x="[% x_key + key_box_size + key_padding %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + key_box_size + stagger %]" class="keyText">[% dataset.title %]</text>
     [% key_count = key_count + 1 %]
   [% END %]
-  
+
 [% END %]
 
 <!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->

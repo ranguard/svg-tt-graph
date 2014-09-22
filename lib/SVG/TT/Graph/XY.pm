@@ -19,12 +19,12 @@ SVG::TT::Graph::XY - Create presentation quality SVG line graphs of XY data poin
 
   my @data_cpu  = (0.3, 23, 0.5, 54, 1.0, 67, 1.8, 12);
   my @data_disk = (0.45, 12, 0.51, 26, 0.53, 23);
-  
+
   my $graph = SVG::TT::Graph::XY->new({
     'height' => '500',
     'width'  => '300',
   });
-  
+
   $graph->add_data({
     'data'  => \@data_cpu,
     'title' => 'CPU',
@@ -34,7 +34,7 @@ SVG::TT::Graph::XY - Create presentation quality SVG line graphs of XY data poin
     'data'  => \@data_disk,
     'title' => 'Disk',
   });
-  
+
   print "Content-type: image/svg+xml\n\n";
   print $graph->burn();
 
@@ -52,9 +52,9 @@ title, subtitle etc.
 =head2 new()
 
   use SVG::TT::Graph::XY;
-  
+
   my $graph = SVG::TT::Graph::XY->new({
-  
+
     # Optional - defaults shown
     'height'              => 500,
     'width'               => 300,
@@ -64,7 +64,7 @@ title, subtitle etc.
     'min_yscale_value'    => 0,
     'max_yscale_value'    => '',
 
-    'show_x_labels'       => 1,    
+    'show_x_labels'       => 1,
     'xscale_divisions'    => '',
     'min_xscale_value'    => '',
     'max_xscale_value'    => '',
@@ -72,12 +72,12 @@ title, subtitle etc.
     'rotate_x_labels'     => 0,
     'y_label_formatter'   => sub { return @_ },
     'x_label_formatter'   => sub { return @_ },
-    
+
     'show_data_points'    => 1,
     'show_data_values'    => 1,
     'rollover_values'     => 0,
-    
-    'area_fill'           => 0,    
+
+    'area_fill'           => 0,
 
     'show_x_title'        => 0,
     'x_title'             => 'X Field names',
@@ -145,7 +145,7 @@ been added to the graph object.
 
   my $value = $graph->method();
   my $confirmed_new_value = $graph->method($value);
-  
+
 The following is a list of the methods which are available
 to change the config of the graph object after it has been
 created.
@@ -258,7 +258,7 @@ Format string for presenting the Y axis labels (as per printf).
 =item xscale_divisions()
 
 This defines the gap between markers on the X axis.
-Default is the entire range (only start and end axis 
+Default is the entire range (only start and end axis
 labels).
 
 =item stagger_x_labels()
@@ -344,40 +344,12 @@ A callback subroutine which will format a label on the y axis.  For example:
 
 =head1 EXAMPLES
 
-For examples look at the project home page 
+For examples look at the project home page
 http://leo.cuckoo.org/projects/SVG-TT-Graph/
 
 =head1 EXPORT
 
 None by default.
-
-=head1 ACKNOWLEDGEMENTS
-
-This module was largely based on SVG::TT::Graph::TimeSeries by David Meibusch.
-
-=head1 AUTHOR
-
-Florent Angly <florent.angly@gmail.com>
-
-=head1 MAINTAINER
-
-Florent Angly <florent.angly@gmail.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2003, Leo Lapworth 
-
-This module is free software; you can redistribute it or 
-modify it under the same terms as Perl itself.
-
-=head1 BUGS
-
-Please report any bugs or feature requests to bug-graph-svg-tt@rt.cpan.org, or
-through the web interface at http://rt.cpan.org.
-
-The Graph::SVG::TT development repository is located on GitHub at
-L<http://github.com/ranguard/svg-tt-graph>. Get the latest development version
-using: git clone git://github.com/ranguard/svg-tt-graph.git
 
 =head1 SEE ALSO
 
@@ -398,15 +370,15 @@ sub _init {
 
 sub _set_defaults {
   my $self = shift;
-    
+
   my @fields = ();
 
   my %default = (
     'fields'              => \@fields,
-        
+
     'width'               => '500',
     'height'              => '300',
-        
+
     'style_sheet'         => '',
     'random_colors'       => 0,
 
@@ -415,13 +387,13 @@ sub _set_defaults {
     'rollover_values'     => 0,
 
     'max_x_span'          => '',
-        
+
     'area_fill'           => 0,
-        
-    'show_y_labels'       => 1,   
+
+    'show_y_labels'       => 1,
     'yscale_divisions'    => '',
     'min_yscale_value'    => '0',
-        
+
     'stacked'             => 0,
 
     'show_x_labels'       => 1,
@@ -430,13 +402,13 @@ sub _set_defaults {
     'xscale_divisions'    => '',
     'x_label_formatter'   => sub { return @_ },
     'y_label_formatter'   => sub { return @_ },
-  
+
     'show_x_title'        => 0,
     'x_title'             => 'X Field names',
-  
+
     'show_y_title'        => 0,
     'y_title'             => 'Y Scale',
-  
+
     'show_graph_title'    => 0,
     'graph_title'         => 'Graph Title',
     'show_graph_subtitle' => 0,
@@ -445,7 +417,7 @@ sub _set_defaults {
     'key'                 => 0,
     'key_position'        => 'right', # bottom or right
   );
-  
+
   while( my ($key,$value) = each %default ) {
     $self->{config}->{$key} = $value;
   }
@@ -481,18 +453,18 @@ sub add_data {
     }
     push @new_data, [ @pair ];
   }
-  
+
   my @sorted = sort {@{$a}[0] <=> @{$b}[0]} @new_data;
-  
-  # if stacked, we accumulate the 
+
+  # if stacked, we accumulate the
   if (($self->{config}->{stacked}) && (@{$self->{'data'}})) {
     my $prev = $self->{'data'}->[@{$self->{'data'}} - 1]->{pairs};
-    
+
     # check our length matches previous
     croak sprintf("Series %d can not be stacked on previous series. Mismatched length.",
       scalar(@{$self->{'data'}}))
       unless (scalar(@sorted) == scalar(@$prev));
-    
+
     for (my $i = 0; $i < @sorted; $i++) {
       # check the x value matches
       croak sprintf("Series %d can not be stacked on previous series. Mismatched x value at sample %d (x %s).",
@@ -500,15 +472,15 @@ sub add_data {
         $i,
         $sorted[$i][0])
       unless ($sorted[$i][0] == $prev->[$i][0]);
-       
+
       $sorted[$i][1] += $prev->[$i][1];
     }
   }
-  
+
   my %store = (
     'pairs' => \@sorted,
   );
-  
+
   $store{'title'} = $conf->{'title'} if defined $conf->{'title'};
   push (@{$self->{'data'}},\%store);
 
@@ -518,13 +490,13 @@ sub add_data {
 # override calculations to set a few calculated values, mainly for scaling
 sub calculations {
   my $self = shift;
-  
+
   # run through the data and calculate maximum and minimum values
   my ($max_key_size, $max_x, $min_x, $max_y, $min_y, $max_x_label_length, $x_label);
-  
+
   foreach my $dataset (@{$self->{data}}) {
     $max_key_size = length($dataset->{title}) if ((!defined $max_key_size) || ($max_key_size < length($dataset->{title})));
-    
+
     foreach my $pair (@{$dataset->{pairs}}) {
       $max_x = $pair->[0] if ((!defined $max_x) || ($max_x < $pair->[0]));
       $min_x = $pair->[0] if ((!defined $min_x) || ($min_x > $pair->[0]));
@@ -551,14 +523,14 @@ sub calculations {
   $self->{calc}->{min_yscale_value} = ($self->_is_valid_config('min_yscale_value')) ? $self->{config}->{min_yscale_value} : $min_y;
   $self->{calc}->{max_yscale_value} = ($self->_is_valid_config('max_yscale_value')) ? $self->{config}->{max_yscale_value} : $max_y;
   $self->{calc}->{yscale_range} = $self->{calc}->{max_yscale_value} - $self->{calc}->{min_yscale_value};
-  
+
   my ($range,$division,$precision);
-  
+
   if ($self->_is_valid_config('yscale_divisions')) {
     $division = $self->{config}->{yscale_divisions};
 
     if ($division >= 1) {
-      $precision = 0;   
+      $precision = 0;
     }
     else {
       $precision = length($division) - 2;
@@ -570,12 +542,12 @@ sub calculations {
 
     # If a max value hasn't been set we can set a revised range and max value
     if (! $self->_is_valid_config('max_yscale_value')) {
-      $self->{calc}->{max_yscale_value} = $self->{calc}->{min_yscale_value} + $range;  
+      $self->{calc}->{max_yscale_value} = $self->{calc}->{min_yscale_value} + $range;
       $self->{calc}->{yscale_range} = $self->{calc}->{max_yscale_value} - $self->{calc}->{min_yscale_value};
     }
   }
   $self->{calc}->{yscale_division} = $division;
-  
+
   $self->{calc}->{y_label_format} = ($self->_is_valid_config('y_label_format')) ? $self->{config}->{y_label_format} : "%.${precision}f";
   $self->{calc}->{data_value_format} = ($self->_is_valid_config('data_value_format')) ? $self->{config}->{data_value_format} : "%.${precision}f";
 }
@@ -589,7 +561,7 @@ __DATA__
 [% stylesheet = 'included' %]
 
 [% IF config.style_sheet && config.style_sheet != '' %]
-  <?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>  
+  <?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>
 [% ELSE %]
   [% stylesheet = 'excluded' %]
 [% END %]
@@ -683,7 +655,7 @@ __DATA__
 .staggerGuideLine{
   fill: none;
   stroke: #000000;
-  stroke-width: 0.5px;  
+  stroke-width: 0.5px;
 }
 
 [% FOREACH dataset = data %]
@@ -693,7 +665,7 @@ __DATA__
   [% ELSE %]
     [% color = predefined_color(loop.count) %]
   [% END %]
-   
+
   .fill[% loop.count %]{
     fill: [% color %];
     fill-opacity: 0.2;
@@ -766,7 +738,7 @@ __DATA__
 <!-- CALC HEIGHT AND Y COORD DIMENSIONS -->
 [%# reduce height of graph area if there is labelling on x axis %]
 [% IF config.show_x_labels %][% h = h - 20 %][% END %]
-  
+
 [%# reduce height if x labels are rotated %]
 [% x_label_allowance = 0 %]
 [% IF config.rotate_x_labels %]
@@ -866,7 +838,7 @@ __DATA__
 <rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]" class="graphBackground"/>
 <clipPath id="clipGraphArea">
   <rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]"/>
-</clipPath> 
+</clipPath>
 
 <!-- axis -->
 <path d="M[% x %] [% y %] v[% h %]" class="axis" id="xAxis"/>
@@ -953,7 +925,7 @@ __DATA__
       [% IF next_label != last_label %]
         <text x="[% x - 5 %]" y="[% base_line - (dh * (y_value - calc.min_yscale_value)) %]" class="yAxisLabels">[% next_label %]</text>
         <path d="M[% x %] [% base_line - (dh * (y_value - calc.min_yscale_value)) %] h[% w %]" class="guideLines"/>
-      [% END %]  
+      [% END %]
     [%- END -%]
     [%- y_value = y_value + calc.yscale_division -%]
     [%- last_label = next_label -%]
@@ -993,7 +965,7 @@ __DATA__
           V [% base_line %] H [% (dw * (pair.0 - calc.min_xscale_value)) + x %] V [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
         [%- ELSE -%]
           L [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
-        [%- END -%]  
+        [%- END -%]
         [%- lastx = pair.0 -%][%- xcount = xcount + 1 -%]
       [%- END -%]
     [% END %]
@@ -1011,10 +983,10 @@ __DATA__
           M [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
         [%- ELSE -%]
           L [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
-        [%- END -%]    
+        [%- END -%]
       [%- END -%]
       [%- lastx = pair.0 -%][%- xcount = xcount + 1 -%]
-    [%- END -%]   
+    [%- END -%]
   [% END %]
   [% IF xcount > 0 %] " class="line[% line %]"/> [% END %]
   </g>
@@ -1045,7 +1017,7 @@ __DATA__
           >[% point_label %]</text>
         [% END %]
         </g>
-      [% END %]  
+      [% END %]
     [% END %]
   [% END %]
   </g>
@@ -1072,7 +1044,7 @@ __DATA__
   [% ELSIF config.show_x_labels && stagger < 1 %]
     [% y_key = y_key + 20 %]
   [% END %]
-  
+
   [% y_key_start = y_key %]
   [% x_key = x %]
   [% FOREACH dataset = data %]
@@ -1085,7 +1057,7 @@ __DATA__
     <text x="[% x_key + key_box_size + key_padding %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + key_box_size + stagger %]" class="keyText">[% dataset.title %]</text>
     [% key_count = key_count + 1 %]
   [% END %]
-  
+
 [% END %]
 
 <!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->

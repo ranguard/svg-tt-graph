@@ -19,13 +19,13 @@ SVG::TT::Graph::Line - Create presentation quality SVG line graphs easily
   my @fields = qw(Jan Feb Mar);
   my @data_sales_02 = qw(12 45 21);
   my @data_sales_03 = qw(15 30 40);
-  
+
   my $graph = SVG::TT::Graph::Line->new({
     'height' => '500',
     'width'  => '300',
     'fields' => \@fields,
   });
-  
+
   $graph->add_data({
     'data'  => \@data_sales_02,
     'title' => 'Sales 2002',
@@ -35,7 +35,7 @@ SVG::TT::Graph::Line - Create presentation quality SVG line graphs easily
     'data' => \@data_sales_03,
     'title' => 'Sales 2003',
   });
-  
+
   print "Content-type: image/svg+xml\n\n";
   print $graph->burn();
 
@@ -53,14 +53,14 @@ title, subtitle etc.
 =head2 new()
 
   use SVG::TT::Graph::Line;
-  
+
   # Field names along the X axis
   my @fields = qw(Jan Feb Mar);
-  
+
   my $graph = SVG::TT::Graph::Line->new({
     # Required
     'fields'                 => \@fields,
-  
+
     # Optional - defaults shown
     'height'                 => '500',
     'width'                  => '300',
@@ -138,7 +138,7 @@ been added to the graph object.
 
   my $value = $graph->method();
   my $confirmed_new_value = $graph->method($value);
-  
+
 The following is a list of the methods which are available
 to change the config of the graph object after it has been
 created.
@@ -206,7 +206,7 @@ if set to '' it will default to the minimum data value.
 
 =item max_scale_value()
 
-The maximum value for the Y axis.  If set to '', it will 
+The maximum value for the Y axis.  If set to '', it will
 default to the maximum data value.
 
 =item show_x_labels()
@@ -222,7 +222,7 @@ to 1, set to '0' if you want to turn them off.
 =item scale_integers()
 
 Ensures only whole numbers are used as the scale divisions.
-Default it '0', to turn on set to '1'. This has no effect if 
+Default it '0', to turn on set to '1'. This has no effect if
 scale divisions are less than 1.
 
 =item scale_divisions()
@@ -311,43 +311,12 @@ A callback subroutine which will format a label on the y axis.  For example:
 
 =head1 EXAMPLES
 
-For examples look at the project home page 
+For examples look at the project home page
 http://leo.cuckoo.org/projects/SVG-TT-Graph/
 
 =head1 EXPORT
 
 None by default.
-
-=head1 ACKNOWLEDGEMENTS
-
-Thanks to Foxtons for letting us put this on CPAN, Todd Caine for heads up on
-reparsing the template (but not using atm), David Meibusch for TimeSeries and a
-load of other ideas, Stephen Morgan for creating the TT template and SVG, and
-thanks for all the patches by Andrew Ruthven and others.
-
-=head1 AUTHOR
-
-Leo Lapworth <LLAP@cuckoo.org>
-
-=head1 MAINTAINER
-
-Florent Angly <florent.angly@gmail.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2003, Leo Lapworth 
-
-This module is free software; you can redistribute it or 
-modify it under the same terms as Perl itself.
-
-=head1 BUGS
-
-Please report any bugs or feature requests to bug-graph-svg-tt@rt.cpan.org, or
-through the web interface at http://rt.cpan.org.
-
-The Graph::SVG::TT development repository is located on GitHub at
-L<http://github.com/ranguard/svg-tt-graph>. Get the latest development version
-using: git clone git://github.com/ranguard/svg-tt-graph.git
 
 =head1 SEE ALSO
 
@@ -365,15 +334,15 @@ L<XML::Tidy>
 
 sub _init {
   my $self = shift;
-  croak "fields was not supplied or is empty" 
-  unless defined $self->{'config'}->{fields} 
+  croak "fields was not supplied or is empty"
+  unless defined $self->{'config'}->{fields}
     && ref($self->{'config'}->{fields}) eq 'ARRAY'
     && scalar(@{$self->{'config'}->{fields}}) > 0;
 }
 
 sub _set_defaults {
   my $self = shift;
-  
+
   my %default = (
     'width'                  => '500',
     'height'                 => '300',
@@ -384,7 +353,7 @@ sub _set_defaults {
     'show_data_points'       => 1,
     'show_data_values'       => 1,
     'stacked'                => 0,
-  
+
     'min_scale_value'        => '0',
     'max_scale_value'        => '',
     'area_fill'              => 0,
@@ -396,22 +365,22 @@ sub _set_defaults {
     'scale_divisions'        => '',
     'x_label_formatter'      => sub { return @_ },
     'y_label_formatter'      => sub { return @_ },
-      
+
     'show_x_title'           => 0,
     'x_title'                => 'X Field names',
-  
+
     'show_y_title'           => 0,
     'y_title_text_direction' => 'bt',
     'y_title'                => 'Y Scale',
-  
+
     'show_graph_title'       => 0,
     'graph_title'            => 'Graph Title',
     'show_graph_subtitle'    => 0,
     'graph_subtitle'         => 'Graph Sub Title',
-    'key'                    => 0, 
+    'key'                    => 0,
     'key_position'           => 'right', # bottom or right
   );
-  
+
   while( my ($key,$value) = each %default ) {
     $self->{config}->{$key} = $value;
   }
@@ -425,7 +394,7 @@ __DATA__
 [% stylesheet = 'included' %]
 
 [% IF config.style_sheet && config.style_sheet != '' %]
-  <?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>  
+  <?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>
 [% ELSE %]
   [% stylesheet = 'excluded' %]
 [% END %]
@@ -567,7 +536,7 @@ __DATA__
 [% w = config.width %]
 [% h = config.height %]
 
-<!-- set start/default coords of graph --> 
+<!-- set start/default coords of graph -->
 [% x = 0 %]
 [% y = 0 %]
 
@@ -575,7 +544,7 @@ __DATA__
 [% half_char_height = 2.5 %]
 
 [% IF config.stacked %]
-  <!-- pre-stack the data -->    
+  <!-- pre-stack the data -->
   [% FOREACH field = config.fields %]
     [% cumulative = 0 %]
     [% FOREACH dataset = data %]
@@ -602,7 +571,7 @@ __DATA__
     [% IF min_value > dataset.data.$field && dataset.data.$field != '' %]
       [% min_value = dataset.data.$field %]
     [% END %]
-    
+
     [% IF max_value < dataset.data.$field && dataset.data.$field != '' %]
       [% max_value = dataset.data.$field %]
     [% END %]
@@ -655,7 +624,7 @@ __DATA__
     [% h = h - ((data.size + 1) * (key_box_size + key_padding))%]
   [% ELSE %]
     [% h = h - (4 * (key_box_size + key_padding))%]
-  [% END %]        
+  [% END %]
 [% END %]
 
 <!-- find start value for scale on y axis -->
@@ -873,9 +842,9 @@ __DATA__
   [% FOREACH field = config.fields %]
     [% IF xcount == 1 %] L [% END %]
     [% (dw * xcount) + x %] [% base_line - ((dataset.data.$field - min_scale_value) * divider) %]
-    [% xcount = xcount + 1 %]       
+    [% xcount = xcount + 1 %]
   [% END %]" class="line[% line %]"/>
-    
+
   [% IF config.show_data_points || config.show_data_values%]
     [% xcount = 0 %]
     [% FOREACH field = config.fields %]
@@ -883,15 +852,15 @@ __DATA__
         <!-- datapoint shown -->
         <circle cx="[% (dw * xcount) + x %]" cy="[% base_line - ((dataset.data.$field - min_scale_value) * divider) %]" r="2.5" class="dataPoint[% line %]"/>
       [% END %]
-            
+
       [% IF config.show_data_values %]
         <!-- datavalue shown -->
         <text x="[% (dw * xcount) + x %]" y="[% base_line - ((dataset.data.$field - min_scale_value) * divider) - 6 %]" class="dataPointLabel">[% dataset.data.$field %]</text>
       [% END %]
-      [% xcount = xcount + 1 %]       
+      [% xcount = xcount + 1 %]
     [% END %]
   [% END %]
-   
+
   [% line = line - 1 %]
 [% END %]
 
@@ -914,7 +883,7 @@ __DATA__
   [% ELSIF config.show_x_labels && stagger < 1 %]
     [% y_key = y_key + 20 %]
   [% END %]
-  
+
   [% y_key_start = y_key %]
   [% x_key = x %]
   [% FOREACH dataset = data %]
@@ -924,11 +893,11 @@ __DATA__
       [% y_key = y_key - (key_box_size * 4) - 2 %]
     [% END %]
     <rect x="[% x_key %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + stagger %]" width="[% key_box_size %]" height="[% key_box_size %]" class="key[% key_count %]"/>
-    
+
     <text x="[% x_key + key_box_size + key_padding %]" y="[% y_key + (key_box_size * key_count) + (key_count * key_padding) + key_box_size + stagger %]" class="keyText">[% dataset.title %]</text>
     [% key_count = key_count + 1 %]
   [% END %]
-  
+
 [% END %]
 
 <!-- //////////////////////////////// MAIN TITLES ////////////////////////// -->
