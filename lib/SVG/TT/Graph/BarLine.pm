@@ -80,6 +80,9 @@ title, subtitle etc.
     'y_label_formatter'                => sub { return @_ },
     'x_label_formatter'                => sub { return @_ },
 
+    'show_path_title'		       => 0,
+    'show_title_fields'		       => 0,
+
     'show_x_title'                     => 0,
     'x_title'                          => 'X Field names',
 
@@ -321,6 +324,18 @@ A callback subroutine which will format a label on the y axis.  For example:
 
     $graph->y_label_formatter( sub { return '$' . $_[0] } );
 
+=item show_path_title()
+
+Whether to add the title attribute to the data path tags,
+which will show "tooltips" when hovering over the bar area.
+
+=item show_title_fields()
+
+Whether to show field values as title elements in path tag,
+defaults to 0, set to '1' to turn on. Suggest on single
+add_data graphs, for overlapping graphs leave off to see
+the title value used in the add_data call.
+
 =back
 
 =head1 EXAMPLES
@@ -409,6 +424,9 @@ sub _set_defaults {
     'show_secondary_y_labels'          => 1,
     'x_label_formatter'                => sub { return @_ },
     'y_label_formatter'                => sub { return @_ },
+
+    'show_path_title'		       => 0,
+    'show_title_fields'		       => 0,
 
     'show_x_title'                     => 0,
     'x_title'                          => 'X Field names',
@@ -931,7 +949,16 @@ __DATA__
 <!-- Draw BAR CHART -->
 [% FOREACH field = config.fields %]
   [% dcount = 1 %]
-  <path d="M[% x + (dw * xcount) %] [% base_line %] V[% base_line - (data.0.data.$field * divider) %] h[% bar_width %] V[% base_line %] Z" class="fill[% dcount %]"/>
+    [% IF config.show_path_title %]
+      [% IF config.show_title_fields %]
+	<path d="M[% x + (dw * xcount) %] [% base_line %] V[% base_line - (data.0.data.$field * divider) %] h[% bar_width %] V[% base_line %] Z" class="fill[% dcount %]"><title>[% data.0.data.$field %] - [% field %]</title></path>
+      [% ELSE %]
+	<path d="M[% x + (dw * xcount) %] [% base_line %] V[% base_line - (data.0.data.$field * divider) %] h[% bar_width %] V[% base_line %] Z" class="fill[% dcount %]"><title>[% data.0.data.$field %] - [% data.0.title %]</title></path>
+      [% END %]
+    [% ELSE %]
+      <path d="M[% x + (dw * xcount) %] [% base_line %] V[% base_line - (data.0.data.$field * divider) %] h[% bar_width %] V[% base_line %] Z" class="fill[% dcount %]"/>
+    [% END %]
+
   [% IF config.show_data_values %]
     <text x="[% (dw * xcount) + x + (dw / 2) - (bar_gap / 2) %]" y="[% base_line - (data.0.data.$field * divider) - 6 %]" class="dataPointLabel">[% data.0.data.$field %]</text>
   [% END %]

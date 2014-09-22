@@ -1,5 +1,15 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.24 Wed 9 Jul 2014 19:23:11
+    - Added config.show_path_title to control whether to include new 
+      title attribute in path tag, default to '0' (mikejbwhoo)
+    - Added TITLE attribute to PATH tag in SHOW DATA section (mikejbwhoo)
+    - Added config.show_title_fields to allow for fields array element to
+      be shown instead of title attribute used in add_data, looks nice
+      when creating non-overlapping bars, default to '0' (mikejbwhoo)
+    - Above changes made only to Pie, Bar, BarHorizontal, BarLine
+      (mikejbwhoo)
+
 0.23 Mon 4 Feb 2013 21:14:40
     - fix division by zero errors in all graph types (Carsten Wolff)
     - Doc clarification (elnjensen)
