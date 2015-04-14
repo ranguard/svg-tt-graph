@@ -282,6 +282,12 @@ The expected form is:
 The default time period if not provided is 'days'.
 These time periods are used by the L<DateTime::Duration> methods.
 
+=item timescale_time_zone
+
+This determines the time zone used for the date intervals on the X axis.
+Values are those that L<DateTime> accepts for its constructor's 'time_zone'
+parameter. The default is 'floating'.
+
 =item stagger_x_labels()
 
 This puts the labels at alternative levels so if they
@@ -425,6 +431,7 @@ sub _set_defaults {
     'stagger_x_labels'    => 0,
     'rotate_x_labels'     => 0,
     'timescale_divisions' => '',
+    'timescale_time_zone' => 'floating',
     'x_label_format'      => '%Y-%m-%d %H:%M:%S',
     'x_label_formatter'   => sub { return @_ },
     'y_label_formatter'   => sub { return @_ },
@@ -530,11 +537,29 @@ sub add_data {
   return 1;
 }
 
+#This is for internal use only, so we don't have to pass the time zone around.
+#It gets local()ed below before it's used.
+our $_TIME_ZONE;
+
+sub burn {
+  my ($self, @args) = @_;
+
+  local $_TIME_ZONE = $self->{'config'}{'timescale_time_zone'};
+
+  return $self->SUPER::burn(@args);
+}
+
 # Helper function for doing date/time calculations
 # Current implementations of DateTime can be slow :-(
 sub dateadd {
   my ($epoch,$value,$unit) = @_;
   my $dt = DateTime->from_epoch(epoch => $epoch);
+
+  #This should have been local()ed prior to getting here.
+  if ( $_TIME_ZONE ) {
+    $dt->set_time_zone( $_TIME_ZONE );
+  }
+
   $dt->add( $unit => $value );
   return $dt->epoch();
 }
