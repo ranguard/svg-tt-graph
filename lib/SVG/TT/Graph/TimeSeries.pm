@@ -417,6 +417,7 @@ sub _set_defaults {
     'show_y_labels'       => 1,
     'scale_divisions'     => '',
     'min_scale_value'     => '0',
+    'max_scale_value'     => '',
 
     'stacked'             => 0,
 
