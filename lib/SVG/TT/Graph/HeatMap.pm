@@ -561,8 +561,6 @@ sub calculations
     $self->{ calc }->{ min_y }              = $min_y;
     $self->{ calc }->{ max_x_label_length } = $max_x_label_length;
     $self->{ calc }->{ max_y_label_length } = $max_y_label_length;
-    warn $max_x_label_length;
-    warn $max_y_label_length;
     $self->{ config }->{ width } =
       ( 10 * 2 ) + ( $max_y_label_length * 8 ) + 1 + (
                                        $max_x * (
@@ -816,9 +814,7 @@ __DATA__
     <text
     x="[% x - (max_y_label_char / 2)    %]"
     y="[% (base_line - 1 ) - (yy * (config.block_height + config.gutter_width)) - config.block_height / 3     %]"
-    class="yAxisLabels">
-    [% y_data %]
-    </text>      
+    class="yAxisLabels">[% y_data %]</text>      
         [% yy = yy + 1 %]
     [% END %]
     [% FOREACH pair = dataset.pairs %]
