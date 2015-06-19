@@ -924,8 +924,8 @@ __DATA__
 </clipPath>
 
 <!-- axis -->
-<path d="M[% x %] [% y %] v[% h %]" class="axis" id="xAxis"/>
-<path d="M[% x %] [% base_line %] h[% w %]" class="axis" id="yAxis"/>
+<path d="M[% x %] [% base_line %] h[% w %]" class="axis" id="xAxis"/>
+<path d="M[% x %] [% y %] v[% h %]" class="axis" id="yAxis"/>
 
 <!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
 <!-- x axis scaling -->

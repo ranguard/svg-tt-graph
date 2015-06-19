@@ -779,8 +779,8 @@ __DATA__
 <rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]" class="graphBackground"/>
 
 <!-- axis -->
-<path d="M[% x %] [% y %] v[% h %]" class="axis" id="xAxis"/>
-<path d="M[% x %] [% base_line %] h[% w %]" class="axis" id="yAxis"/>
+<path d="M[% x %] [% base_line %] h[% w %]" class="axis" id="xAxis"/>
+<path d="M[% x %] [% y %] v[% h %]" class="axis" id="yAxis"/>
 
 <path d="M[% x + w %] [% y %] v[% h %]" class="axis" id="yAxis2"/>
 <!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
