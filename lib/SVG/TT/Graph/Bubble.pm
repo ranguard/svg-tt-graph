@@ -17,7 +17,7 @@ SVG::TT::Graph::Bubble - Create presentation quality SVG Bubble plot
 
 use SVG::TT::Graph::Bubble;
 
-my @data_cpu = ( 0.3, 23, 1, 0.5, 54, 2, 1.0, 67, 3, 1.8, 12, 2 );
+my @data = ( 2, 15, 18.10, 6, 19, 0.10, 12, 17, 12.92, 17, 10, 17.97 );
 
 my $graph = SVG::TT::Graph::Bubble->new( { 'height' => '500',
                                            'width'  => '300',
