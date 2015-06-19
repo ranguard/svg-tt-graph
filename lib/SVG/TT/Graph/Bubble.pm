@@ -593,6 +593,19 @@ sub calculations
       ( $self->_is_valid_config('data_value_format') ) ?
       $self->{ config }->{ data_value_format } :
       "%.${precision}f";
+
+    # This is some sanity incase someone activates the diganonal path, and the axis
+    # are not the same size
+    if ( $self->{ config }->{ diagonal_path } &&
+         ( $self->{ calc }->{ max_xscale_value } !=
+            $self->{ calc }->{ max_yscale_value } ||
+            $self->{ calc }->{ min_xscale_value } !=
+            $self->{ calc }->{ min_yscale_value } ) )
+    {
+        warn
+          "Using the diagonal_path in the configs assumes the axis\n will be the same size. If you want to use this.\nYou might want to set the min and max x and y sizes.";
+    }
+
 }
 
 1;
