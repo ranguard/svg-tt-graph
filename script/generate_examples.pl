@@ -29,6 +29,7 @@ my @data_03 = qw(0 0 0 0 0 0 0 0 0 0 1815 0);
 run_bar('Bar',\@fields1,\@data_01,'small_range');
 run_bar('BarHorizontal',\@fields1,\@data_02,'large_range');
 run_line('Line',\@fields2,\@data_03,'default');
+run_pie('Pie',\@fields1,\@data_02,'default');
 
 sub run_line {
 	my $type = shift;
@@ -114,6 +115,29 @@ sub run_bar {
 	
 }
 
+sub run_pie {
+	my $type = shift;
+	my $fields = shift;
+	my $data = shift;
+	my $title = shift;
+
+	my $module = "SVG::TT::Graph::$type";
+	
+	## Basic using default config
+	my $graph1 = $module->new({
+		'fields' => $fields,
+	});
+	$graph1->add_data({
+		'data' => $data,
+		'title' => 'Sales 2002 asdfasdfds',
+	});
+	
+	my $outfile1 = "$dir/$type" . "_defaults_" . "$title.svg";
+	open(FH,">$outfile1");
+	print FH $graph1->burn();
+	close(FH);
+	
+}
 
 
 
