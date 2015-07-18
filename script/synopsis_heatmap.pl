@@ -10,12 +10,12 @@ for ( 1 .. 20 )
 {
     push @data,
       { x   => "ABC$_",
-        c   => $_ * 3,
-        b   => $_ * 2,
-        d   => int( rand(10) ),
-        abc => $_,
-        f   => int( rand(10) ),
-        e   => int( rand(10) ),
+        c   => $_ * 30,
+        b   => $_ * 20,
+        d   => int( rand(1000) ),
+        absasasc => $_,
+        f   => int( rand(1000) ),
+        e   => int( rand(100) ),
       };
 }
 
