@@ -568,8 +568,6 @@ sub calculations
     $self->{ calc }->{ min_y }              = $min_y;
     $self->{ calc }->{ max_x_label_length } = $max_x_label_length;
     $self->{ calc }->{ max_y_label_length } = $max_y_label_length;
-    warn $max_x_label_length;
-    warn $max_y_label_length;
     $self->{ config }->{ width } =
       ( 10 * 2 ) + ( $max_y_label_length * 8 ) + 1 + (
                                        $max_x * (
