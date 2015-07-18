@@ -417,9 +417,11 @@ sub _set_defaults
         'show_graph_subtitle' => 0,
         'graph_subtitle'      => 'Graph Sub Title',
 
-        'key'          => 0,
-        'key_position' => 'right',    # bottom or right
-        y_axis_order   => [] );
+        'key'                  => 0,
+        'key_position'         => 'right',    # bottom or right
+        'y_axis_order'         => [],
+        'include_undef_values' => 0
+                  );
 
     while ( my ( $key, $value ) = each %default )
     {
@@ -472,14 +474,15 @@ sub add_data
     my $max = scalar @{ $conf->{ 'data' } };
     while ( $i < $max )
     {
-        my %row ;
+        my %row;
         if ( ref( $conf->{ 'data' }->[$i] ) eq 'ARRAY' )
         {
             $row{ x } = $conf->{ 'data' }->[$i]->[0];
             for my $col ( 1 .. $#{ $conf->{ 'data' }->[$i] } )
             {
                 $row{ $conf->{ 'data' }->[0]->[$col] } =
-                  colourDecide( $conf->{ 'data' }->[$i]->[$col] )
+                  $self->colourDecide( $conf->{ 'data' }->[$i]->[$col] )
+
                   #$conf->{ 'data' }->[$i]->[$col];
             }
         }
@@ -491,9 +494,13 @@ sub add_data
             $row{ x } = $conf->{ 'data' }->[$i]->{ x };
             while ( my ( $k, $v ) = each %check )
             {
-                croak "'$row{ x }' does not have a '$k' vaule"
-                  unless defined $conf->{ 'data' }->[$i]->{ $k };
-                $row{ $k } = colourDecide();
+                unless ( defined $conf->{ 'data' }->[$i]->{ $k } )
+                {
+                    croak "zzz '$row{ x }' does not have a '$k' vaule"
+                      unless ( $self->{ config }->{ include_undef_values } );
+                }
+                $row{ $k } =
+                  $self->colourDecide( $conf->{ 'data' }->[$i]->{ $k } );
             }
         }
         else
@@ -553,7 +560,7 @@ sub calculations
                    ( $max_x_label_length < length($x_label) ) );
         }
     }
-    
+
     $self->{ calc }->{ max_key_size }       = $max_key_size;
     $self->{ calc }->{ max_x }              = $max_x;
     $self->{ calc }->{ min_x }              = $min_x;
@@ -561,6 +568,8 @@ sub calculations
     $self->{ calc }->{ min_y }              = $min_y;
     $self->{ calc }->{ max_x_label_length } = $max_x_label_length;
     $self->{ calc }->{ max_y_label_length } = $max_y_label_length;
+    warn $max_x_label_length;
+    warn $max_y_label_length;
     $self->{ config }->{ width } =
       ( 10 * 2 ) + ( $max_y_label_length * 8 ) + 1 + (
                                        $max_x * (
@@ -576,12 +585,73 @@ sub calculations
 
 }
 
+sub defaultColours
+{
+    my ($self) = @_;
+
+    my %default = (
+                    '<=' => { 1000 => [0,   0,   255],
+                              900  => [4,   150, 252],
+                              800  => [4,   218, 252],
+                              700  => [4,   200, 100],
+                              600  => [36,  225, 36],
+                              500  => [132, 255, 14],
+                              400  => [244, 254, 4],
+                              300  => [252, 190, 4],
+                              200  => [252, 125, 4],
+                              100  => [252, 2,   4],
+                            },
+                    '=' => { 0  => [0, 0, 0],
+                             -1 => [0, 0, 0],
+                             -2 => [0, 0, 0],
+                             -3 => [0, 0, 0],
+                             -4 => [0, 0, 0],
+                           } );
+
+
+    return %default;
+}
+
 sub colourDecide
 {
-    my $r = int( rand(255) );
-    my $g = int( rand(255) );
-    my $b = int( rand(255) );
-    return "rgb($r,$g,$b)";
+    my ( $self, $score ) = @_;
+
+    my %key = $self->defaultColours;
+
+    # return the default missing colour if the score is undef
+    return 'rgb(255,255,255)' unless defined $score;
+
+
+    my @precidence = qw(< <= > >= = );
+
+    my %tests = ( '<'  => sub {return 1, if $_[0] < $_[1]},
+                  '<=' => sub {return 1, if $_[0] <= $_[1]},
+                  '>'  => sub {return 1, if $_[0] > $_[1]},
+                  '>=' => sub {return 1, if $_[0] >= $_[1]},
+                  '='  => sub {return 1, if $_[0] == $_[1]},
+                );
+
+    # set this to the default so if there are no rule matches
+    # we just use the default
+    my $colour = [0, 0, 0];
+
+    for my $symbol (@precidence)
+    {
+        next unless exists $key{ $symbol };
+
+        my @values = sort {$b <=> $a} keys %{ $key{ $symbol } };
+
+        # if we are looking for the highest we flip the order
+        @values = reverse @values if ( $symbol =~ /^>/ );
+        for my $value (@values)
+        {
+            if ( $tests{ $symbol }( $score, $value ) )
+            {
+                $colour = $key{ $symbol }{ $value };
+            }
+        }
+    }
+    return sprintf "rgb(%s,%s,%s)", @$colour;
 }
 
 1;
@@ -812,9 +882,11 @@ __DATA__
     [% yy = 0 %]
     [% FOREACH y_data = config.y_axis_order %]
     <text
-    x="[% x - (max_y_label_char / 2)    %]"
+    x="[% max_y_label_char %]"
     y="[% (base_line - 1 ) - (yy * (config.block_height + config.gutter_width)) - config.block_height / 3     %]"
-    class="yAxisLabels">[% y_data %]</text>      
+    class="yAxisLabels">
+    [% y_data %]
+    </text>      
         [% yy = yy + 1 %]
     [% END %]
     [% FOREACH pair = dataset.pairs %]
@@ -841,7 +913,7 @@ __DATA__
         y="[% (base_line - 1 - config.block_height) - (yy * (config.block_height + config.gutter_width))   %]"
         width="[% config.block_width  %]"
         height="[% config.block_height  %]" style="fill:[% pair.$y_data  %]" />
-        <!-- [% y_data %] [% pair.$y_data %] -->
+        <!-- [% y_data %] -z- [% pair.$y_data %] -->
         [% yy = yy + 1 %]
         [% END %]
     [% xx = xx + 1 %]
