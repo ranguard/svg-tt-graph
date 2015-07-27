@@ -4,9 +4,9 @@ use strict;
 use Carp;
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);
-use vars qw($VERSION $TEMPLATE_FH);
-$VERSION     = $SVG::TT::Graph::VERSION;
-$TEMPLATE_FH = \*DATA;
+
+our $VERSION     = $SVG::TT::Graph::VERSION;
+our $TEMPLATE_FH = \*DATA;
 
 
 =head1 NAME
