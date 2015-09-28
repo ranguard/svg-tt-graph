@@ -458,7 +458,7 @@ sub add_data
         if ( ref( $conf->{ 'data' }->[0] ) eq 'ARRAY' )
         {
             my @header = @{ $conf->{ 'data' }->[0] };
-            $self->{ config }->{ y_axis_order } = \@header[1 .. $#header];
+            $self->{ config }->{ y_axis_order } = [@header[1 .. $#header]];
         }
     }
     %check = map {$_, 1} @{ $self->{ config }->{ y_axis_order } };
