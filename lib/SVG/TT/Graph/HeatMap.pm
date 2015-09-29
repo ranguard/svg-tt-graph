@@ -193,7 +193,7 @@ L<SVG::TT::Graph::Bar>,
 L<SVG::TT::Graph::BarHorizontal>,
 L<SVG::TT::Graph::BarLine>,
 L<SVG::TT::Graph::Pie>,
-L<SVG::TT::Graph::Buuble>,
+L<SVG::TT::Graph::Bubble>,
 L<Compress::Zlib>,
 L<XML::Tidy>
 
