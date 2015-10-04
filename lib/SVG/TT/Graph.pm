@@ -6,7 +6,7 @@ use Template;
 
 require 5.6.1;
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 our $AUTOLOAD;
 our $TEMPLATE_FH;
 

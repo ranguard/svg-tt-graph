@@ -1,5 +1,8 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.26 Sun  4 Oct 2015 20:18:50
+    - Add HeatMap! (stuartskelton)
+
 0.25 Tue 14 Apr 2015 21:26:11
     - Make TimeSeries accept max_scale_value. (FGasper)
     - Teach TimeSeries to accept a time zone for date display. (FGasper)
