@@ -3,7 +3,7 @@ package SVG::TT::Graph;
 use strict;
 use Carp;
 use Template;
-
+use POSIX;
 require 5.6.1;
 
 our $VERSION = '0.26';
