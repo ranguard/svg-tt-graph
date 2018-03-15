@@ -4,9 +4,9 @@ use strict;
 use Carp;
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);
-use vars qw($VERSION $TEMPLATE_FH);
-$VERSION = $SVG::TT::Graph::VERSION;
-$TEMPLATE_FH = \*DATA;
+
+our $VERSION = $SVG::TT::Graph::VERSION;
+our $TEMPLATE_FH = \*DATA;
 
 =head1 NAME
 
@@ -18,18 +18,18 @@ SVG::TT::Graph::Pie - Create presentation quality SVG pie graphs easily
 
   my @fields = qw(Jan Feb Mar);
   my @data_sales_02 = qw(12 45 21);
-  
+
   my $graph = SVG::TT::Graph::Pie->new({
     'height' => '500',
     'width'  => '300',
     'fields' => \@fields,
   });
-  
+
   $graph->add_data({
     'data'  => \@data_sales_02,
     'title' => 'Sales 2002',
   });
-  
+
   print "Content-type: image/svg+xml\n\n";
   print $graph->burn();
 
@@ -47,10 +47,10 @@ title, subtitle etc.
 =head2 new()
 
   use SVG::TT::Graph::Pie;
-  
+
   # Field names along the X axis
   my @fields = qw(Jan Feb Mar);
-  
+
   my $graph = SVG::TT::Graph::Pie->new({
     # Required
     'fields'                  => \@fields,
@@ -75,6 +75,8 @@ title, subtitle etc.
     'show_actual_values'      => 0,
     'show_percent'            => 1,
     'rollover_values'         => 0,
+    'show_path_title'	      => 0,
+    'show_title_fields'	      => 0,
 
     # data on key:
     'show_key_data_labels'    => 1,
@@ -129,7 +131,7 @@ been added to the graph object.
 
   my $value = $graph->method();
   my $confirmed_new_value = $graph->method($value);
-  
+
 The following is a list of the methods which are available
 to change the config of the graph object after it has been
 created.
@@ -229,7 +231,7 @@ Whether to show a key, defaults to 0, set to
 
 =item key_placement()
 
-Defaults to 'R' - right, can be 
+Defaults to 'R' - right, can be
 'R', 'L', 'T' or 'B'.
 
 =item show_data_labels()
@@ -250,6 +252,18 @@ to '1', can be set to '0'.
 =item rollover_values()
 
 Shows data field and value when the mouse is over a piechart wedge.
+
+=item show_path_title()
+
+Whether to add the title attribute to the data path tags,
+which will show "tooltips" when hovering over the bar area.
+
+=item show_title_fields()
+
+Whether to show field values as title elements in path tag,
+defaults to 0, set to '1' to turn on. Suggest on single
+add_data graphs, for overlapping graphs leave off to see
+the title value used in the add_data call.
 
 =item show_key_data_labels()
 
@@ -275,8 +289,8 @@ use expanded_greatest().
 =item expand_greatest()
 
 The largest slice of pie is exploded out
-from the pie, defaults to '0'. Useful if you are 
-only showing the percentages (which are rounded) but 
+from the pie, defaults to '0'. Useful if you are
+only showing the percentages (which are rounded) but
 still want to visually show which slice was largest.
 
 Do not set to '1' if you are going to
@@ -286,43 +300,12 @@ use expanded().
 
 =head1 EXAMPLES
 
-For examples look at the project home page 
+For examples look at the project home page
 http://leo.cuckoo.org/projects/SVG-TT-Graph/
 
 =head1 EXPORT
 
 None by default.
-
-=head1 ACKNOWLEDGEMENTS
-
-Thanks to Foxtons for letting us put this on CPAN, Todd Caine for heads up on
-reparsing the template (but not using atm), David Meibusch for TimeSeries and a
-load of other ideas, Stephen Morgan for creating the TT template and SVG, and
-thanks for all the patches by Andrew Ruthven and others.
-
-=head1 AUTHOR
-
-Leo Lapworth <LLAP@cuckoo.org>
-
-=head1 MAINTAINER
-
-Florent Angly <florent.angly@gmail.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2003, Leo Lapworth 
-
-This module is free software; you can redistribute it or 
-modify it under the same terms as Perl itself.
-
-=head1 BUGS
-
-Please report any bugs or feature requests to bug-graph-svg-tt@rt.cpan.org, or
-through the web interface at http://rt.cpan.org.
-
-The Graph::SVG::TT development repository is located on GitHub at
-L<http://github.com/ranguard/svg-tt-graph>. Get the latest development version
-using: git clone git://github.com/ranguard/svg-tt-graph.git
 
 =head1 SEE ALSO
 
@@ -341,15 +324,15 @@ L<XML::Tidy>
 
 sub _init {
   my $self = shift;
-  croak "fields was not supplied or is empty" 
-  unless defined $self->{'config'}->{fields} 
+  croak "fields was not supplied or is empty"
+  unless defined $self->{'config'}->{fields}
     && ref($self->{'config'}->{fields}) eq 'ARRAY'
     && scalar(@{$self->{'config'}->{fields}}) > 0;
 }
 
 sub _set_defaults {
   my $self = shift;
-  
+
   my %default = (
     'width'                   => '500',
     'height'                  => '300',
@@ -362,27 +345,29 @@ sub _set_defaults {
     'graph_title'             => 'Graph Title',
     'show_graph_subtitle'     => 0,
     'graph_subtitle'          => 'Graph Sub Title',
-    
+
     'show_shadow'             => 1,
     'shadow_size'             => 1,
-    'shadow_offset'           => 15, 
-    
+    'shadow_offset'           => 15,
+
     'key_placement'           => 'R',
-    
+
     'show_data_labels'        => 0,
     'show_actual_values'      => 0,
     'show_percent'            => 1,
     'rollover_values'         => 0,
+    'show_path_title'	      => 0,
+    'show_title_fields'	      => 0,
 
-    'key'                     => 0, 
+    'key'                     => 0,
     'show_key_data_labels'    => 1,
     'show_key_actual_values'  => 1,
     'show_key_percent'        => 0,
-    
+
     'expanded'                => 0,
     'expand_greatest'         => 0,
   );
-  
+
   while( my ($key,$value) = each %default ) {
     $self->{config}->{$key} = $value;
   }
@@ -524,7 +509,7 @@ __DATA__
 [% IF config.show_graph_subtitle %][% y = y + 10 %][% END %]
 [% IF config.show_graph_subtitle %][% y = y + 10 %][% END %]
 
-<!-- set start/default coords of graph --> 
+<!-- set start/default coords of graph -->
 [% x = w / 2 %]
 [% y = h / 2 %]
 
@@ -537,7 +522,7 @@ __DATA__
 <!-- calc radius and check whether KEY will affect this -->
 [% IF w >= h %]
   [% r = (h / 2) - padding %]
-  
+
   [% IF config.key %]
     [% key_position = 'h' %]
     [% x_key_start = 30 %]
@@ -547,20 +532,20 @@ __DATA__
       <!-- if the radius is too big, shrink it -->
       [% IF x < r %]
         [% r = r - (w / 8) %]
-      [% END %]    
+      [% END %]
     [% ELSE %]
       <!-- if there is a key, move the pie chart -->
       [% x = x + r / 3 %]
       <!-- if the radius is too big, shrink it -->
       [% IF r > (w - x) && x > (w / 2) %]
         [% r = r - (w / 8) %]
-      [% END %]  
+      [% END %]
     [% END %]
   [% END %]
-  
+
 [% ELSE %]
   [% r = (w / 2) - padding %]
-  
+
   [% IF config.key %]
     [% key_position = 'v' %]
     [% y_key_start = 40 %]
@@ -570,14 +555,14 @@ __DATA__
       <!-- if the radius is too big, shrink it -->
       [% IF y < r %]
         [% r = r - (h / 8) %]
-      [% END %]    
+      [% END %]
     [% ELSE %]
       <!-- if there is a key, move the pie chart -->
       [% y = y + (r / 2) %]
       <!-- if the radius is too big, shrink it -->
       [% IF r > (h - y) && y > (h / 2) %]
         [% r = r - (h / 8) %]
-      [% END %]  
+      [% END %]
     [% END %]
   [% END %]
 [% END %]
@@ -597,12 +582,12 @@ __DATA__
   [% ELSE %]
     [% shadow_size = r %]
   [% END %]
-  
+
   [% IF !config.expanded && !config.expand_greatest %]
     <!-- only show shadow if not expanded -->
     <circle cx="[% x + config.shadow_offset %]" cy="[% y + config.shadow_offset %]" r="[% shadow_size + e %]" style="fill: url(#shadow); stroke: none;"/>
   [% END %]
-  
+
 [% END %]
 
 <circle cx="[% x %]" cy="[% y %]" r="[% r + e %]" fill="#ffffff"/>
@@ -626,12 +611,16 @@ __DATA__
   [% FOREACH dataset = data %]
     [% value = data.0.data.$field %]
     [% value_half = data.0.data.$field / 2 %]
-    
+
     <!-- calc percentage -->
-    [% percent = (100 / total) * value FILTER format('%2.0f')%]    
+    [% IF total == 0 %]
+      [% percent = 0 %]
+    [% ELSE %]
+      [% percent = (100 / total) * value FILTER format('%2.0f')%]
+    [% END %]
 
     [% values = values + value %]
-    
+
     [% IF count == 1 %]
       <!-- offset values at start to get mid point -->
       [% values_half = values_half + value_half %]
@@ -639,17 +628,22 @@ __DATA__
       [% values_half = values_half + last_value_half + value_half %]
     [% END %]
 
-    [% degrees = (values / total) * 360 %]
-    [% degrees_half = (values_half / total) * 360 %]  
-    
+    [% IF total == 0 %]
+      [% degrees = 0 %]
+      [% degrees_half = 0 %]
+    [% ELSE %]
+      [% degrees = (values / total) * 360 %]
+      [% degrees_half = (values_half / total) * 360 %]
+    [% END %]
+
     [% radians = degrees * (Pi / 180) %]
     [% radians_half = degrees_half * (Pi / 180) %]
 
     [% px_end = r * cos(radians) FILTER format('%02.10f') %]
     [% py_end = r * sin(radians) FILTER format('%02.10f') %]
-    
+
     [% px_mid = r * cos(radians_half) FILTER format('%02.10f') %]
-    [% py_mid = r * sin(radians_half) FILTER format('%02.10f') %]  
+    [% py_mid = r * sin(radians_half) FILTER format('%02.10f') %]
 
 
     <!-- segments displayed clockwise from ' 3 o'clock ' -->
@@ -658,24 +652,34 @@ __DATA__
       [% xe = re * cos(radians_half) FILTER format('%02.10f') %]
       [% ye = re * sin(radians_half) FILTER format('%02.10f') %]
 
-      <path id="w[% count %]" d="M[% px_start + xe %] [% pmin_scale_value + ye %] A[% r %] [% r %] 0 
-      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
-  
+      <path id="w[% count %]" d="M[% px_start + xe %] [% pmin_scale_value + ye %] A[% r %] [% r %] 0
+      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]
+
     [% ELSIF !config.expanded && config.expand_greatest %]
       [% IF data.0.data.$field == max_value %]
         [% re = r / e %]
         [% xe = re * cos(radians_half) FILTER format('%02.10f') %]
         [% ye = re * sin(radians_half) FILTER format('%02.10f') %]
-        <path id="w[% count %]" d="M[% px_start + xe %] [% pmin_scale_value + ye %] A[% r %] [% r %] 0 
-        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
+        <path id="w[% count %]" d="M[% px_start + xe %] [% pmin_scale_value + ye %] A[% r %] [% r %] 0
+        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end + xe %] [% y + py_end + ye %] L[% x + xe %] [% y + ye %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]
       [% ELSE %]
-        <path id="w[% count %]" d="M[% px_start %] [% pmin_scale_value %] A[% r %] [% r %] 0 
-        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
+        <path id="w[% count %]" d="M[% px_start %] [% pmin_scale_value %] A[% r %] [% r %] 0
+        [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]
       [% END %]
-  
+
     [% ELSE %]
-      <path id="w[% count %]" d="M[% px_start %] [% pmin_scale_value %] A[% r %] [% r %] 0 
-      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]/>
+      <path id="w[% count %]" d="M[% px_start %] [% pmin_scale_value %] A[% r %] [% r %] 0
+      [% IF percent >= 50 %]1[% ELSE %]0[% END %] 1 [% x + px_end %] [% y + py_end %] L[% x %] [% y %] Z" class="[% IF config.style_sheet_field_names %][% field %]_dataPoint[% ELSE %]dataPoint[% count %][% END %]" [% IF config.rollover_values %]onmouseover="togglePath([% count %]);" onmouseout="togglePath([% count %]);"[% END %]
+    [% END %]
+
+    [% IF config.show_path_title %]
+      [% IF config.show_title_fields %]
+	><title>[% data.0.data.$field %] - [% field %]</title></path>
+      [% ELSE %]
+	><title>[% data.0.data.$field %] - [% data.0.title %]</title></path>
+      [% END %]
+    [% ELSE %]
+      />
     [% END %]
 
     <!-- show values next to wedges -->
@@ -700,7 +704,7 @@ __DATA__
     [% IF config.rollover_values %]
         <text id="n[% count %]" x="[% x %]" y="[% y + r + e + padding %]" class="subTitle" opacity="0">[% field %]</text>
     [% END %]
-    
+
     [% px_start = x + px_end %]
     [% pmin_scale_value = y + py_end %]
     [% last_value_half = value_half %]
@@ -752,9 +756,13 @@ __DATA__
   [% END %]
 
   [% FOREACH field = config.fields %]
-    [% percent = (100 / total) * data.0.data.$field FILTER format('%2.0f')%]
+    [% IF total == 0 %]
+      [% percent = 0 %]
+    [% ELSE %]
+      [% percent = (100 / total) * data.0.data.$field FILTER format('%2.0f')%]
+    [% END %]
     <rect x="[% x_off %]" y="[% y_off + (key_box_size * key_count) + (key_count * key_padding) %]" width="[% key_box_size %]" height="[% key_box_size %]" class="[% IF config.style_sheet_field_names %][% field %]_key[% ELSE %]key[% key_count %][% END %]"/>
-    <text x="[% x_off + key_box_size + key_padding %]" y="[% y_off + (key_box_size * key_count) + (key_count * key_padding) + key_box_size %]" class="keyText">[% IF config.show_key_data_labels %][% field %][% END %] [% IF config.show_key_actual_values %][[% data.0.data.$field %]][% END %] [% IF config.show_key_percent %][% percent %]%[% END %]</text>  
+    <text x="[% x_off + key_box_size + key_padding %]" y="[% y_off + (key_box_size * key_count) + (key_count * key_padding) + key_box_size %]" class="keyText">[% IF config.show_key_data_labels %][% field %][% END %] [% IF config.show_key_actual_values %][[% data.0.data.$field %]][% END %] [% IF config.show_key_percent %][% percent %]%[% END %]</text>
     [% key_count = key_count + 1 %]
   [% END %]
 

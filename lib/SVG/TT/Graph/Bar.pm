@@ -4,9 +4,9 @@ use strict;
 use Carp;
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);
-use vars qw($VERSION $TEMPLATE_FH);
-$VERSION = $SVG::TT::Graph::VERSION;
-$TEMPLATE_FH = \*DATA;
+
+our $VERSION = $SVG::TT::Graph::VERSION;
+our $TEMPLATE_FH = \*DATA;
 
 =head1 NAME
 
@@ -73,6 +73,9 @@ title, subtitle etc.
     'scale_divisions'        => '',
     'y_label_formatter'      => sub { return @_ },
     'x_label_formatter'      => sub { return @_ },
+
+    'show_path_title'	     => 0,
+    'show_title_fields'	     => 0,
 
     'show_x_title'           => 0,
     'x_title'                => 'X Field names',
@@ -297,6 +300,18 @@ A callback subroutine which will format a label on the y axis.  For example:
 
     $graph->y_label_formatter( sub { return '$' . $_[0] } );
 
+=item show_path_title()
+
+Whether to add the title attribute to the data path tags,
+which will show "tooltips" when hovering over the bar area.
+
+=item show_title_fields()
+
+Whether to show field values as title elements in path tag,
+defaults to 0, set to '1' to turn on. Suggest on single
+add_data graphs, for overlapping graphs leave off to see
+the title value used in the add_data call.
+
 =back
 
 =head1 EXAMPLES
@@ -307,37 +322,6 @@ http://leo.cuckoo.org/projects/SVG-TT-Graph/
 =head1 EXPORT
 
 None by default.
-
-=head1 ACKNOWLEDGEMENTS
-
-Thanks to Foxtons for letting us put this on CPAN, Todd Caine for heads up on
-reparsing the template (but not using atm), David Meibusch for TimeSeries and a
-load of other ideas, Stephen Morgan for creating the TT template and SVG, and
-thanks for all the patches by Andrew Ruthven and others.
-
-=head1 AUTHOR
-
-Leo Lapworth (LLAP@cuckoo.org)
-
-=head1 MAINTAINER
-
-Florent Angly <florent.angly@gmail.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2003, Leo Lapworth 
-
-This module is free software; you can redistribute it or 
-modify it under the same terms as Perl itself.
-
-=head1 BUGS
-
-Please report any bugs or feature requests to bug-graph-svg-tt@rt.cpan.org, or
-through the web interface at http://rt.cpan.org.
-
-The Graph::SVG::TT development repository is located on GitHub at
-L<http://github.com/ranguard/svg-tt-graph>. Get the latest development version
-using: git clone git://github.com/ranguard/svg-tt-graph.git
 
 =head1 SEE ALSO
 
@@ -383,6 +367,9 @@ sub _set_defaults {
     'rotate_x_labels'        => 0,
     'x_label_formatter'      => sub { return @_ },
     'y_label_formatter'      => sub { return @_ },
+
+    'show_path_title'	     => 0,
+    'show_title_fields'	     => 0,
     
     'show_y_labels'          => 1,
     'scale_integers'         => 0,
@@ -674,7 +661,9 @@ __DATA__
 <!-- JUMP THE GUN AND CALC BAR WIDTHS AS THESE ARE USED FOR PADDING IF LARGE X LABELS ARE USED -->
 <!-- get number of data points on x scale -->
 [% dx = config.fields.size %]
-
+[% IF dx == 0 %]
+  [% dx = 1 %]
+[% END %]
 <!-- get distribution width on x axis -->
 [% data_widths_x = w / dx %]
 [% dw = data_widths_x FILTER format('%2.02f') %]
@@ -726,13 +715,15 @@ __DATA__
 <rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]" class="graphBackground"/>
 
 <!-- axis -->
-<path d="M[% x %] [% y %] v[% h %]" class="axis" id="xAxis"/>
-<path d="M[% x %] [% base_line %] h[% w %]" class="axis" id="yAxis"/>
+<path d="M[% x %] [% base_line %] h[% w %]" class="axis" id="xAxis"/>
+<path d="M[% x %] [% y %] v[% h %]" class="axis" id="yAxis"/>
 
 <!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
 <!-- get number of data points on x scale -->
 [% dx = config.fields.size %]
-
+[% IF dx == 0 %]
+  [% dx = 1 %]
+[% END %]
 <!-- get distribution width on x axis -->
 [% data_widths_x = w / dx %]
 [% dw = data_widths_x.match('(\d+[\.\d\d])').0 %]
@@ -775,6 +766,9 @@ __DATA__
 
 <!-- distribute Y scale -->
 [% dy = scale_range / scale_division %]
+[% IF dy == 0 %]
+  [% dy = 1 %]
+[% END %]
 <!-- ensure y_data_points butt up to edge of graph -->
 [% y_marker_height = h / dy %]
 [% dy = y_marker_height.match('(\d+[\.\d\d])').0 %]
@@ -834,7 +828,16 @@ __DATA__
 
   [% start_x = base_line %]
   [% FOREACH dataset = data %]
-    <path d="M[% (dw * xcount) + x %] [% start_x %] V[% start_x - (dataset.data.$field * divider) %] h[% bar_width %] V[% start_x %] Z" class="fill[% dcount %]"/>
+    [% IF config.show_path_title %]
+      [% IF config.show_title_fields %]
+	<path d="M[% (dw * xcount) + x %] [% start_x %] V[% start_x - (dataset.data.$field * divider) %] h[% bar_width %] V[% start_x %] Z" class="fill[% dcount %]"><title>[% dataset.data.$field %] - [% field %]</title></path>
+      [% ELSE %]
+	<path d="M[% (dw * xcount) + x %] [% start_x %] V[% start_x - (dataset.data.$field * divider) %] h[% bar_width %] V[% start_x %] Z" class="fill[% dcount %]"><title>[% dataset.data.$field %] - [% dataset.title %]</title></path>
+      [% END %]
+    [% ELSE %]
+      <path d="M[% (dw * xcount) + x %] [% start_x %] V[% start_x - (dataset.data.$field * divider) %] h[% bar_width %] V[% start_x %] Z" class="fill[% dcount %]"/>
+    [% END %]
+
     [% IF config.show_data_values %]
       <text x="[% (dw * xcount) + x + (dw / 2) - (bar_gap / 2) %]" y="[% start_x - (dataset.data.$field * divider) - 6 %]" class="dataPointLabel">[% dataset.data.$field %]</text>
     [% END %]

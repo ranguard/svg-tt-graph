@@ -1,5 +1,26 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+0.26 Sun  4 Oct 2015 20:18:50
+    - Add HeatMap! (stuartskelton)
+
+0.25 Tue 14 Apr 2015 21:26:11
+    - Make TimeSeries accept max_scale_value. (FGasper)
+    - Teach TimeSeries to accept a time zone for date display. (FGasper)
+
+0.24 Wed 9 Jul 2014 19:23:11
+    - Added config.show_path_title to control whether to include new
+      title attribute in path tag, default to '0' (mikejbwhoo)
+    - Added TITLE attribute to PATH tag in SHOW DATA section (mikejbwhoo)
+    - Added config.show_title_fields to allow for fields array element to
+      be shown instead of title attribute used in add_data, looks nice
+      when creating non-overlapping bars, default to '0' (mikejbwhoo)
+    - Above changes made only to Pie, Bar, BarHorizontal, BarLine
+      (mikejbwhoo)
+
+0.23 Mon 4 Feb 2013 21:14:40
+    - fix division by zero errors in all graph types (Carsten Wolff)
+    - Doc clarification (elnjensen)
+
 0.22 Sun 14 Oct 2012 09:43:58
     - Link to github for issue tracking
     - Allow reversed y-axis (elnjensen)
@@ -32,7 +53,7 @@ Revision history for Perl extension SVG::TT::Graph.
 0.16 - Sun Apr 18 2010
   - Javascript code in the piechart and timeseries put into a CDATA tag
 
-0.15 - Sat Apr 17 2010  
+0.15 - Sat Apr 17 2010
   - Method get_template() moved from SVG::TT::Graph::* to SVG::TT::Graph to avoid redundancy
   - Fixed bug in get_template(). The DATA filehandle is now read from the beginning
     at each get_template call
@@ -76,7 +97,7 @@ Revision history for Perl extension SVG::TT::Graph.
 0.09
   - Applied path patch for Firefox from Pat Ekman for Pie
   - patched other modules so Firefox works (doesn't like comma's in a path)
-  
+
 0.08
   - Fix stylesheet for Pie
 
@@ -88,7 +109,7 @@ Revision history for Perl extension SVG::TT::Graph.
     #8680 (Typo in defaut Stylesheet for SVG::TT::Graph::TimeSeries)
     #7541 (BarHorizontal)
     #7549 (Character width setting in BarHorizontal)
-  
+
 0.06
   - Put in comment so people know where to copy the
     style sheet from (e.g. not including the <style> or CDATA)
@@ -120,12 +141,12 @@ Revision history for Perl extension SVG::TT::Graph.
   - Added Prereq of 'DateTime' - lots of modules but
     don't think it's bad to encourage people to use it
   - Altered style sheet from fill-opacity: 0.2; to fill-opacity: 0.5;
-    
+
 0.04 Wed Sept 24 2003
   - Patch from David Meibusch for Pie if slice > 50%
   - Patch from David Meibusch for Line to add 'stacked' option
 
-0.03  Wed Aug 28 
+0.03  Wed Aug 28
   - Doc fix thanks to Mike Castle
   - Renaming (sorry, thought it best to do ASAP)
   - y_marker  to  scale_divisions
@@ -133,9 +154,9 @@ Revision history for Perl extension SVG::TT::Graph.
   - y_start   to  min_scale_value
   - stagger_x_labels method added to Bar and Line
   - bar_gap method added to Bar and BarHorizontal
-  - made the padding clever depending on length 
+  - made the padding clever depending on length
     of labels, including the key.
-  
+
 0.02  Thurs Aug 21 17:16:09 2003
   - Now with added Pie!!
   - oh, and tests
@@ -144,4 +165,3 @@ Revision history for Perl extension SVG::TT::Graph.
 
 0.01  Wed Aug 20 11:26:09 2003
   - First public release - well if PAUSE was up
-

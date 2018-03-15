@@ -1,47 +1,40 @@
-package SVG::TT::Graph::XY;
+package SVG::TT::Graph::Bubble;
 
 use strict;
 use Carp;
 use SVG::TT::Graph;
 use base qw(SVG::TT::Graph);
 
-our $VERSION = $SVG::TT::Graph::VERSION;
+our $VERSION     = $SVG::TT::Graph::VERSION;
 our $TEMPLATE_FH = \*DATA;
 
 
 =head1 NAME
 
-SVG::TT::Graph::XY - Create presentation quality SVG line graphs of XY data points easily
+SVG::TT::Graph::Bubble - Create presentation quality SVG Bubble plot
 
 =head1 SYNOPSIS
 
-  use SVG::TT::Graph::XY;
+use SVG::TT::Graph::Bubble;
 
-  my @data_cpu  = (0.3, 23, 0.5, 54, 1.0, 67, 1.8, 12);
-  my @data_disk = (0.45, 12, 0.51, 26, 0.53, 23);
+my @data = ( 2, 15, 18.10, 6, 19, 0.10, 12, 17, 12.92, 17, 10, 17.97 );
 
-  my $graph = SVG::TT::Graph::XY->new({
-    'height' => '500',
-    'width'  => '300',
-  });
+my $graph = SVG::TT::Graph::Bubble->new( { 'height' => '500',
+                                           'width'  => '300',
+                                         } );
 
-  $graph->add_data({
-    'data'  => \@data_cpu,
-    'title' => 'CPU',
-  });
+$graph->add_data( { 'data'  => \@data_cpu,
+                    'title' => 'CPU',
+                  } );
 
-  $graph->add_data({
-    'data'  => \@data_disk,
-    'title' => 'Disk',
-  });
 
-  print "Content-type: image/svg+xml\n\n";
-  print $graph->burn();
+print "Content-type: image/svg+xml\n\n";
+print $graph->burn();
 
 =head1 DESCRIPTION
 
 This object aims to allow you to easily create high quality
-SVG line graphs of XY data. You can either use the default style sheet
+SVG Bubble plot graphs using xyz data. You can either use the default style sheet
 or supply your own. Either way there are many options which can
 be configured to give you control over how the graph is
 generated - with or without a key, data elements at each point,
@@ -51,9 +44,9 @@ title, subtitle etc.
 
 =head2 new()
 
-  use SVG::TT::Graph::XY;
+  use SVG::TT::Graph::Bubble;
 
-  my $graph = SVG::TT::Graph::XY->new({
+  my $graph = SVG::TT::Graph::Bubble->new({
 
     # Optional - defaults shown
     'height'              => 500,
@@ -73,7 +66,6 @@ title, subtitle etc.
     'y_label_formatter'   => sub { return @_ },
     'x_label_formatter'   => sub { return @_ },
 
-    'show_data_points'    => 1,
     'show_data_values'    => 1,
     'rollover_values'     => 0,
 
@@ -95,6 +87,8 @@ title, subtitle etc.
     # Stylesheet defaults
     'style_sheet'         => '/includes/graph.css', # internal stylesheet
     'random_colors'       => 0,
+    'bubble_fill'   => 0.4,
+    'bubble_border_stroke'   => 0,
   });
 
 The constructor takes a hash reference with values defaulted to those
@@ -103,11 +97,20 @@ to using the internal style sheet.
 
 =head2 add_data()
 
-  my @data_cpu  = (0.3, 23, 0.5, 54, 1.0, 67, 1.8, 12);
+  my @data = ( 2,  15, 18.10, 
+               6,  19, 0.10, 
+               12, 17, 12.92, 
+               17, 10, 17.97 );
   or
-  my @data_cpu = ([0.3,23], [0.5,54], [1.0,67], [1.8,12]);
+  my @data = ( [2, 15, 18.10] , [6, 19, 0.10], 
+               [12, 17, 12.92], [17, 10, 17.97], );
   or
-  my @data_cpu = ([0.3,23,'23%'], [0.5,54,'54%'], [1.0,67,'67%'], [1.8,12,'12%']);
+  my @data = ( { x => 2,  y => 15, z => 18.10 },
+               { x => 6,  y => 19, z => 0.10 },
+               { x => 12, y => 17, z => 12.92 },
+               { x => 17, y => 10, z => 17.97 },
+             )
+
 
   $graph->add_data({
     'data' => \@data_cpu,
@@ -196,15 +199,10 @@ Use random colors in the internal stylesheet.
 Show the value of each element of data on the graph (or
 optionally a user-defined label; see add_data).
 
-=item show_data_points()
-
-Show a small circle on the graph where the line
-goes from one point to the next.
-
 =item rollover_values()
 
 Shows data values and data points when the mouse is over the point.
-Used in combination with show_data_values and/or show_data_points.
+Used in combination with show_data_values.
 
 =item data_value_format()
 
@@ -340,6 +338,15 @@ A callback subroutine which will format a label on the y axis.  For example:
 
     $graph->y_label_formatter( sub { return '$' . $_[0] } );
 
+=item bubble_fill()
+    
+This is a floating number from 0 to 1 and determins how opaque the bubbles are.
+Default: 0.4
+
+=item bubble_border_stroke()
+
+Whether to show a 1px border stroke around the bubble.
+   
 =back
 
 =head1 EXAMPLES
@@ -364,192 +371,250 @@ L<XML::Tidy>
 
 =cut
 
-sub _init {
-  my $self = shift;
+sub _init
+{
+    my $self = shift;
 }
 
-sub _set_defaults {
-  my $self = shift;
+sub _set_defaults
+{
+    my $self = shift;
 
-  my @fields = ();
+    my @fields = ();
 
-  my %default = (
-    'fields'              => \@fields,
+    my %default = (
+        'fields' => \@fields,
 
-    'width'               => '500',
-    'height'              => '300',
+        'width'  => '500',
+        'height' => '300',
 
-    'style_sheet'         => '',
-    'random_colors'       => 0,
+        'style_sheet'   => '',
+        'random_colors' => 0,
 
-    'show_data_points'    => 1,
-    'show_data_values'    => 1,
-    'rollover_values'     => 0,
+        'show_data_values'     => 1,
+        'rollover_values'      => 0,
+        'bubble_fill'          => 0.4,
+        'bubble_border_stroke' => 0,
 
-    'max_x_span'          => '',
 
-    'area_fill'           => 0,
+        'max_x_span' => '',
 
-    'show_y_labels'       => 1,
-    'yscale_divisions'    => '',
-    'min_yscale_value'    => '0',
+        'area_fill' => 0,
 
-    'stacked'             => 0,
+        'show_y_labels'    => 1,
+        'yscale_divisions' => '',
+        'min_yscale_value' => '0',
+        'pad_top_y_axis'   => 1,
+        'stacked'          => 0,
 
-    'show_x_labels'       => 1,
-    'stagger_x_labels'    => 0,
-    'rotate_x_labels'     => 0,
-    'xscale_divisions'    => '',
-    'x_label_formatter'   => sub { return @_ },
-    'y_label_formatter'   => sub { return @_ },
+        'show_x_labels'     => 1,
+        'stagger_x_labels'  => 0,
+        'rotate_x_labels'   => 0,
+        'xscale_divisions'  => '',
+        'x_label_formatter' => sub {return @_},
+        'y_label_formatter' => sub {return @_},
 
-    'show_x_title'        => 0,
-    'x_title'             => 'X Field names',
+        'show_x_title' => 0,
+        'x_title'      => 'X Field names',
 
-    'show_y_title'        => 0,
-    'y_title'             => 'Y Scale',
+        'show_y_title' => 0,
+        'y_title'      => 'Y Scale',
 
-    'show_graph_title'    => 0,
-    'graph_title'         => 'Graph Title',
-    'show_graph_subtitle' => 0,
-    'graph_subtitle'      => 'Graph Sub Title',
+        'show_graph_title'    => 0,
+        'graph_title'         => 'Graph Title',
+        'show_graph_subtitle' => 0,
+        'graph_subtitle'      => 'Graph Sub Title',
 
-    'key'                 => 0,
-    'key_position'        => 'right', # bottom or right
-  );
+        'key'           => 0,
+        'key_position'  => 'right',    # bottom or right
+        'diagonal_path' => 0,
+                  );
 
-  while( my ($key,$value) = each %default ) {
-    $self->{config}->{$key} = $value;
-  }
+    while ( my ( $key, $value ) = each %default )
+    {
+        $self->{ config }->{ $key } = $value;
+    }
 }
 
 # override this so we can pre-manipulate the data
-sub add_data {
-  my ($self, $conf) = @_;
+sub add_data
+{
+    my ( $self, $conf ) = @_;
 
-  croak 'no data provided'
-    unless (defined $conf->{'data'} && ref($conf->{'data'}) eq 'ARRAY');
+    croak 'no data provided'
+      unless ( defined $conf->{ 'data' } &&
+               ref( $conf->{ 'data' } ) eq 'ARRAY' );
 
-  # create an array
-  unless(defined $self->{'data'}) {
-    my @data;
-    $self->{'data'} = \@data;
-  }
-
-  # convert to sorted (by ascending numeric value) array of [ x, y ]
-  my @new_data = ();
-  my ($i,$x,@pair);
-
-  $i = 0;
-  while ($i < @{$conf->{'data'}}) {
-    @pair = ();
-    if (ref($conf->{'data'}->[$i]) eq 'ARRAY') {
-      push @pair,@{$conf->{'data'}->[$i]};
-      $i++;
+    # create an array
+    unless ( defined $self->{ 'data' } )
+    {
+        my @data;
+        $self->{ 'data' } = \@data;
     }
-    else {
-      $pair[0] = $conf->{'data'}->[$i++];
-      $pair[1] = $conf->{'data'}->[$i++];
+
+    # convert to sorted (by ascending numeric value) array of [ x, y ]
+    my @new_data = ();
+    my ( $i, $x, @pair );
+
+    $i = 0;
+    while ( $i < @{ $conf->{ 'data' } } )
+    {
+        @pair = ();
+        if ( ref( $conf->{ 'data' }->[$i] ) eq 'ARRAY' )
+        {
+            push @pair, @{ $conf->{ 'data' }->[$i] };
+            $i++;
+        }
+        elsif ( ref( $conf->{ 'data' }->[$i] ) eq 'HASH' )
+        {
+            $pair[0] = $conf->{ 'data' }->[$i]->{ x };
+            $pair[1] = $conf->{ 'data' }->[$i]->{ y };
+            $pair[2] = $conf->{ 'data' }->[$i]->{ z };
+            $i++;
+        }
+        else
+        {
+            $pair[0] = $conf->{ 'data' }->[$i++];
+            $pair[1] = $conf->{ 'data' }->[$i++];
+            $pair[2] = $conf->{ 'data' }->[$i++];
+        }
+        push @new_data, [@pair];
     }
-    push @new_data, [ @pair ];
-  }
 
-  my @sorted = sort {@{$a}[0] <=> @{$b}[0]} @new_data;
+    my %store = ( 'pairs' => \@new_data, );
 
-  # if stacked, we accumulate the
-  if (($self->{config}->{stacked}) && (@{$self->{'data'}})) {
-    my $prev = $self->{'data'}->[@{$self->{'data'}} - 1]->{pairs};
+    $store{ 'title' } = $conf->{ 'title' } if defined $conf->{ 'title' };
+    push( @{ $self->{ 'data' } }, \%store );
 
-    # check our length matches previous
-    croak sprintf("Series %d can not be stacked on previous series. Mismatched length.",
-      scalar(@{$self->{'data'}}))
-      unless (scalar(@sorted) == scalar(@$prev));
-
-    for (my $i = 0; $i < @sorted; $i++) {
-      # check the x value matches
-      croak sprintf("Series %d can not be stacked on previous series. Mismatched x value at sample %d (x %s).",
-        scalar(@{$self->{'data'}}),
-        $i,
-        $sorted[$i][0])
-      unless ($sorted[$i][0] == $prev->[$i][0]);
-
-      $sorted[$i][1] += $prev->[$i][1];
-    }
-  }
-
-  my %store = (
-    'pairs' => \@sorted,
-  );
-
-  $store{'title'} = $conf->{'title'} if defined $conf->{'title'};
-  push (@{$self->{'data'}},\%store);
-
-  return 1;
+    return 1;
 }
 
 # override calculations to set a few calculated values, mainly for scaling
-sub calculations {
-  my $self = shift;
+sub calculations
+{
+    my $self = shift;
 
-  # run through the data and calculate maximum and minimum values
-  my ($max_key_size, $max_x, $min_x, $max_y, $min_y, $max_x_label_length, $x_label);
+    # run through the data and calculate maximum and minimum values
+    my ( $max_key_size, $max_x, $min_x, $max_y, $min_y, $max_z,
+         $max_x_label_length, $x_label );
 
-  foreach my $dataset (@{$self->{data}}) {
-    $max_key_size = length($dataset->{title}) if ((!defined $max_key_size) || ($max_key_size < length($dataset->{title})));
 
-    foreach my $pair (@{$dataset->{pairs}}) {
-      $max_x = $pair->[0] if ((!defined $max_x) || ($max_x < $pair->[0]));
-      $min_x = $pair->[0] if ((!defined $min_x) || ($min_x > $pair->[0]));
-      $max_y = $pair->[1] if (($pair->[1] ne '') && ((!defined $max_y) || ($max_y < $pair->[1])));
-      $min_y = $pair->[1] if (($pair->[1] ne '') && ((!defined $min_y) || ($min_y > $pair->[1])));
+    foreach my $dataset ( @{ $self->{ data } } )
+    {
+        $max_key_size = length( $dataset->{ title } )
+          if ( ( !defined $max_key_size ) ||
+               ( $max_key_size < length( $dataset->{ title } ) ) );
 
-      $x_label = $pair->[0];
-      $max_x_label_length = length($x_label) if ((!defined $max_x_label_length) || ($max_x_label_length < length($x_label)));
+        foreach my $pair ( @{ $dataset->{ pairs } } )
+        {
+            $max_x = $pair->[0]
+              if ( ( !defined $max_x ) || ( $max_x < $pair->[0] ) );
+            $min_x = $pair->[0]
+              if ( ( !defined $min_x ) || ( $min_x > $pair->[0] ) );
+            $max_y = $pair->[1]
+              if ( ( $pair->[1] ne '' ) &&
+                   ( ( !defined $max_y ) || ( $max_y < $pair->[1] ) ) );
+            $min_y = $pair->[1]
+              if ( ( $pair->[1] ne '' ) &&
+                   ( ( !defined $min_y ) || ( $min_y > $pair->[1] ) ) );
+            $max_z = $pair->[2]
+              if ( ( $pair->[2] ne '' ) &&
+                   ( ( !defined $max_z ) || ( $max_z < $pair->[2] ) ) );
+
+            $x_label            = $pair->[0];
+            $max_x_label_length = length($x_label)
+              if ( ( !defined $max_x_label_length ) ||
+                   ( $max_x_label_length < length($x_label) ) );
+        }
     }
-  }
-  $self->{calc}->{max_key_size} = $max_key_size;
-  $self->{calc}->{max_x} = $max_x;
-  $self->{calc}->{min_x} = $min_x;
-  $self->{calc}->{max_y} = $max_y;
-  $self->{calc}->{min_y} = $min_y;
-  $self->{calc}->{max_x_label_length} = $max_x_label_length;
+    $self->{ calc }->{ max_key_size }       = $max_key_size;
+    $self->{ calc }->{ max_x }              = $max_x;
+    $self->{ calc }->{ min_x }              = $min_x;
+    $self->{ calc }->{ max_y }              = $max_y;
+    $self->{ calc }->{ min_y }              = $min_y;
+    $self->{ calc }->{ max_z }              = $max_z;
+    $self->{ calc }->{ max_x_label_length } = $max_x_label_length;
 
-  # Calc the x axis scale values
-  $self->{calc}->{min_xscale_value} = ($self->_is_valid_config('min_xscale_value')) ? $self->{config}->{min_xscale_value} : $min_x;
-  $self->{calc}->{max_xscale_value} = ($self->_is_valid_config('max_xscale_value')) ? $self->{config}->{max_xscale_value} : $max_x;
-  $self->{calc}->{xscale_range} = $self->{calc}->{max_xscale_value} - $self->{calc}->{min_xscale_value};
+    # Calc the x axis scale values
+    $self->{ calc }->{ min_xscale_value } =
+      ( $self->_is_valid_config('min_xscale_value') ) ?
+      $self->{ config }->{ min_xscale_value } :
+      $min_x;
+    $self->{ calc }->{ max_xscale_value } =
+      ( $self->_is_valid_config('max_xscale_value') ) ?
+      $self->{ config }->{ max_xscale_value } :
+      $max_x;
+    $self->{ calc }->{ xscale_range } =
+      $self->{ calc }->{ max_xscale_value } -
+      $self->{ calc }->{ min_xscale_value };
 
-  # Calc the y axis scale values
-  $self->{calc}->{min_yscale_value} = ($self->_is_valid_config('min_yscale_value')) ? $self->{config}->{min_yscale_value} : $min_y;
-  $self->{calc}->{max_yscale_value} = ($self->_is_valid_config('max_yscale_value')) ? $self->{config}->{max_yscale_value} : $max_y;
-  $self->{calc}->{yscale_range} = $self->{calc}->{max_yscale_value} - $self->{calc}->{min_yscale_value};
+    # Calc the y axis scale values
+    $self->{ calc }->{ min_yscale_value } =
+      ( $self->_is_valid_config('min_yscale_value') ) ?
+      $self->{ config }->{ min_yscale_value } :
+      $min_y;
+    $self->{ calc }->{ max_yscale_value } =
+      ( $self->_is_valid_config('max_yscale_value') ) ?
+      $self->{ config }->{ max_yscale_value } :
+      $max_y;
+    $self->{ calc }->{ yscale_range } =
+      $self->{ calc }->{ max_yscale_value } -
+      $self->{ calc }->{ min_yscale_value };
 
-  my ($range,$division,$precision);
+    my ( $range, $division, $precision );
 
-  if ($self->_is_valid_config('yscale_divisions')) {
-    $division = $self->{config}->{yscale_divisions};
+    if ( $self->_is_valid_config('yscale_divisions') )
+    {
+        $division = $self->{ config }->{ yscale_divisions };
 
-    if ($division >= 1) {
-      $precision = 0;
+        if ( $division >= 1 )
+        {
+            $precision = 0;
+        }
+        else
+        {
+            $precision = length($division) - 2;
+        }
     }
-    else {
-      $precision = length($division) - 2;
-    }
-  }
-  else {
-    # Find divisions, format and range
-    ($range, $division, $precision) = $self->_range_calc($self->{calc}->{yscale_range});
+    else
+    {
+        # Find divisions, format and range
+        ( $range, $division, $precision ) =
+          $self->_range_calc( $self->{ calc }->{ yscale_range } );
 
-    # If a max value hasn't been set we can set a revised range and max value
-    if (! $self->_is_valid_config('max_yscale_value')) {
-      $self->{calc}->{max_yscale_value} = $self->{calc}->{min_yscale_value} + $range;
-      $self->{calc}->{yscale_range} = $self->{calc}->{max_yscale_value} - $self->{calc}->{min_yscale_value};
+        # If a max value hasn't been set we can set a revised range and max value
+        if ( !$self->_is_valid_config('max_yscale_value') )
+        {
+            $self->{ calc }->{ max_yscale_value } =
+              $self->{ calc }->{ min_yscale_value } + $range;
+            $self->{ calc }->{ yscale_range } =
+              $self->{ calc }->{ max_yscale_value } -
+              $self->{ calc }->{ min_yscale_value };
+        }
     }
-  }
-  $self->{calc}->{yscale_division} = $division;
+    $self->{ calc }->{ yscale_division } = $division;
 
-  $self->{calc}->{y_label_format} = ($self->_is_valid_config('y_label_format')) ? $self->{config}->{y_label_format} : "%.${precision}f";
-  $self->{calc}->{data_value_format} = ($self->_is_valid_config('data_value_format')) ? $self->{config}->{data_value_format} : "%.${precision}f";
+    $self->{ calc }->{ y_label_format } =
+      ( $self->_is_valid_config('y_label_format') ) ?
+      $self->{ config }->{ y_label_format } :
+      "%.${precision}f";
+    $self->{ calc }->{ data_value_format } =
+      ( $self->_is_valid_config('data_value_format') ) ?
+      $self->{ config }->{ data_value_format } :
+      "%.${precision}f";
+
+    # This is some sanity incase someone activates the diganonal path, and the axis
+    # are not the same size
+    if ( $self->{ config }->{ diagonal_path } &&
+         ( $self->{ calc }->{ max_xscale_value } !=
+            $self->{ calc }->{ max_yscale_value } ||
+            $self->{ calc }->{ min_xscale_value } !=
+            $self->{ calc }->{ min_yscale_value } ) )
+    {
+        warn
+          "Using the diagonal_path in the configs assumes the axis\n will be the same size. If you want to use this.\nYou might want to set the min and max x and y sizes.";
+    }
+
 }
 
 1;
@@ -668,21 +733,17 @@ __DATA__
 
   .fill[% loop.count %]{
     fill: [% color %];
-    fill-opacity: 0.2;
-    stroke: none;
-  }
-
-  .line[% loop.count %]{
-    fill: none;
+    fill-opacity: [% config.bubble_fill %];
+    [% IF config.bubble_border_stroke %]
     stroke: [% color %];
     stroke-width: 1px;
-  }
-
-  .key[% loop.count %],.fill[% loop.count %]{
-    fill: [% color %];
+  [% ELSE %]
     stroke: none;
     stroke-width: 1px;
+  [% END %]
   }
+
+  
 
   [% LAST IF (config.random_colors == 0 && loop.count == 12) %]
 [% END %]
@@ -719,7 +780,7 @@ __DATA__
 [% END %]
 
 <!-- svg bg -->
-<rect x="0" y="0" width="[% config.width %]" height="[% config.height %]" class="svgBackground"/>
+<rect x="0" y="0" width="[% config.width %]" height="[% config.height %]" stroke="rgba(0,0,0,1)" class="svgBackground"/>
 
 <!-- ///////////////// CALCULATE GRAPH AREA AND BOUNDARIES //////////////// -->
 [%# get dimensions of actual graph area (NOT SVG area) %]
@@ -790,7 +851,7 @@ __DATA__
 
 <!-- CALC WIDTH AND X COORD DIMENSIONS -->
 [%# reduce width of graph area if there is large labelling on x axis %]
-[% space_b4_y_axis = (calc.min_xscale_value.length / 2) * char_width %]
+[% space_b4_y_axis = (calc.min_xscale_value.length / 2) * char_width  %]
 
 [% IF config.show_x_labels %]
   [% IF config.key && config.key_position == 'right' %]
@@ -832,10 +893,18 @@ __DATA__
   [% max_x_span = config.max_x_span %]
   <!-- max_x_span [% max_x_span %] -->
 [% END %]
+  
+  [%# scaling for bubbles %]
+  [% wpad = w / 10  %]
+  [% w = w - wpad * 2  %]
+  [% h = h - wpad %]
+  [% x = x + wpad %]
+  [% y = y + wpad %]
+ 
 
 <!-- //////////////////////////////  BUILD GRAPH AREA ////////////////////////////// -->
 [%# graph bg and clipping regions for lines/fill and clip extended to included data labels %]
-<rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]" class="graphBackground"/>
+<rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]" stroke="rgba(0,0,0,1)" class="graphBackground"/>
 <clipPath id="clipGraphArea">
   <rect x="[% x %]" y="[% y %]" width="[% w %]" height="[% h %]"/>
 </clipPath>
@@ -843,6 +912,9 @@ __DATA__
 <!-- axis -->
 <path d="M[% x %] [% base_line %] h[% w %]" class="axis" id="xAxis"/>
 <path d="M[% x %] [% y %] v[% h %]" class="axis" id="yAxis"/>
+[% IF config.diagonal_path %]
+<path d="M[% x %] [% base_line %] [% x+w %] [% y %]" class="axis" id="zAxis"/>
+[% END %]
 
 <!-- //////////////////////////////  AXIS DISTRIBUTIONS //////////////////////////// -->
 <!-- x axis scaling -->
@@ -895,7 +967,7 @@ __DATA__
 
 <!-- y axis scaling -->
 [%# how much padding between largest bar and top of graph %]
-[% top_pad = h / 40 %]
+[% top_pad = config.pad_top_y_axis ?  h / 40 : 0 %]
 
 [% dy = calc.yscale_range %]
 [% IF dy == 0 %]
@@ -954,58 +1026,15 @@ __DATA__
 [% line = data.size %]
 <g id="groupData" class="data">
 [% FOREACH dataset = data.reverse %]
-  <g id="groupDataSeries[% line %]" class="dataSeries[% line %]" clip-path="url(#clipGraphArea)">
-  [% IF config.area_fill %]
-    [%# create alternate fill first (so line can overwrite if necessary) %]
-    [% xcount = 0 %]
-    [% FOREACH pair = dataset.pairs %]
-      [%- IF ((pair.0 >= calc.min_xscale_value) && (pair.0 <= calc.max_xscale_value)) -%]
-        [%- IF xcount == 0 -%][% lastx = pair.0 %]<path d="M[% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line %][%- END -%]
-        [%- IF ((max_x_span) && (pair.0 > lastx + max_x_span)) -%]
-          V [% base_line %] H [% (dw * (pair.0 - calc.min_xscale_value)) + x %] V [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
-        [%- ELSE -%]
-          L [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
-        [%- END -%]
-        [%- lastx = pair.0 -%][%- xcount = xcount + 1 -%]
-      [%- END -%]
-    [% END %]
-    [% IF xcount > 0 %] V [% base_line %] Z" class="fill[% line %]"/> [% END %]
-  [% END %]
-
-  <!--- create line [% dataset.title %]-->
-  [% xcount = 0 %]
-  [% FOREACH pair = dataset.pairs %]
-    [% IF ((pair.0 >= calc.min_xscale_value) && (pair.0 <= calc.max_xscale_value)) %]
-      [%- IF xcount == 0 -%][%- lastx = pair.0 -%]<path d="M
-        [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
-      [%- ELSE -%]
-        [%- IF ((max_x_span) && (pair.0 > lastx + max_x_span)) -%]
-          M [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
-        [%- ELSE -%]
-          L [% (dw * (pair.0 - calc.min_xscale_value)) + x %] [% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]
-        [%- END -%]
-      [%- END -%]
-      [%- lastx = pair.0 -%][%- xcount = xcount + 1 -%]
-    [%- END -%]
-  [% END %]
-  [% IF xcount > 0 %] " class="line[% line %]"/> [% END %]
-  </g>
   <g id="groupDataLabels[% line %]" class="dataLabels[% line %]">
-  [% IF config.show_data_points || config.show_data_values %]
     [% FOREACH pair = dataset.pairs %]
       [% IF ((pair.0 >= calc.min_xscale_value) && (pair.0 <= calc.max_xscale_value)) %]
-        <g class="dataLabel[% line %]" [% IF config.rollover_values %] opacity="0" [% END %]>
-        [% IF config.show_data_points %]
-          <circle cx="[% (dw * (pair.0 - calc.min_xscale_value)) + x %]" cy="[% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]" r="2.5" class="dataPoint[% line %]"
-          [% IF config.rollover_values %]
-            onmouseover="evt.target.parentNode.setAttribute('opacity',1);"
-            onmouseout="evt.target.parentNode.setAttribute('opacity',0);"
-          [% END %]
-          [% IF pair.3.defined %]
-            onclick="[% pair.3 %]"
-          [% END %]
-          ></circle>
-        [% END %]
+        <g class="dataLabel[% line %]" [% IF config.rollover_values %] opacity="0" [% END %]>    
+          <circle
+          cx="[% (dw * (pair.0 - calc.min_xscale_value)) + x %]"
+          cy="[% base_line - (dh * (pair.1 - calc.min_yscale_value)) %]"
+          r="[% wpad * (pair.2 / calc.max_z) %]"
+          class="fill[% line %]"></circle>
         [% IF config.show_data_values %]
           [%# datavalue shown %]
           [% IF (pair.2.defined) && (pair.2 != '') %][% point_label = pair.2 %][% ELSE %][% point_label = pair.1 FILTER format(calc.data_value_format) %][% END %]
@@ -1019,7 +1048,6 @@ __DATA__
         </g>
       [% END %]
     [% END %]
-  [% END %]
   </g>
   [% line = line - 1 %]
 [% END %]
