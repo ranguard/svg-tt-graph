@@ -380,8 +380,11 @@ __DATA__
   "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 [% stylesheet = 'included' %]
 
-[% IF config.style_sheet && config.style_sheet != '' %]
+[% IF config.style_sheet && config.style_sheet != '' && config.style_sheet.substr(0,7) != 'inline:' %]
   <?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>
+[% ELSIF config.style_sheet && config.style_sheet.substr(0,7) == 'inline:'%]
+  [% stylesheet = 'inline' 
+     style_inline = config.style_sheet.substr(7) %]
 [% ELSE %]
   [% stylesheet = 'excluded' %]
 [% END %]
@@ -398,7 +401,9 @@ __DATA__
     <stop offset="100%" style="stop-color: #ccc;stop-opacity: 0"/>
   </radialGradient>
 
-[% IF stylesheet == 'excluded' %]
+[% IF stylesheet == 'inline' %]
+[% style_inline %]
+[% ELSIF stylesheet == 'excluded' %]
 <!-- include default stylesheet if none specified -->
 <style type="text/css">
 <![CDATA[
