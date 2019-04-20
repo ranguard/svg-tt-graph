@@ -163,6 +163,9 @@ Whether or not to tidy the content of the SVG file (XML::Tidy required).
 Set the path to an external stylesheet, set to '' if
 you want to revert back to using the defaut internal version.
 
+Set to "inline:<style>...</style>" with your CSS in between the tags.
+You can thus override the default style without requireing an external URL. 
+
 The default stylesheet handles up to 12 data sets. All data series over
 the 12th will have no style and be in black. If you have over 12 data
 sets you can assign them all random colors (see the random_color()
