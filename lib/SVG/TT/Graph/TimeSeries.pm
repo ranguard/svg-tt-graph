@@ -264,6 +264,8 @@ to 1, set to '0' if you want to turn them off.
 
 Format string for presenting the X axis labels.
 The POSIX strftime() function is used for formatting
+after calling the POSIX tzset() function with the timezone
+specified in timescale_time_zone if present 
 (see strftime man pages and LC_TIME locale information).
 
 =item show_y_labels()
@@ -289,7 +291,10 @@ These time periods are used by the L<DateTime::Duration> methods.
 
 This determines the time zone used for the date intervals on the X axis.
 Values are those that L<DateTime> accepts for its constructor's 'time_zone'
-parameter. The default is 'floating'.
+parameter. The default is 'floating'.  If passing in data for a different
+timezone than that set for your system, note that you also must embed the 
+timezone information into the values passed to 'add_data', for example by 
+formatting your DateTime objects with L<DateTime::Format::RFC3339>. 
 
 =item stagger_x_labels()
 
@@ -570,6 +575,11 @@ sub dateadd {
 # override calculations to set a few calculated values, mainly for scaling
 sub calculations {
   my $self = shift;
+
+  # Need to set the timezone in order for x-axis labels to be 
+  # formatted correctly by strftime:
+  $ENV{'TZ'} = $self->{config}->{timescale_time_zone};
+  POSIX::tzset();
 
   # run through the data and calculate maximum and minimum values
   my ($max_key_size,$max_time,$min_time,$max_value,$min_value,$max_x_label_length,$x_label);
