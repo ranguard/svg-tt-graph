@@ -163,6 +163,9 @@ Whether or not to tidy the content of the SVG file (XML::Tidy required).
 Set the path to an external stylesheet, set to '' if
 you want to revert back to using the defaut internal version.
 
+Set to "inline:<style>...</style>" with your CSS in between the tags.
+You can thus override the default style without requireing an external URL. 
+
 The default stylesheet handles up to 12 data sets. All data series over
 the 12th will have no style and be in black. If you have over 12 data
 sets you can assign them all random colors (see the random_color()
@@ -380,8 +383,11 @@ __DATA__
   "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 [% stylesheet = 'included' %]
 
-[% IF config.style_sheet && config.style_sheet != '' %]
+[% IF config.style_sheet && config.style_sheet != '' && config.style_sheet.substr(0,7) != 'inline:' %]
   <?xml-stylesheet href="[% config.style_sheet %]" type="text/css"?>
+[% ELSIF config.style_sheet && config.style_sheet.substr(0,7) == 'inline:'%]
+  [% stylesheet = 'inline' 
+     style_inline = config.style_sheet.substr(7) %]
 [% ELSE %]
   [% stylesheet = 'excluded' %]
 [% END %]
@@ -398,7 +404,9 @@ __DATA__
     <stop offset="100%" style="stop-color: #ccc;stop-opacity: 0"/>
   </radialGradient>
 
-[% IF stylesheet == 'excluded' %]
+[% IF stylesheet == 'inline' %]
+[% style_inline %]
+[% ELSIF stylesheet == 'excluded' %]
 <!-- include default stylesheet if none specified -->
 <style type="text/css">
 <![CDATA[
