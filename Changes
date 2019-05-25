@@ -1,5 +1,9 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+1.00 Fri 10 May 2019 07:19:53
+    - add support for `inline` (jmccanta)
+    - doc and timezone fix (Eric Jensen)
+
 0.26 Sun  4 Oct 2015 20:18:50
     - Add HeatMap! (stuartskelton)
 
