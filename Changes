@@ -1,5 +1,8 @@
 Revision history for Perl extension SVG::TT::Graph.
 
+1.01 Mon 27 May 2019 09:45:54 BST
+    - Release without a 'local' dir!
+
 1.00 Fri 10 May 2019 07:19:53
     - add support for `inline` (jmccanta)
     - doc and timezone fix (Eric Jensen)
